@@ -1,319 +1,156 @@
 {
   "courses": [
     {
-      "id": "computer-basics",
-      "title": "Computer Basics",
-      "lessons": [
-        {
-          "id": "cb-os",
-          "title": "Operating System",
-          "explain": "An operating system manages the resources of a computer and provides the environment in which programs run.",
-          "steps": [
-            "Understand what an operating system does.",
-            "Learn common operating-system examples.",
-            "Review its main functions.",
-            "Try the short quiz."
-          ],
-          "quiz": [
-            {
-              "q": "An operating system is a program that\u2026",
-              "options": [
-                "Helps in checking spelling",
-                "Maintains database relationships",
-                "Manages the resources of computer",
-                "Performs Excel calculations"
-              ],
-              "answer": 2
-            },
-            {
-              "q": "Which is not an operating system?",
-              "options": [
-                "Windows",
-                "Mac",
-                "Microsoft",
-                "Linux"
-              ],
-              "answer": 2
-            }
-          ]
-        },
-        {
-          "id": "cb-hardware",
-          "title": "Hardware, Software and Memory",
-          "explain": "Learn the curriculum topics of hardware, software and memory before moving to practical work.",
-          "steps": [
-            "Identify hardware.",
-            "Understand software.",
-            "Review memory.",
-            "Ask the AI Teacher if any term is unclear."
-          ]
-        }
-      ]
-    },
-    {
       "id": "ms-word",
-      "title": "Microsoft Word",
+      "title": "MS Word",
+      "description": "Practical MS Word training based on the Joining Hands curriculum.",
       "lessons": [
         {
-          "id": "word-2",
-          "title": "Admission Notification",
-          "type": "practical",
-          "explain": "Practice the Word formatting and shape skills listed for the Admission Notification project.",
-          "steps": [
-            "Create the document.",
-            "Apply font style, colour and size.",
-            "Highlight required text.",
-            "Insert and format shapes.",
-            "Add text to shapes.",
-            "Apply alignment and justification.",
-            "Save as DOCX."
+          "id": "word-lesson-1",
+          "title": "Lesson 1 \u2014 Preparing Application Form",
+          "project": "Project 1",
+          "duration": "75 minutes",
+          "image": "/projects/word-project-1.png",
+          "learn": [
+            "Insert clip art / picture",
+            "Resize picture or clip art",
+            "Insert a table",
+            "Enter text in the table",
+            "Make text Bold",
+            "Underline the text",
+            "Make a line dashed"
           ],
-          "skills": [
-            "Font style",
-            "Font colour",
-            "Font size",
-            "Highlight text",
-            "Shapes",
-            "Resize shapes",
-            "Add text to shape",
-            "Text alignment",
-            "Justification"
-          ]
-        },
-        {
-          "id": "word-3",
-          "title": "Sale Advertisement",
-          "type": "practical",
-          "explain": "Practice WordArt, Drop Cap and shape formatting for the Sale Advertisement project.",
           "steps": [
-            "Create the advertisement.",
-            "Insert and format WordArt.",
-            "Apply Drop Cap.",
-            "Format shapes.",
-            "Set shape outline/colour.",
-            "Set text direction.",
-            "Save as DOCX."
+            "Open Microsoft Word and create a blank document.",
+            "Set up the page and create the basic form layout.",
+            "Insert the picture/clip art and resize it to match the sample.",
+            "Create the Form No. area using a table.",
+            "Type \u201cApplication for Admission\u201d and format it as shown.",
+            "Create the applicant-information lines and phone-number boxes.",
+            "Create the \u201cAcknowledgement Receipt and Hall Ticket\u201d section.",
+            "Add the counseling information, signatures and date.",
+            "Compare your document with the Project 1 sample before submitting."
           ],
-          "skills": [
-            "WordArt",
-            "WordArt formatting",
-            "Shapes",
-            "Drop Cap",
-            "Shape outline",
-            "Text direction"
-          ]
+          "practical": "Recreate the complete Application for Admission form shown in Project 1."
         },
         {
-          "id": "word-4",
-          "title": "Book Cover Page",
-          "type": "practical",
-          "explain": "Create a book cover using the Word features specified in the curriculum.",
-          "steps": [
-            "Create the cover.",
-            "Add symbols/equations where required.",
-            "Add watermark.",
-            "Insert SmartArt.",
-            "Apply bullets and numbering where needed.",
-            "Format the page.",
-            "Save as DOCX."
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ms-excel",
-      "title": "Microsoft Excel",
-      "lessons": [
-        {
-          "id": "excel-formulas",
-          "title": "Excel Formulas",
-          "explain": "Learn how formulas are used to calculate results in Excel.",
-          "steps": [
-            "Enter data.",
-            "Select a result cell.",
-            "Start a formula with =.",
-            "Use cell references and functions.",
-            "Check the result."
-          ]
-        },
-        {
-          "id": "excel-sum",
-          "title": "SUM Function",
-          "explain": "Use SUM to add values and calculate totals.",
-          "steps": [
-            "Enter numeric data.",
-            "Select the total cell.",
-            "Use =SUM(range).",
-            "Press Enter and verify the total."
+          "id": "word-lesson-2",
+          "title": "Lesson 2 \u2014 Prepare an Admission Notification",
+          "project": "Project 2",
+          "duration": "75 minutes",
+          "image": "/projects/word-project-2.png",
+          "learn": [
+            "Create a formatted admission notification",
+            "Use text formatting and alignment",
+            "Use shapes/text boxes and pictures",
+            "Arrange elements to match the sample"
           ],
-          "practice": "Create a small marks table and calculate the total."
-        },
-        {
-          "id": "excel-if",
-          "title": "IF Function",
-          "explain": "Use IF to return one result when a condition is true and another when it is false.",
           "steps": [
-            "Identify the condition.",
-            "Write the IF formula.",
-            "Enter the true result.",
-            "Enter the false result.",
-            "Test with different values."
+            "Open a blank Word document.",
+            "Create the page border and basic layout.",
+            "Add the university heading and admission title.",
+            "Enter the eligibility and application information.",
+            "Add the highlighted last-date section.",
+            "Create the two information boxes at the bottom.",
+            "Add the date and page number.",
+            "Compare your result with the Project 2 sample."
           ],
-          "practice": "For marks in B2, try =IF(B2>=40,\"Pass\",\"Fail\")",
-          "quiz": [
-            {
-              "q": "Which formula returns Pass when B2 is 40 or more?",
-              "options": [
-                "=SUM(B2>=40)",
-                "=IF(B2>=40,\"Pass\",\"Fail\")",
-                "=COUNTIF(B2,40)",
-                "=MAX(B2,40)"
-              ],
-              "answer": 1
-            }
-          ]
+          "practical": "Recreate the Admission Notification shown in Project 2."
         },
         {
-          "id": "excel-countif",
-          "title": "COUNTIF Function",
-          "explain": "Use COUNTIF to count cells that meet a condition.",
-          "steps": [
-            "Choose the range.",
-            "Define the condition.",
-            "Enter COUNTIF.",
-            "Check the count."
-          ]
-        },
-        {
-          "id": "excel-max",
-          "title": "MAX Function",
-          "explain": "Use MAX to find the highest numeric value.",
-          "steps": [
-            "Select the range.",
-            "Enter =MAX(range).",
-            "Check the highest value."
-          ]
-        },
-        {
-          "id": "excel-min",
-          "title": "MIN Function",
-          "explain": "Use MIN to find the lowest numeric value.",
-          "steps": [
-            "Select the range.",
-            "Enter =MIN(range).",
-            "Check the lowest value."
-          ]
-        },
-        {
-          "id": "excel-and",
-          "title": "AND Function",
-          "explain": "Use AND when multiple conditions must be true.",
-          "steps": [
-            "Identify all conditions.",
-            "Place them inside AND.",
-            "Combine with IF when needed.",
-            "Test the result."
-          ]
-        },
-        {
-          "id": "excel-filter",
-          "title": "FILTER",
-          "explain": "Use filtering to display rows that match selected criteria.",
-          "steps": [
-            "Select the table.",
-            "Turn on Filter.",
-            "Choose a column condition.",
-            "Review the filtered rows."
-          ]
-        },
-        {
-          "id": "excel-pivot",
-          "title": "PIVOT TABLE",
-          "explain": "Use a Pivot Table to summarize and analyze tabular data.",
-          "steps": [
-            "Select the data.",
-            "Insert a Pivot Table.",
-            "Choose fields.",
-            "Place fields into rows/values.",
-            "Review the summary."
-          ]
-        },
-        {
-          "id": "excel-sumif",
-          "title": "SUMIF Function",
-          "type": "practical",
-          "explain": "Practice SUMIF for the commission and sales project.",
-          "steps": [
-            "Identify the criteria range.",
-            "Set the criterion.",
-            "Choose the sum range.",
-            "Enter SUMIF.",
-            "Verify the result."
-          ]
-        },
-        {
-          "id": "excel-sumifs",
-          "title": "SUMIFS Function",
-          "type": "practical",
-          "explain": "Practice SUMIFS to calculate sums using different conditions.",
-          "steps": [
-            "Identify the sum range.",
-            "Add the first condition.",
-            "Add additional conditions.",
-            "Verify the output."
-          ]
-        },
-        {
-          "id": "excel-results",
-          "title": "Results \u2014 Project 24",
-          "type": "practical",
-          "explain": "Complete the Results project using the tasks listed in the curriculum.",
-          "steps": [
-            "Find the highest marks.",
-            "Find the lowest marks.",
-            "Find the highest marks in Multimedia.",
-            "Find the lowest marks in Networking.",
-            "Find the average.",
-            "Find the second-highest marks.",
-            "Use Filter for sorting data.",
-            "Save the workbook."
-          ]
-        }
-      ]
-    },
-    {
-      "id": "powerpoint",
-      "title": "Microsoft PowerPoint",
-      "lessons": [
-        {
-          "id": "ppt-41",
-          "title": "Basics of Computer \u2014 Project 33",
-          "type": "practical",
-          "explain": "Prepare the Basics of Computer presentation using the skills listed in the curriculum.",
-          "steps": [
-            "Insert a picture.",
-            "Make required text bold.",
-            "Choose slide design/layout.",
-            "Insert a chart.",
-            "Use bullets and numbering.",
-            "Run the slide show.",
-            "Add animations.",
-            "Format the theme.",
-            "Set text alignment.",
-            "Save the presentation."
+          "id": "word-lesson-3",
+          "title": "Lesson 3 \u2014 Prepare a Sale Advertisement",
+          "project": "Project 3",
+          "duration": "75 minutes",
+          "image": "/projects/word-project-3.png",
+          "learn": [
+            "Create an attractive advertisement",
+            "Use WordArt",
+            "Insert and format shapes",
+            "Use text boxes and pictures",
+            "Apply formatting and effects"
           ],
-          "skills": [
-            "Insert Picture",
-            "Make text bold",
-            "Slide design",
-            "Slide layout",
-            "Insert chart",
-            "Bullets & Numbers",
-            "Slide show",
-            "Animations",
-            "Format theme",
-            "Change Text alignment"
-          ]
+          "steps": [
+            "Create the page background and main heading.",
+            "Insert WordArt for the main sale title.",
+            "Insert the required shapes and type the offer text.",
+            "Format colours, outlines and effects.",
+            "Arrange the offers and supporting text.",
+            "Add the bottom promotional information.",
+            "Compare your work with Project 3."
+          ],
+          "practical": "Recreate the Sale Advertisement shown in Project 3."
+        },
+        {
+          "id": "word-lesson-4",
+          "title": "Lesson 4 \u2014 Prepare a Cover Page of a Book",
+          "project": "Project 4",
+          "duration": "75 minutes",
+          "image": "/projects/word-project-4.png",
+          "learn": [
+            "Create a book cover page",
+            "Use WordArt and shapes",
+            "Insert pictures",
+            "Use text boxes and formatting effects",
+            "Arrange objects on a page"
+          ],
+          "steps": [
+            "Set the page and create the main title.",
+            "Insert and format the large arrow shapes.",
+            "Add the mathematics guidebook text.",
+            "Insert the picture and thought bubble.",
+            "Create the information box and highlighted text.",
+            "Create the publishing-house section.",
+            "Arrange and align all objects to match the sample."
+          ],
+          "practical": "Recreate the Book Cover Page shown in Project 4."
+        },
+        {
+          "id": "word-lesson-5",
+          "title": "Lesson 5 \u2014 Prepare a Sales Advertisement",
+          "project": "Project 5",
+          "duration": "75 minutes",
+          "image": "/projects/word-project-5.png",
+          "learn": [
+            "Create a professional sales advertisement",
+            "Use WordArt",
+            "Insert pictures",
+            "Use shapes, tables and text boxes",
+            "Apply borders, colours and effects"
+          ],
+          "steps": [
+            "Create the page border and heading.",
+            "Add the clothing image and title.",
+            "Create the large SALE WordArt.",
+            "Create the discount circle and other promotional shapes.",
+            "Create the fashion-and-style section.",
+            "Insert the store table.",
+            "Add the discount list and align all elements."
+          ],
+          "practical": "Recreate the Sales Advertisement shown in Project 5."
+        },
+        {
+          "id": "word-lesson-6",
+          "title": "Lesson 6 \u2014 Prepare a Marketing Planning Cycle",
+          "project": "Project 6",
+          "duration": "75 minutes",
+          "image": "/projects/word-project-6.png",
+          "learn": [
+            "Create a planning-cycle diagram",
+            "Use shapes and arrows",
+            "Format headings and text",
+            "Arrange multiple objects on one page",
+            "Create a guidance sheet layout"
+          ],
+          "steps": [
+            "Create the blue title/header area.",
+            "Create the cycle using shapes and arrows.",
+            "Add the Analysis, Objectives, Strategy, Resources, Implementation and Evaluation sections.",
+            "Format the bullet points and headings.",
+            "Create the Guidance Sheet for Marketing Planning section.",
+            "Align and arrange all objects to match Project 6."
+          ],
+          "practical": "Recreate the Marketing Planning Cycle shown in Project 6."
         }
       ]
     }
