@@ -26,7 +26,8 @@ if(!db.prepare("SELECT COUNT(*) c FROM users").get().c){
 const curriculum=JSON.parse(fs.readFileSync(path.join(__dirname,"curriculum.json"),"utf8"));
 const ai=process.env.OPENAI_API_KEY?new OpenAI({apiKey:process.env.OPENAI_API_KEY}):null,sessions=new Map();
 const lessons=()=>curriculum.courses.flatMap(c=>c.lessons.map(l=>({...l,courseId:c.id,courseTitle:c.title})));
-app.use(express.json({limit:"2mb"}));app.use(express.static(path.join(__dirname,"public")));
+app.get("/",(req,res)=>res.sendFile(path.join(__dirname,"index.html")));
+app.use(express.static(path.join(__dirname,"public")));
 function auth(req,res,next){const t=req.headers.authorization?.replace("Bearer ",""),u=sessions.get(t);if(!u)return res.status(401).json({error:"Please login"});req.user=u;next()}
 function role(...r){return(req,res,next)=>r.includes(req.user.role)?next():res.status(403).json({error:"Access denied"})}
 
