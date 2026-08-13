@@ -8,6 +8,7 @@ import {fileURLToPath} from "url";
 
 dotenv.config();
 const app=express(),__filename=fileURLToPath(import.meta.url),__dirname=path.dirname(__filename);
+app.use(express.json());
 const db=new Database(path.join(__dirname,"joining_hands.db"));db.pragma("journal_mode=WAL");
 db.exec(`
 CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT,user_code TEXT UNIQUE,name TEXT,role TEXT,batch TEXT,password_hash TEXT,phone TEXT,email TEXT,join_date TEXT);
