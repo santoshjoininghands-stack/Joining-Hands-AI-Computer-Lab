@@ -12,7 +12,29 @@ table{width:100%;border-collapse:collapse}td,th{padding:9px;border-bottom:1px so
 <script>
 let token='',me=null,curr=null,prog={};
 async function api(p,o={}){o.headers=o.headers||{};o.headers.Authorization='Bearer '+token;return fetch(p,o)}
-async function doLogin(){let r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code.value.trim(),password:pw.value})}),d=await r.json();if(!r.ok){err.textContent=d.error;return}token=d.token;me=d.user;curr=await(await api('/api/curriculum')).json();await load();document.getElementById('login').classList.remove('active');app.classList.add('active');nav.innerHTML=me.role==='student'?'<button onclick="home()">🏠 Dashboard</button><button onclick="courses()">📚 Courses</button><button onclick="attendance()">🗓 Attendance</button><button onclick="profile()">👤 Profile</button><button onclick="certs()">🏆 Certificates</button><button onclick="logout()">Logout</button>':'<button onclick="teacher()">👨‍🏫 Dashboard</button><button onclick="markAttendance()">🗓 Attendance</button>'+(me.role==='admin'?'<button onclick="addStudent()">➕ Add Student</button>':'')+'<button onclick="logout()">Logout</button>';me.role==='student'?home():teacher()}
+async function doLogin(){
+  const loginErr=document.getElementById('err');
+  const codeEl=document.getElementById('code');
+  const pwEl=document.getElementById('pw');
+  const appEl=document.getElementById('app');
+  const navEl=document.getElementById('nav');
+  loginErr.textContent='';
+  try{
+    let r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:codeEl.value.trim(),password:pwEl.value})});
+    let d=await r.json();
+    if(!r.ok){loginErr.textContent=d.error||'Login failed';return}
+    token=d.token;me=d.user;
+    curr=await(await api('/api/curriculum')).json();
+    await load();
+    document.getElementById('login').classList.remove('active');
+    appEl.classList.add('active');
+    navEl.innerHTML=me.role==='student'?'<button onclick="home()">🏠 Dashboard</button><button onclick="courses()">📚 Courses</button><button onclick="attendance()">🗓 Attendance</button><button onclick="profile()">👤 Profile</button><button onclick="certs()">🏆 Certificates</button><button onclick="logout()">Logout</button>':'<button onclick="teacher()">👨‍🏫 Dashboard</button><button onclick="markAttendance()">🗓 Attendance</button>'+(me.role==='admin'?'<button onclick="addStudent()">➕ Add Student</button>':'')+'<button onclick="logout()">Logout</button>';
+    me.role==='student'?home():teacher();
+  }catch(e){
+    loginErr.textContent='Unable to connect to the server. Please try again.';
+    console.error(e);
+  }
+}
 async function load(){prog={};(await(await api('/api/progress')).json()).forEach(x=>prog[x.lesson_id]=x)}
 async function home(){let st=await(await api('/api/course-status')).json();content.innerHTML=`<div class="card"><h1>Welcome, ${me.name} 👋</h1><p>Learn → Practice → Pass → Earn your certificate.</p></div><div class="grid">${st.map(x=>`<div class="card"><h3>${x.title}</h3><p>${x.completed}/${x.total} lessons passed</p><p>Average: <b>${x.average}%</b></p><button onclick="course('${x.id}')">Open</button>${x.complete?`<button onclick="certificate('${x.id}')">🏆 Certificate</button>`:''}</div>`).join('')}</div>`}
 function courses(){home()}
