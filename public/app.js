@@ -158,45 +158,168 @@ function showCourse(course) {
 // ===============================
 
 function showLesson(course, id) {
-
-  const lesson = curriculum[course].find(
-    item => item.id === id
-  );
+  const lesson = curriculum[course].find(item => item.id === id);
 
   const app = document.getElementById("app");
 
-  let imageHTML = "";
+  app.innerHTML = `
+    <button class="back" onclick="showCourse('${course}')">
+      ← Back to ${course}
+    </button>
 
-  if (course === "MS Word") {
+    <div class="lesson-content">
 
-    imageHTML = `
+      <h1>${lesson.title}</h1>
 
-      <div class="example-section">
+      <h2>${lesson.topic}</h2>
 
-        <h2>Example Project</h2>
+      <p>${lesson.description}</p>
+
+      <div class="step">
+        <strong>Step 1:</strong>
+        Open ${course}.
+      </div>
+
+      <div class="step">
+        <strong>Step 2:</strong>
+        Follow the instructions shown in this lesson.
+      </div>
+
+      <div class="step">
+        <strong>Step 3:</strong>
+        Complete the practical project yourself.
+      </div>
+
+      <div class="step">
+        <strong>Step 4:</strong>
+        Check your work and make corrections.
+      </div>
+
+      <div class="practice-box">
+        <h3>🎯 Practice Task</h3>
 
         <p>
-          Study the example carefully before creating your own project.
+          Now create the project yourself without copying the steps.
         </p>
 
-        <div class="example-image-box">
+        <button onclick="alert('Practice task started!')">
+          Start Practice
+        </button>
+      </div>
 
-          <img
-            src="/Project ${id}.png"
-            alt="${lesson.title}"
-            onclick="openImage('/Project ${id}.png')"
-          >
+      <!-- AI TEACHER -->
+      <div class="ai-box">
 
+        <h2>💬 Ask a Question</h2>
+
+        <p>
+          Don't know how to do something? Ask your AI Teacher.
+        </p>
+
+        <textarea
+          id="aiQuestion"
+          placeholder="Example: How do I add a shape in MS Word?"
+          rows="5"
+        ></textarea>
+
+        <button id="askAIButton" onclick="askAITeacher('${course}', '${lesson.title}')">
+          🤖 Ask AI Teacher
+        </button>
+
+        <div id="aiLoading" style="display:none;">
+          ⏳ AI Teacher is thinking...
         </div>
 
-        <p class="image-help">
-          💡 Click the image to view it larger.
-        </p>
+        <div id="aiAnswer" class="ai-answer" style="display:none;">
+        </div>
 
       </div>
 
-    `;
+    </div>
+  `;
+}
+
+
+// ===============================
+// AI TEACHER
+// ===============================
+
+async function askAITeacher(course, project) {
+
+  const questionBox = document.getElementById("aiQuestion");
+  const answerBox = document.getElementById("aiAnswer");
+  const loadingBox = document.getElementById("aiLoading");
+  const button = document.getElementById("askAIButton");
+
+  const question = questionBox.value.trim();
+
+  if (!question) {
+    alert("Please type your question first.");
+    return;
   }
+
+  // Show loading
+  loadingBox.style.display = "block";
+  answerBox.style.display = "none";
+  button.disabled = true;
+  button.innerText = "⏳ Thinking...";
+
+  try {
+
+    const response = await fetch("/api/ask", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        question: question,
+        course: course,
+        project: project
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Something went wrong.");
+    }
+
+    // Show AI answer
+    answerBox.innerHTML = `
+      <h3>💡 AI Teacher</h3>
+      <div class="ai-response"></div>
+    `;
+
+    // Use textContent so AI response is displayed safely
+    answerBox.querySelector(".ai-response").textContent = data.answer;
+
+    answerBox.style.display = "block";
+
+  } catch (error) {
+
+    console.error("AI Teacher Error:", error);
+
+    answerBox.innerHTML = `
+      <h3>❌ Unable to get answer</h3>
+      <p>
+        ${error.message}
+      </p>
+      <p>
+        Please try again in a moment.
+      </p>
+    `;
+
+    answerBox.style.display = "block";
+
+  } finally {
+
+    loadingBox.style.display = "none";
+    button.disabled = false;
+    button.innerText = "🤖 Ask AI Teacher";
+  }
+}
 
 
   app.innerHTML = `
