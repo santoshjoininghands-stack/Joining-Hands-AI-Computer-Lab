@@ -1,73 +1,48 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Joining Hands — AI Computer Learning & Practical Lab</title>
-  <link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Joining Hands — Learn & Practice</title>
+
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<header class="site-header">
-  <div class="brand">
-    <div class="brand-title">JOINING HANDS</div>
-    <div class="brand-subtitle">AI Computer Learning & Practical Lab</div>
-  </div>
-</header>
+  <header class="site-header">
 
-<main class="container">
-
-  <!-- HOME -->
-  <section id="homeView">
-
-    <div class="hero">
-      <h1>Learn. Practice. Improve.</h1>
-      <p>
-        Learn computer skills through real projects,
-        step-by-step lessons and practical exercises.
-      </p>
+    <div class="brand-title">
+      JOINING HANDS
     </div>
 
-    <h2>Courses</h2>
+    <div class="brand-subtitle">
+      AI Computer Learning & Practical Lab
+    </div>
 
-    <div id="courseGrid" class="grid"></div>
-
-  </section>
-
-
-  <!-- COURSE -->
-  <section id="courseView" class="hidden">
-
-    <button class="back" onclick="showHome()">
-      ← All Courses
-    </button>
-
-    <div id="courseHeader"></div>
-
-    <div id="lessonGrid" class="lesson-grid"></div>
-
-  </section>
+  </header>
 
 
-  <!-- LESSON -->
-  <section id="lessonView" class="hidden">
+  <main class="container">
 
-    <button class="back" onclick="backToCourse()">
-      ← Back to Lessons
-    </button>
+    <div id="app">
+      <p>Loading...</p>
+    </div>
 
-    <div id="lessonContent"></div>
+  </main>
 
-  </section>
 
-</main>
+  <footer>
+    Joining Hands — Learn • Practice • Improve
+  </footer>
 
-<footer>
-  Joining Hands • AI Computer Learning & Practical Lab
-</footer>
 
-<script src="/app.js"></script>
+  <script src="app.js"></script>
 
 </body>
 </html>
