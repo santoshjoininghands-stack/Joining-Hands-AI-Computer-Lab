@@ -1,0 +1,259 @@
+{
+  "courses": [
+    {
+      "id": "ms-word",
+      "title": "MS Word",
+      "icon": "📝",
+      "description": "Learn MS Word by creating real documents and completing practical projects.",
+      "lessons": [
+        {
+          "title": "Preparing Application Form",
+          "short": "Create the Project 1 admission application form.",
+          "duration": "75 minutes",
+          "image": "/images/project1.png",
+          "concepts": [
+            "Page layout and margins",
+            "Text formatting: bold, underline and alignment",
+            "Inserting and resizing pictures",
+            "Creating tables for form fields",
+            "Using borders, lines and spacing"
+          ],
+          "steps": [
+            "Open Microsoft Word and create a blank document.",
+            "Set the page size and margins as required.",
+            "Add the small picture/logo at the top-left and resize it.",
+            "Create the Form No. area using a table.",
+            "Type the heading “Application for Admission”, center it and apply underline.",
+            "Create the Name, Father’s/Husband Name, Occupation, Date of Birth and Address fields using text and dotted lines.",
+            "Create the phone-number boxes using a table.",
+            "Add the Current Occupational Status options.",
+            "Insert the horizontal/dashed separator and create the Acknowledgement Receipt and Hall Ticket section.",
+            "Add signatures and date at the bottom. Compare your result with the project image."
+          ],
+          "practiceIntro": "Recreate Project 1 yourself in MS Word. Do not copy-paste the finished picture.",
+          "practice": [
+            {
+              "question": "Create the complete Application for Admission form shown above.",
+              "answer": "Your final page should visually match the Project 1 image: heading, form fields, phone boxes, occupational-status options, acknowledgement section and signatures."
+            },
+            {
+              "question": "Create the phone-number boxes using a table instead of typing vertical lines.",
+              "answer": "Insert a one-row table with the required number of cells, adjust cell width/height, and keep the borders visible."
+            }
+          ]
+        },
+        {
+          "title": "Prepare an Admission Notification",
+          "short": "Create the Project 2 admission notification using Word shapes, text and formatting.",
+          "duration": "75 minutes",
+          "image": "/images/project2.png",
+          "concepts": [
+            "Text boxes and shapes",
+            "WordArt/text effects",
+            "Page border",
+            "Alignment and layering objects",
+            "Highlighting important information"
+          ],
+          "steps": [
+            "Create a new Word document.",
+            "Add the page border and light background area.",
+            "Type the university heading and format it prominently.",
+            "Create the “Admissions open” heading using large decorative text.",
+            "Add the eligibility criteria and how-to-apply sections.",
+            "Create colored boxes/shapes for contact details and the special offer.",
+            "Place the last-date text prominently.",
+            "Add footer date and page number."
+          ],
+          "practice": [
+            {
+              "question": "Recreate Project 2 from the reference image using Word shapes and formatted text.",
+              "answer": "Use separate text boxes/shapes for the main title, eligibility, last date, contact box and offer box."
+            }
+          ]
+        },
+        {
+          "title": "Prepare a Sale Advertisement",
+          "short": "Create a colourful sale advertisement using Word shapes and text effects.",
+          "duration": "75 minutes",
+          "image": "/images/project3.png",
+          "concepts": [
+            "Shapes",
+            "WordArt",
+            "Text effects",
+            "Shape fill and outline",
+            "Text wrapping and object positioning"
+          ],
+          "steps": [
+            "Insert a suitable page background.",
+            "Create the “END OF SEASON SALE” heading with decorative text.",
+            "Insert a starburst shape for the main discount offer.",
+            "Add offer text inside shapes.",
+            "Create the different promotional shapes at the bottom.",
+            "Apply colors, outlines and text effects.",
+            "Arrange all objects to match the reference image."
+          ],
+          "practice": [
+            {
+              "question": "Create the complete Project 3 sale advertisement.",
+              "answer": "Your design should contain the main sale heading, discount starburst, gift voucher offer and the three lower promotional shapes."
+            }
+          ]
+        },
+        {
+          "title": "Prepare a Cover Page of a Book",
+          "short": "Design a book cover using WordArt, shapes, picture and text boxes.",
+          "duration": "75 minutes",
+          "image": "/images/project4.png",
+          "concepts": [
+            "WordArt",
+            "Shapes and arrows",
+            "Pictures",
+            "Text boxes",
+            "Borders and alignment"
+          ],
+          "steps": [
+            "Create the page border.",
+            "Add the book title at the top.",
+            "Insert the large arrow shapes and format their fill.",
+            "Add the mathematics formula in a cloud shape.",
+            "Insert the illustration.",
+            "Create the green information box.",
+            "Add the bottom publisher scroll/banner.",
+            "Align all elements and compare with the reference."
+          ],
+          "practice": [
+            {
+              "question": "Recreate Project 4 as a book cover in MS Word.",
+              "answer": "Use Word shapes and text boxes to reproduce the title, arrows, formula cloud, information box, illustration and publisher banner."
+            }
+          ]
+        },
+        {
+          "title": "Prepare a Sales Advertisement",
+          "short": "Create the Project 5 clothing sales advertisement.",
+          "duration": "75 minutes",
+          "image": "/images/project5.png",
+          "concepts": [
+            "Pictures and transparency",
+            "Shapes",
+            "Tables",
+            "Text formatting",
+            "Layering and alignment"
+          ],
+          "steps": [
+            "Create the main title and subtitle.",
+            "Insert the fashion picture/background.",
+            "Create the circular discount shape.",
+            "Add the sale and offer text.",
+            "Create the women’s and men’s apparel sections.",
+            "Create the store-location table.",
+            "Add the discount list at the bottom-right.",
+            "Arrange and align all objects to match the reference."
+          ],
+          "practice": [
+            {
+              "question": "Create the complete Bella Vista Clothing advertisement.",
+              "answer": "Reproduce the major sections: title, SALE, discount circle, apparel categories, store table and discount list."
+            }
+          ]
+        },
+        {
+          "title": "Prepare a Marketing Planning Cycle",
+          "short": "Create the Project 6 marketing planning cycle diagram.",
+          "duration": "75 minutes",
+          "image": "/images/project6.png",
+          "concepts": [
+            "Shapes and arrows",
+            "Text boxes",
+            "Grouping objects",
+            "Alignment",
+            "Page layout"
+          ],
+          "steps": [
+            "Create the title banner.",
+            "Draw the circular planning-cycle diagram using shapes and arrows.",
+            "Add Analysis, Objectives, Strategy, Resources, Implementation and Evaluation.",
+            "Add the explanatory text on the right and below.",
+            "Create the blue guidance-sheet banner.",
+            "Align and group related objects."
+          ],
+          "practice": [
+            {
+              "question": "Recreate the complete Marketing Planning Cycle shown in Project 6.",
+              "answer": "Your page should include the cycle diagram, analysis/objectives/strategy/resources/implementation/evaluation sections and the guidance-sheet banner."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ms-excel",
+      "title": "MS Excel",
+      "icon": "📊",
+      "description": "Learn Excel through formulas, tables and practical office tasks.",
+      "lessons": [
+        {
+          "title": "Basic Calculation",
+          "short": "Practice addition, subtraction, multiplication and division.",
+          "concepts": [
+            "Cell references",
+            "Basic arithmetic operators",
+            "Writing formulas"
+          ],
+          "steps": [
+            "Enter sample values in cells.",
+            "Click the result cell.",
+            "Type = followed by the cell references and operator.",
+            "Press Enter and verify the result."
+          ],
+          "formula": "=B2+C2  |  =B2-C2  |  =B2*C2  |  =B2/C2",
+          "practice": [
+            {
+              "question": "If B2 contains 100 and C2 contains 25, calculate the total using a formula.",
+              "answer": "=B2+C2"
+            },
+            {
+              "question": "If B2 contains 100 and C2 contains 25, calculate 25% of B2 using a formula.",
+              "answer": "=B2*25%"
+            }
+          ]
+        },
+        {
+          "title": "SUM Function",
+          "short": "Calculate totals from a range of numbers.",
+          "concepts": [
+            "SUM function",
+            "Cell ranges"
+          ],
+          "steps": [
+            "Enter numbers in B2:B6.",
+            "Select the result cell.",
+            "Type =SUM(B2:B6).",
+            "Press Enter."
+          ],
+          "formula": "=SUM(B2:B6)",
+          "practice": [
+            {
+              "question": "Find the total of B2:B10.",
+              "answer": "=SUM(B2:B10)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "powerpoint",
+      "title": "PowerPoint",
+      "icon": "📽️",
+      "description": "Create presentations using practical slide-design tasks.",
+      "lessons": []
+    },
+    {
+      "id": "english",
+      "title": "English Class",
+      "icon": "🗣️",
+      "description": "Improve practical English for study, work and communication.",
+      "lessons": []
+    }
+  ]
+}
