@@ -1,311 +1,68 @@
-const curriculum = {
-  "MS Word": Array.from({ length: 14 }, (_, i) => ({
-    id: i + 1,
-    title: `Project ${i + 1}`,
-    topic: `MS Word Practical Project ${i + 1}`,
-    description: `Complete this practical MS Word project by following the instructions and creating the document yourself.`,
-    image: `/Project ${i + 1}.png`
-  })),
-
-  "MS Excel": [
-    {
-      id: 1,
-      title: "Project 1",
-      topic: "Basic Excel",
-      description: "Learn rows, columns, cells and basic data entry."
-    },
-    {
-      id: 2,
-      title: "Project 2",
-      topic: "Basic Formulas",
-      description: "Practice SUM, AVERAGE, MIN and MAX."
-    },
-    {
-      id: 3,
-      title: "Project 3",
-      topic: "Formatting",
-      description: "Format an Excel worksheet professionally."
-    }
-  ],
-
-  "MS PowerPoint": [
-    {
-      id: 1,
-      title: "Project 1",
-      topic: "Create a Presentation",
-      description: "Create your first PowerPoint presentation."
-    },
-    {
-      id: 2,
-      title: "Project 2",
-      topic: "Design and Formatting",
-      description: "Practice themes, pictures, shapes and text."
-    }
-  ],
-
-  "English": [
-    {
-      id: 1,
-      title: "Lesson 1",
-      topic: "Basic English",
-      description: "Practice basic English words and sentences."
-    },
-    {
-      id: 2,
-      title: "Lesson 2",
-      topic: "Daily Conversation",
-      description: "Practice common conversations used in daily life."
-    }
-  ]
-};
-
-
-// =========================
-// HOME PAGE
-// =========================
-
-function showHome() {
-  const app = document.getElementById("app");
-
-  app.innerHTML = `
-    <div class="hero">
-      <h1>Learn & Practice</h1>
-      <p>
-        Welcome to Joining Hands AI Computer Learning & Practical Lab.
-        Choose a course and start learning through practical projects.
-      </p>
-    </div>
-
-    <h2>Courses</h2>
-
-    <div class="grid">
-      ${Object.keys(curriculum).map(course => `
-        <div class="course-card">
-
-          <h3>${course}</h3>
-
-          <p>
-            ${curriculum[course].length}
-            practical lessons/projects
-          </p>
-
-          <button onclick="showCourse('${course}')">
-            Start Learning
-          </button>
-
-        </div>
-      `).join("")}
-    </div>
-  `;
-}
-
-
-// =========================
-// COURSE PAGE
-// =========================
-
-function showCourse(course) {
-  const app = document.getElementById("app");
-
-  app.innerHTML = `
-    <button class="back" onclick="showHome()">
-      ← Back to Courses
-    </button>
-
-    <div class="hero">
-      <h1>${course}</h1>
-
-      <p>
-        Select a lesson/project to start learning.
-      </p>
-    </div>
-
-    <div class="lesson-grid">
-
-      ${curriculum[course].map(item => `
-
-        <div class="lesson-card">
-
-          ${
-            item.image
-              ? `<img
-                  class="project-thumb"
-                  src="${item.image}"
-                  alt="${item.title}"
-                  onerror="this.style.display='none'"
-                >`
-              : ""
-          }
-
-          <h3>${item.title}</h3>
-
-          <p>
-            <strong>${item.topic}</strong>
-          </p>
-
-          <p>
-            ${item.description}
-          </p>
-
-          <button onclick="showLesson('${course}', ${item.id})">
-            Open Project
-          </button>
-
-        </div>
-
-      `).join("")}
-
-    </div>
-  `;
-}
-
-
-// =========================
-// PROJECT PAGE
-// =========================
-
-function showLesson(course, id) {
-
-  const lesson =
-    curriculum[course].find(item => item.id === id);
-
-  const app = document.getElementById("app");
-
-  if (course === "MS Word") {
-    showWordProject(lesson);
-    return;
-  }
-
-  app.innerHTML = `
-
-    <button
-      class="back"
-      onclick="showCourse('${course}')">
-      ← Back to ${course}
-    </button>
-
-    <div class="lesson-content">
-
-      <h1>${lesson.title}</h1>
-
-      <h2>${lesson.topic}</h2>
-
-      <p>${lesson.description}</p>
-
-      <div class="practice-box">
-
-        <h3>🎯 Practice Task</h3>
-
-        <p>
-          Complete this practical task yourself.
-        </p>
-
-      </div>
-
-    </div>
-  `;
-}
-
-
-// =========================
-// MS WORD PROJECT
-// =========================
-
 function showWordProject(lesson) {
 
   const app = document.getElementById("app");
 
   app.innerHTML = `
 
-    <button
-      class="back"
-      onclick="showCourse('MS Word')">
+    <button class="back" onclick="showCourse('MS Word')">
       ← Back to MS Word Projects
     </button>
 
     <div class="word-practice-page">
 
-      <!-- INSTRUCTIONS -->
+      <!-- LEFT: INSTRUCTIONS -->
 
-      <div class="instructions-panel">
+      <aside class="instructions-panel">
 
         <h1>${lesson.title}</h1>
 
         <h2>${lesson.topic}</h2>
 
-        <h3>📋 Instructions</h3>
+        <h3>📋 Your Task</h3>
+
+        <p>
+          Recreate the project shown in the example using the
+          practice document.
+        </p>
+
+        <h3>🪜 Steps</h3>
 
         <ol>
-
-          <li>
-            Read the project carefully.
-          </li>
-
-          <li>
-            Look at the project example below.
-          </li>
-
-          <li>
-            Create the same document in the practice area.
-          </li>
-
-          <li>
-            Use the formatting tools to make your document
-            look similar to the example.
-          </li>
-
-          <li>
-            Check your work before downloading it.
-          </li>
-
+          <li>Look carefully at the project example.</li>
+          <li>Open the practice document.</li>
+          <li>Create the same layout and content.</li>
+          <li>Use tables, pictures, shapes and formatting where required.</li>
+          <li>Compare your work with the example.</li>
         </ol>
 
-        <div class="task-box">
+        <h3>👀 Project Example</h3>
 
-          <h3>🎯 Your Task</h3>
-
-          <p>
-            Recreate <strong>${lesson.title}</strong>
-            as closely as possible using MS Word skills.
-          </p>
-
+        <div class="example-image-box">
+          <img
+            src="${lesson.image}"
+            class="example-image"
+            onclick="openImage('${lesson.image}')"
+          >
         </div>
 
-        ${
-          lesson.image
-            ? `
-              <h3>👀 Project Example</h3>
+        <button
+          class="full-image-btn"
+          onclick="openImage('${lesson.image}')">
+          🔍 View Full Size
+        </button>
 
-              <div class="example-image-box">
-
-                <img
-                  src="${lesson.image}"
-                  class="example-image"
-                  alt="${lesson.title}"
-                >
-
-              </div>
-            `
-            : ""
-        }
-
-      </div>
+      </aside>
 
 
-      <!-- PRACTICE AREA -->
+      <!-- MIDDLE: PRACTICE -->
 
-      <div class="practice-panel">
+      <section class="practice-panel">
 
         <div class="practice-header">
 
           <div>
-
-            <h2>📝 Practice in Word</h2>
-
-            <p>
-              Type and format your document below.
-            </p>
-
+            <h2>📝 Practice Area</h2>
+            <p>Create the project here.</p>
           </div>
 
           <button onclick="downloadWordDocument()">
@@ -319,20 +76,18 @@ function showWordProject(lesson) {
 
         <div class="word-toolbar">
 
-          <button onclick="formatText('bold')">
-            <b>B</b>
-          </button>
+          <button onclick="editorCommand('undo')">↶</button>
+          <button onclick="editorCommand('redo')">↷</button>
 
-          <button onclick="formatText('italic')">
-            <i>I</i>
-          </button>
+          <select onchange="setFont(this.value)">
+            <option value="">Font</option>
+            <option value="Arial">Arial</option>
+            <option value="Calibri">Calibri</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Verdana">Verdana</option>
+          </select>
 
-          <button onclick="formatText('underline')">
-            <u>U</u>
-          </button>
-
-          <select onchange="changeFontSize(this.value)">
-
+          <select onchange="setFontSize(this.value)">
             <option value="">Size</option>
             <option value="12">12</option>
             <option value="14">14</option>
@@ -341,38 +96,40 @@ function showWordProject(lesson) {
             <option value="20">20</option>
             <option value="24">24</option>
             <option value="28">28</option>
-
+            <option value="32">32</option>
           </select>
 
+          <button onclick="editorCommand('bold')"><b>B</b></button>
+          <button onclick="editorCommand('italic')"><i>I</i></button>
+          <button onclick="editorCommand('underline')"><u>U</u></button>
 
-          <button onclick="formatText('justifyLeft')">
-            Left
-          </button>
+          <button onclick="editorCommand('justifyLeft')">≡</button>
+          <button onclick="editorCommand('justifyCenter')">≡</button>
+          <button onclick="editorCommand('justifyRight')">≡</button>
 
-          <button onclick="formatText('justifyCenter')">
-            Center
-          </button>
+          <button onclick="editorCommand('insertUnorderedList')">• List</button>
+          <button onclick="editorCommand('insertOrderedList')">1. List</button>
 
-          <button onclick="formatText('justifyRight')">
-            Right
-          </button>
+          <button onclick="insertTable()">▦ Table</button>
 
+          <button onclick="insertImage()">🖼️ Image</button>
 
-          <button onclick="formatText('insertUnorderedList')">
-            • List
-          </button>
+          <button onclick="insertShape('rectangle')">▭ Shape</button>
+
+          <button onclick="insertShape('circle')">○ Shape</button>
+
+          <button onclick="insertLine()">― Line</button>
 
         </div>
 
 
-        <!-- EDITOR -->
+        <!-- DOCUMENT -->
 
         <div
           id="wordEditor"
           class="word-editor"
           contenteditable="true"
-          spellcheck="true"
-        >
+          spellcheck="true">
 
           <h2>Start Your Project</h2>
 
@@ -381,7 +138,7 @@ function showWordProject(lesson) {
           </p>
 
           <p>
-            Replace this text with your own work.
+            Delete this text and create your project.
           </p>
 
         </div>
@@ -389,30 +146,109 @@ function showWordProject(lesson) {
 
         <div class="editor-footer">
 
-          <button onclick="clearEditor()">
-            Clear
+          <button onclick="savePractice()">
+            💾 Save
           </button>
 
-          <button onclick="savePractice()">
-            💾 Save Practice
+          <button onclick="clearEditor()">
+            Clear
           </button>
 
           <span id="saveMessage"></span>
 
         </div>
 
-      </div>
+      </section>
+
+
+      <!-- RIGHT: AI TEACHER -->
+
+      <aside class="ai-panel">
+
+        <div class="ai-header">
+          <h2>🤖 AI Teacher</h2>
+          <p>Ask whenever you are stuck.</p>
+        </div>
+
+        <div class="quick-help">
+
+          <button onclick="askQuick('How do I insert a table in MS Word?')">
+            How to insert a table?
+          </button>
+
+          <button onclick="askQuick('How do I insert and resize a picture in MS Word?')">
+            Insert / resize picture
+          </button>
+
+          <button onclick="askQuick('How do I make a line dashed in MS Word?')">
+            Make dashed line
+          </button>
+
+          <button onclick="askQuick('How do I put text inside a table in MS Word?')">
+            Text inside table
+          </button>
+
+        </div>
+
+        <div
+          id="aiMessages"
+          class="ai-messages">
+
+          <div class="ai-message">
+            👋 Hi! I'm your AI Teacher.<br><br>
+            Ask me how to use any MS Word feature.
+          </div>
+
+        </div>
+
+        <div class="ai-input-area">
+
+          <textarea
+            id="aiQuestion"
+            placeholder="Ask your question..."
+            rows="3"></textarea>
+
+          <button onclick="askAI()">
+            Ask AI Teacher
+          </button>
+
+        </div>
+
+      </aside>
 
     </div>
   `;
 }
 
 
-// =========================
-// WORD FORMATTING
-// =========================
+// ===========================
+// IMAGE FULL SCREEN
+// ===========================
 
-function formatText(command) {
+function openImage(src) {
+
+  const overlay = document.createElement("div");
+
+  overlay.className = "image-overlay";
+
+  overlay.innerHTML = `
+    <button class="close-image"
+      onclick="this.parentElement.remove()">
+      ✕
+    </button>
+
+    <img src="${src}">
+  `;
+
+  document.body.appendChild(overlay);
+}
+
+
+// ===========================
+// WORD TOOLBAR
+// ===========================
+
+function editorCommand(command) {
 
   document.execCommand(command, false, null);
 
@@ -420,7 +256,19 @@ function formatText(command) {
 }
 
 
-function changeFontSize(size) {
+function setFont(font) {
+
+  if (!font) return;
+
+  document.execCommand(
+    "fontName",
+    false,
+    font
+  );
+}
+
+
+function setFontSize(size) {
 
   if (!size) return;
 
@@ -430,26 +278,196 @@ function changeFontSize(size) {
     "7"
   );
 
-  const fonts =
-    document.querySelectorAll(
-      "#wordEditor font[size='7']"
-    );
+  document
+    .querySelectorAll("#wordEditor font[size='7']")
+    .forEach(el => {
 
-  fonts.forEach(font => {
+      el.removeAttribute("size");
+      el.style.fontSize = size + "px";
 
-    font.removeAttribute("size");
-
-    font.style.fontSize =
-      `${size}px`;
-
-  });
-
+    });
 }
 
 
-// =========================
-// SAVE PRACTICE
-// =========================
+// ===========================
+// INSERT TABLE
+// ===========================
+
+function insertTable() {
+
+  const rows =
+    prompt("Number of rows:", "3");
+
+  const cols =
+    prompt("Number of columns:", "3");
+
+  if (!rows || !cols) return;
+
+  let table =
+    `<table style="
+      border-collapse:collapse;
+      width:100%;
+      margin:15px 0;
+    ">`;
+
+  for (let r = 0; r < Number(rows); r++) {
+
+    table += "<tr>";
+
+    for (let c = 0; c < Number(cols); c++) {
+
+      table += `
+        <td style="
+          border:1px solid #555;
+          padding:8px;
+          min-width:50px;
+        ">
+          &nbsp;
+        </td>
+      `;
+
+    }
+
+    table += "</tr>";
+  }
+
+  table += "</table>";
+
+  document.execCommand(
+    "insertHTML",
+    false,
+    table
+  );
+}
+
+
+// ===========================
+// INSERT IMAGE
+// ===========================
+
+function insertImage() {
+
+  const input =
+    document.createElement("input");
+
+  input.type = "file";
+  input.accept = "image/*";
+
+  input.onchange = function() {
+
+    const file =
+      input.files[0];
+
+    if (!file) return;
+
+    const reader =
+      new FileReader();
+
+    reader.onload = function(e) {
+
+      const img = `
+        <img
+          src="${e.target.result}"
+          style="
+            max-width:100%;
+            width:300px;
+            display:block;
+            margin:10px 0;
+          "
+        >
+      `;
+
+      document.execCommand(
+        "insertHTML",
+        false,
+        img
+      );
+
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  input.click();
+}
+
+
+// ===========================
+// INSERT SHAPE
+// ===========================
+
+function insertShape(type) {
+
+  let shape;
+
+  if (type === "rectangle") {
+
+    shape = `
+      <div
+        contenteditable="false"
+        style="
+          width:180px;
+          height:90px;
+          border:3px solid #244f91;
+          margin:15px;
+          display:inline-block;
+        ">
+      </div>
+    `;
+
+  } else {
+
+    shape = `
+      <div
+        contenteditable="false"
+        style="
+          width:100px;
+          height:100px;
+          border:3px solid #244f91;
+          border-radius:50%;
+          margin:15px;
+          display:inline-block;
+        ">
+      </div>
+    `;
+
+  }
+
+  document.execCommand(
+    "insertHTML",
+    false,
+    shape
+  );
+}
+
+
+// ===========================
+// INSERT LINE
+// ===========================
+
+function insertLine() {
+
+  const line = `
+    <hr
+      style="
+        border:0;
+        border-top:2px dashed #333;
+        margin:20px 0;
+      "
+    >
+  `;
+
+  document.execCommand(
+    "insertHTML",
+    false,
+    line
+  );
+}
+
+
+// ===========================
+// SAVE
+// ===========================
 
 function savePractice() {
 
@@ -464,21 +482,19 @@ function savePractice() {
   document.getElementById(
     "saveMessage"
   ).textContent =
-    "✓ Your practice has been saved on this device.";
+    "✓ Saved on this device.";
 
 }
 
 
-// =========================
+// ===========================
 // CLEAR
-// =========================
+// ===========================
 
 function clearEditor() {
 
   if (
-    confirm(
-      "Are you sure you want to clear your work?"
-    )
+    confirm("Clear your entire document?")
   ) {
 
     document.getElementById(
@@ -486,64 +502,41 @@ function clearEditor() {
     ).innerHTML = "";
 
   }
-
 }
 
 
-// =========================
-// DOWNLOAD AS WORD FILE
-// =========================
+// ===========================
+// DOWNLOAD
+// ===========================
 
 function downloadWordDocument() {
 
-  const editor =
-    document.getElementById("wordEditor");
-
   const content =
-    editor.innerHTML;
+    document.getElementById(
+      "wordEditor"
+    ).innerHTML;
 
   const html = `
-
     <html>
+    <head>
+      <meta charset="UTF-8">
+    </head>
 
-      <head>
-
-        <meta charset="UTF-8">
-
-        <style>
-
-          body {
-            font-family: Arial;
-            margin: 40px;
-          }
-
-        </style>
-
-      </head>
-
-      <body>
-
-        ${content}
-
-      </body>
+    <body>
+      ${content}
+    </body>
 
     </html>
   `;
 
-
   const blob =
     new Blob(
       [html],
-      {
-        type:
-          "application/msword"
-      }
+      {type:"application/msword"}
     );
-
 
   const url =
     URL.createObjectURL(blob);
-
 
   const link =
     document.createElement("a");
@@ -551,7 +544,7 @@ function downloadWordDocument() {
   link.href = url;
 
   link.download =
-    "Joining-Hands-${lessonTitleForDownload()}.doc";
+    "Joining-Hands-Practice.doc";
 
   link.click();
 
@@ -559,20 +552,121 @@ function downloadWordDocument() {
 }
 
 
-function lessonTitleForDownload() {
+// ===========================
+// AI TEACHER
+// ===========================
 
-  const editor =
-    document.getElementById("wordEditor");
+async function askQuick(question) {
 
-  return "Practice";
+  document.getElementById(
+    "aiQuestion"
+  ).value = question;
+
+  await askAI();
 }
 
 
-// =========================
-// START
-// =========================
+async function askAI() {
 
-document.addEventListener(
-  "DOMContentLoaded",
-  showHome
-);
+  const input =
+    document.getElementById(
+      "aiQuestion"
+    );
+
+  const question =
+    input.value.trim();
+
+  if (!question) return;
+
+  const messages =
+    document.getElementById(
+      "aiMessages"
+    );
+
+  messages.innerHTML += `
+    <div class="student-message">
+      ${question}
+    </div>
+  `;
+
+  input.value = "";
+
+  const loading =
+    document.createElement("div");
+
+  loading.className =
+    "ai-message";
+
+  loading.textContent =
+    "Thinking...";
+
+  messages.appendChild(
+    loading
+  );
+
+  messages.scrollTop =
+    messages.scrollHeight;
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/ai-teacher",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+
+            question:question,
+
+            course:"MS Word",
+
+            project:
+              document.querySelector(
+                ".lesson-content h1"
+              )?.textContent || "MS Word Project"
+
+          })
+        }
+      );
+
+    const data =
+      await response.json();
+
+    loading.remove();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error ||
+        "AI Teacher is unavailable."
+      );
+    }
+
+    const answer =
+      document.createElement("div");
+
+    answer.className =
+      "ai-message";
+
+    answer.textContent =
+      data.answer;
+
+    messages.appendChild(
+      answer
+    );
+
+  } catch(error) {
+
+    loading.textContent =
+      "AI Teacher could not connect. Please check the server API setup.";
+
+  }
+
+  messages.scrollTop =
+    messages.scrollHeight;
+}
