@@ -7,7 +7,7 @@ const curriculum = {
     { id: 5, title: "Project 5", topic: "MS Word Practical Project", description: "Complete the project by following the example." },
     { id: 6, title: "Project 6", topic: "MS Word Practical Project", description: "Complete the project by following the example." },
     { id: 7, title: "Project 7", topic: "Visitor's Information Sheet", description: "Prepare a visitor's information sheet in MS Word." },
-    { id: 8, title: "Project 8", topic: "Sales Chart", description: "Create a sales chart and present information using tables and charts." },
+    { id: 8, title: "Project 8", topic: "Sales Chart", description: "Create a sales chart using tables and charts." },
     { id: 9, title: "Project 9", topic: "MS Word Practical Project", description: "Complete the project by following the example." },
     { id: 10, title: "Project 10", topic: "MS Word Practical Project", description: "Complete the project by following the example." },
     { id: 11, title: "Project 11", topic: "MS Word Practical Project", description: "Complete the project by following the example." },
@@ -17,69 +17,30 @@ const curriculum = {
   ],
 
   "MS Excel": [
-    {
-      id: 1,
-      title: "Project 1",
-      topic: "Basic Excel",
-      description: "Learn rows, columns, cells and basic data entry."
-    },
-    {
-      id: 2,
-      title: "Project 2",
-      topic: "Basic Formulas",
-      description: "Practice SUM, AVERAGE, MIN and MAX."
-    },
-    {
-      id: 3,
-      title: "Project 3",
-      topic: "Formatting",
-      description: "Format an Excel worksheet professionally."
-    }
+    { id: 1, title: "Project 1", topic: "Basic Excel", description: "Learn rows, columns, cells and basic data entry." },
+    { id: 2, title: "Project 2", topic: "Basic Formulas", description: "Practice SUM, AVERAGE, MIN and MAX." },
+    { id: 3, title: "Project 3", topic: "Formatting", description: "Format an Excel worksheet professionally." }
   ],
 
   "MS PowerPoint": [
-    {
-      id: 1,
-      title: "Project 1",
-      topic: "Create a Presentation",
-      description: "Create your first PowerPoint presentation."
-    },
-    {
-      id: 2,
-      title: "Project 2",
-      topic: "Design and Formatting",
-      description: "Practice themes, pictures, shapes and text."
-    }
+    { id: 1, title: "Project 1", topic: "Create a Presentation", description: "Create your first PowerPoint presentation." },
+    { id: 2, title: "Project 2", topic: "Design and Formatting", description: "Practice themes, pictures, shapes and text." }
   ],
 
   "English": [
-    {
-      id: 1,
-      title: "Lesson 1",
-      topic: "Basic English",
-      description: "Practice basic English words and sentences."
-    },
-    {
-      id: 2,
-      title: "Lesson 2",
-      topic: "Daily Conversation",
-      description: "Practice common conversations used in daily life."
-    }
+    { id: 1, title: "Lesson 1", topic: "Basic English", description: "Practice basic English words and sentences." },
+    { id: 2, title: "Lesson 2", topic: "Daily Conversation", description: "Practice common conversations used in daily life." }
   ]
 };
 
 
-// --------------------------------------------------
-// HOME PAGE
-// --------------------------------------------------
+// ===============================
+// HOME
+// ===============================
 
 function showHome() {
-  const app = document.getElementById("app");
 
-  if (!app) {
-    console.error("Element with id='app' was not found.");
-    return;
-  }
+  const app = document.getElementById("app");
 
   app.innerHTML = `
     <div class="hero">
@@ -94,8 +55,9 @@ function showHome() {
     <h2>Courses</h2>
 
     <div class="grid">
+
       ${Object.keys(curriculum).map(course => `
-        
+
         <div class="course-card">
 
           <h3>${course}</h3>
@@ -112,24 +74,22 @@ function showHome() {
         </div>
 
       `).join("")}
+
     </div>
   `;
 }
 
 
-// --------------------------------------------------
-// COURSE PAGE
-// --------------------------------------------------
+// ===============================
+// COURSE
+// ===============================
 
 function showCourse(course) {
+
   const app = document.getElementById("app");
 
-  if (!app) return;
-
-  const projects = curriculum[course];
-
   app.innerHTML = `
-    
+
     <button class="back" onclick="showHome()">
       ← Back to Courses
     </button>
@@ -146,25 +106,24 @@ function showCourse(course) {
 
     <div class="lesson-grid">
 
-      ${projects.map(item => {
+      ${curriculum[course].map(item => {
 
-        // Only MS Word has uploaded project images
         let imageHTML = "";
 
         if (course === "MS Word") {
+
           imageHTML = `
             <div class="project-image">
               <img
                 src="/Project ${item.id}.png"
                 alt="${item.title}"
-                onerror="this.parentElement.style.display='none';"
               >
             </div>
           `;
         }
 
         return `
-          
+
           <div class="lesson-card">
 
             ${imageHTML}
@@ -179,8 +138,7 @@ function showCourse(course) {
               ${item.description}
             </p>
 
-            <button
-              onclick="showLesson('${course}', ${item.id})">
+            <button onclick="showLesson('${course}', ${item.id})">
               Open Project
             </button>
 
@@ -195,9 +153,9 @@ function showCourse(course) {
 }
 
 
-// --------------------------------------------------
-// PROJECT / LESSON PAGE
-// --------------------------------------------------
+// ===============================
+// PROJECT PAGE
+// ===============================
 
 function showLesson(course, id) {
 
@@ -205,37 +163,35 @@ function showLesson(course, id) {
     item => item.id === id
   );
 
-  if (!lesson) {
-    alert("Project not found.");
-    return;
-  }
-
   const app = document.getElementById("app");
-
-  if (!app) return;
 
   let imageHTML = "";
 
   if (course === "MS Word") {
 
     imageHTML = `
-      
+
       <div class="example-section">
 
         <h2>Example Project</h2>
 
         <p>
-          Study the example carefully before creating your own copy.
+          Study the example carefully before creating your own project.
         </p>
 
-        <div class="large-project-image">
+        <div class="example-image-box">
 
           <img
             src="/Project ${id}.png"
-            alt="${lesson.title} example"
+            alt="${lesson.title}"
+            onclick="openImage('/Project ${id}.png')"
           >
 
         </div>
+
+        <p class="image-help">
+          💡 Click the image to view it larger.
+        </p>
 
       </div>
 
@@ -270,87 +226,76 @@ function showLesson(course, id) {
 
       <div class="instructions">
 
-        <h2>Instructions</h2>
+        <h2>📋 Instructions</h2>
 
         <div class="step">
-
           <strong>Step 1</strong>
-
-          <p>
-            Look carefully at the example project.
-          </p>
-
+          <p>Look carefully at the example project.</p>
         </div>
 
-
         <div class="step">
-
           <strong>Step 2</strong>
-
-          <p>
-            Open Microsoft ${course === "MS Word" ? "Word" : course}.
-          </p>
-
+          <p>Open Microsoft Word on your computer.</p>
         </div>
 
+        <div class="step">
+          <strong>Step 3</strong>
+          <p>Create a new blank document.</p>
+        </div>
 
         <div class="step">
-
-          <strong>Step 3</strong>
-
+          <strong>Step 4</strong>
           <p>
             Create your own copy of the project.
-            Do not simply copy the image.
+            Do not simply copy the picture.
           </p>
-
         </div>
 
-
         <div class="step">
-
-          <strong>Step 4</strong>
-
-          <p>
-            Try to match the formatting, layout,
-            text, tables, images and shapes shown
-            in the example.
-          </p>
-
-        </div>
-
-
-        <div class="step">
-
           <strong>Step 5</strong>
+          <p>
+            Try to match the text, formatting, tables,
+            images, shapes and layout.
+          </p>
+        </div>
 
+        <div class="step">
+          <strong>Step 6</strong>
           <p>
             Check your work carefully before finishing.
           </p>
-
         </div>
 
       </div>
 
 
+      <!-- PRACTICE -->
+
       <div class="practice-box">
 
-        <h2>🎯 Practice Task</h2>
+        <h2>🎯 Practice</h2>
 
         <p>
-          Now create this project yourself in Microsoft ${course === "MS Word" ? "Word" : course}.
+          Now create this project yourself in Microsoft Word.
         </p>
 
-        <p>
-          Keep this website open while you work so that
-          you can look at the example whenever you need help.
-        </p>
+        <button
+          class="practice-button"
+          onclick="openWord()">
 
-        <button onclick="startPractice()">
-          Start Practice
+          📝 Open Microsoft Word
+
         </button>
+
+        <p class="small-note">
+          If Microsoft Word does not open automatically,
+          open Word manually from your computer.
+        </p>
 
       </div>
 
+
+      <!-- HELP -->
 
       <div class="help-box">
 
@@ -358,11 +303,15 @@ function showLesson(course, id) {
 
         <p>
           Don't know how to do something?
-          Ask your teacher or use the help option.
+          Ask your question here.
         </p>
 
-        <button onclick="showHelp()">
-          Ask for Help
+        <button
+          class="help-button"
+          onclick="showHelp()">
+
+          💬 Ask a Question
+
         </button>
 
       </div>
@@ -373,43 +322,209 @@ function showLesson(course, id) {
 }
 
 
-// --------------------------------------------------
-// PRACTICE BUTTON
-// --------------------------------------------------
+// ===============================
+// OPEN WORD
+// ===============================
 
-function startPractice() {
+function openWord() {
 
-  alert(
-    "Practice started!\n\n" +
-    "Open Microsoft Word and create your own copy of the project."
-  );
+  // Try to open Microsoft Word
+  window.location.href = "ms-word:";
 
+  // Show instructions as fallback
+  setTimeout(function () {
+
+    alert(
+      "Microsoft Word could not be opened automatically.\n\n" +
+      "Please open Microsoft Word from your computer and create a new blank document."
+    );
+
+  }, 1500);
 }
 
 
-// --------------------------------------------------
-// HELP BUTTON
-// --------------------------------------------------
+// ===============================
+// HELP PANEL
+// ===============================
 
 function showHelp() {
 
-  alert(
-    "Need help?\n\n" +
-    "You can ask your teacher how to perform the required task."
-  );
+  const old = document.getElementById("helpModal");
+
+  if (old) {
+    old.remove();
+  }
+
+
+  document.body.insertAdjacentHTML("beforeend", `
+
+    <div id="helpModal" class="help-modal">
+
+      <div class="help-modal-content">
+
+        <button
+          class="close-help"
+          onclick="closeHelp()">
+
+          ×
+
+        </button>
+
+        <h2>💬 Ask a Question</h2>
+
+        <p>
+          Type your question below.
+        </p>
+
+        <textarea
+          id="studentQuestion"
+          placeholder="Example: How do I insert a table in MS Word?"
+        ></textarea>
+
+        <button
+          class="ask-button"
+          onclick="askQuestion()">
+
+          Ask Question
+
+        </button>
+
+        <div id="helpAnswer"></div>
+
+      </div>
+
+    </div>
+
+  `);
+}
+
+
+// ===============================
+// CLOSE HELP
+// ===============================
+
+function closeHelp() {
+
+  const modal = document.getElementById("helpModal");
+
+  if (modal) {
+    modal.remove();
+  }
 
 }
 
 
-// --------------------------------------------------
-// START WEBSITE
-// --------------------------------------------------
+// ===============================
+// ASK QUESTION
+// ===============================
+
+function askQuestion() {
+
+  const question =
+    document.getElementById("studentQuestion").value.trim();
+
+  const answer =
+    document.getElementById("helpAnswer");
+
+
+  if (!question) {
+
+    answer.innerHTML = `
+      <p class="error-message">
+        Please type your question first.
+      </p>
+    `;
+
+    return;
+  }
+
+
+  answer.innerHTML = `
+
+    <div class="help-answer">
+
+      <h3>💡 Help</h3>
+
+      <p>
+        Your question is:
+      </p>
+
+      <p>
+        <strong>${escapeHTML(question)}</strong>
+      </p>
+
+      <p>
+        AI help will be connected here in the next step.
+        For now, ask your teacher if you need immediate help.
+      </p>
+
+    </div>
+
+  `;
+}
+
+
+// ===============================
+// IMAGE VIEWER
+// ===============================
+
+function openImage(imageSrc) {
+
+  document.body.insertAdjacentHTML("beforeend", `
+
+    <div
+      id="imageModal"
+      class="image-modal"
+      onclick="closeImage()">
+
+      <div class="image-modal-content">
+
+        <img src="${imageSrc}">
+
+        <p>
+          Click anywhere to close
+        </p>
+
+      </div>
+
+    </div>
+
+  `);
+}
+
+
+function closeImage() {
+
+  const modal =
+    document.getElementById("imageModal");
+
+  if (modal) {
+    modal.remove();
+  }
+
+}
+
+
+// ===============================
+// SECURITY
+// ===============================
+
+function escapeHTML(text) {
+
+  const div = document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+
+}
+
+
+// ===============================
+// START
+// ===============================
 
 document.addEventListener(
   "DOMContentLoaded",
-  function () {
-
-    showHome();
-
-  }
+  showHome
 );
