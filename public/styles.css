@@ -350,3 +350,122 @@ footer {
   }
 
 }
+.ai-panel {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,.08);
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-header h2 {
+  margin: 0;
+  color: #244f91;
+}
+
+.ai-header p {
+  color: #666;
+  margin-top: 5px;
+}
+
+.quick-help {
+  display: grid;
+  gap: 7px;
+}
+
+.quick-help button {
+  background: #eef4ff;
+  color: #244f91;
+  font-size: 13px;
+  text-align: left;
+}
+
+.ai-messages {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 250px;
+  max-height: 430px;
+  margin: 12px 0;
+  padding: 8px;
+  background: #f7f8fa;
+  border-radius: 10px;
+}
+
+.ai-message {
+  background: white;
+  padding: 11px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.student-message {
+  background: #244f91;
+  color: white;
+  padding: 11px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.ai-input-area textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid #ccd4df;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.ai-input-area button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.full-image-btn {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.image-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.9);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.image-overlay img {
+  max-width: 95vw;
+  max-height: 95vh;
+  object-fit: contain;
+}
+
+.close-image {
+  position: fixed;
+  top: 20px;
+  right: 25px;
+  background: white;
+  color: #222;
+  font-size: 22px;
+  z-index: 10000;
+}
+
+@media (max-width: 1200px) {
+  .word-practice-page {
+    grid-template-columns: 300px 1fr;
+  }
+
+  .ai-panel {
+    grid-column: 1 / -1;
+    position: static;
+  }
+}
