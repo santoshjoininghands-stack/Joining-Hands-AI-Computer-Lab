@@ -469,3 +469,178 @@ footer {
     position: static;
   }
 }
+/* Project example image */
+.example-image-box {
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto;
+  text-align: center;
+  background: #f5f7fa;
+  padding: 15px;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.example-image-box img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 75vh;
+  margin: 0 auto;
+  object-fit: contain;
+  cursor: zoom-in;
+  border-radius: 8px;
+}
+
+/* Full-screen image viewer */
+.image-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.image-modal-content {
+  max-width: 95vw;
+  max-height: 95vh;
+  text-align: center;
+}
+
+.image-modal-content img {
+  max-width: 95vw;
+  max-height: 88vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.image-modal-content p {
+  color: white;
+  margin-top: 10px;
+}
+
+/* Practice */
+.practice-box {
+  margin-top: 30px;
+  padding: 25px;
+  background: #eef5ff;
+  border-radius: 12px;
+  border: 1px solid #cbdcf5;
+}
+
+.practice-button {
+  background: #1f5aa6;
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 7px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.practice-button:hover {
+  background: #16457f;
+}
+
+.small-note {
+  font-size: 13px;
+  color: #666;
+  margin-top: 12px;
+}
+
+/* Help */
+.help-box {
+  margin-top: 25px;
+  padding: 25px;
+  background: #fff8e8;
+  border-radius: 12px;
+  border: 1px solid #f0d58a;
+}
+
+.help-button {
+  background: #e67e22;
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 7px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.help-button:hover {
+  background: #c96716;
+}
+
+/* Help modal */
+.help-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.help-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  background: white;
+  border-radius: 14px;
+  padding: 30px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+}
+
+.close-help {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+  background: transparent;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.help-modal textarea {
+  width: 100%;
+  min-height: 130px;
+  padding: 12px;
+  margin: 15px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 15px;
+}
+
+.ask-button {
+  background: #1f5aa6;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.help-answer {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f3f7fc;
+  border-radius: 8px;
+}
+
+.error-message {
+  color: #d33;
+}
