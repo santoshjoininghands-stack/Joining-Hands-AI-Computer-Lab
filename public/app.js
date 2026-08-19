@@ -23,6 +23,66 @@ const curriculum = {
       title: "Project 4",
       topic: "Book Cover Page",
       description: "Prepare a professional cover page of a book."
+    },
+    {
+      id: 5,
+      title: "Project 5",
+      topic: "MS Word Practical Project",
+      description: "Complete the practical MS Word project by following the sample."
+    },
+    {
+      id: 6,
+      title: "Project 6",
+      topic: "MS Word Practical Project",
+      description: "Complete the practical MS Word project by following the sample."
+    },
+    {
+      id: 7,
+      title: "Project 7",
+      topic: "Prepare a Visitor's Information Sheet",
+      description: "Create a professional visitor's information sheet using text, shapes, formatting and page layout."
+    },
+    {
+      id: 8,
+      title: "Project 8",
+      topic: "Sales Chart for Six Months",
+      description: "Create a sales report using tables, charts and formatting."
+    },
+    {
+      id: 9,
+      title: "Project 9",
+      topic: "Global Climate Change",
+      description: "Create an informative document about global climate change using text, tables, charts and graphics."
+    },
+    {
+      id: 10,
+      title: "Project 10",
+      topic: "Globalization",
+      description: "Create an informative document about globalization using text, shapes, diagrams and charts."
+    },
+    {
+      id: 11,
+      title: "Project 11",
+      topic: "Comparative Analysis of Admission in Colleges/University",
+      description: "Prepare a comparative analysis using tables, data and charts."
+    },
+    {
+      id: 12,
+      title: "Project 12",
+      topic: "Water Pollution",
+      description: "Create an awareness document about water pollution using text, shapes and graphics."
+    },
+    {
+      id: 13,
+      title: "Project 13",
+      topic: "Education",
+      description: "Create an educational document using text, diagrams, tables and charts."
+    },
+    {
+      id: 14,
+      title: "Project 14",
+      topic: "Kid Helper",
+      description: "Create a resource document for teachers and parents using text, images, shapes and charts."
     }
   ],
 
@@ -99,6 +159,7 @@ function showHome() {
         <div class="course-card">
           <h3>${course}</h3>
           <p>${curriculum[course].length} practical lessons/projects</p>
+
           <button onclick="showCourse('${course}')">
             Start Learning
           </button>
@@ -114,7 +175,9 @@ function showCourse(course) {
   const app = document.getElementById("app");
 
   app.innerHTML = `
-    <button class="back" onclick="showHome()">← Back to Courses</button>
+    <button class="back" onclick="showHome()">
+      ← Back to Courses
+    </button>
 
     <div class="hero">
       <h1>${course}</h1>
@@ -124,13 +187,32 @@ function showCourse(course) {
     <div class="lesson-grid">
       ${curriculum[course].map(item => `
         <div class="lesson-card">
+
+          ${
+            course === "MS Word"
+              ? `
+                <img
+                  src="/Project%20${item.id}.png"
+                  alt="${item.title}"
+                  class="project-thumb"
+                  onerror="this.style.display='none'"
+                >
+              `
+              : ""
+          }
+
           <h3>${item.title}</h3>
-          <p><strong>${item.topic}</strong></p>
+
+          <p>
+            <strong>${item.topic}</strong>
+          </p>
+
           <p>${item.description}</p>
 
           <button onclick="showLesson('${course}', ${item.id})">
-            Open Lesson
+            Open Project
           </button>
+
         </div>
       `).join("")}
     </div>
@@ -138,11 +220,26 @@ function showCourse(course) {
 }
 
 
-// Lesson page
+// Lesson / Project page
 function showLesson(course, id) {
   const lesson = curriculum[course].find(item => item.id === id);
 
+  if (!lesson) return;
+
   const app = document.getElementById("app");
+
+  const projectImage =
+    course === "MS Word"
+      ? `
+        <div class="project-preview">
+          <img
+            src="/Project%20${id}.png"
+            alt="${lesson.title}"
+            class="project-image"
+          >
+        </div>
+      `
+      : "";
 
   app.innerHTML = `
     <button class="back" onclick="showCourse('${course}')">
@@ -159,6 +256,8 @@ function showLesson(course, id) {
         ${lesson.description}
       </p>
 
+      ${projectImage}
+
       <div class="step">
         <strong>Step 1:</strong>
         Open ${course}.
@@ -166,12 +265,12 @@ function showLesson(course, id) {
 
       <div class="step">
         <strong>Step 2:</strong>
-        Follow the instructions shown in this lesson.
+        Look carefully at the sample project shown above.
       </div>
 
       <div class="step">
         <strong>Step 3:</strong>
-        Complete the practical project yourself.
+        Create the same project yourself in ${course}.
       </div>
 
       <div class="step">
@@ -183,7 +282,9 @@ function showLesson(course, id) {
         <h3>🎯 Practice Task</h3>
 
         <p>
-          Now create the project yourself without copying the steps.
+          Now create this project yourself without copying directly.
+          Try to match the layout, formatting, text, tables, shapes,
+          charts and images shown in the sample.
         </p>
 
         <button onclick="alert('Practice task started!')">
