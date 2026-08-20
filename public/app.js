@@ -3,100 +3,278 @@ const curriculum = {
     {
       id: 1,
       title: "Project 1",
-      topic: "MS Word Practical Project",
-      description: "Complete the project by following the example.",
-      image: "Project 1.png"
+      topic: "Application Form",
+      description: "Prepare an application form in MS Word.",
+      duration: "75 Minutes",
+      image: "Project 1.png",
+      objective: "Create a neat and properly formatted application form.",
+      steps: [
+        "Open Microsoft Word and create a new blank document.",
+        "Study the example project carefully.",
+        "Type the required headings, labels and information.",
+        "Use proper alignment, spacing and formatting.",
+        "Create the required lines, boxes or table structure.",
+        "Check the complete document and save your work."
+      ],
+      task: "Create your own application form by following the reference image."
     },
+
     {
       id: 2,
       title: "Project 2",
-      topic: "MS Word Practical Project",
-      description: "Complete the project by following the example.",
-      image: "Project 2.png"
+      topic: "Admissions Advertisement",
+      description: "Prepare an attractive admissions advertisement in MS Word.",
+      duration: "75 Minutes",
+      image: "Project 2.png",
+      objective: "Create an attractive advertisement using text formatting and layout.",
+      steps: [
+        "Open a new Word document.",
+        "Study the admissions advertisement shown in the example.",
+        "Type the required heading and admission information.",
+        "Use different font sizes and formatting where required.",
+        "Arrange the text neatly on the page.",
+        "Review the final advertisement and save it."
+      ],
+      task: "Create your own admissions advertisement similar to the reference."
     },
+
     {
       id: 3,
       title: "Project 3",
-      topic: "MS Word Practical Project",
-      description: "Complete the project by following the example.",
-      image: "Project 3.png"
+      topic: "Sales Advertisement",
+      description: "Prepare a sales advertisement using MS Word.",
+      duration: "75 Minutes",
+      image: "Project 3.png",
+      objective: "Practice creating an attractive sales advertisement.",
+      steps: [
+        "Open a new Word document.",
+        "Look carefully at the sales advertisement example.",
+        "Enter the required product and sales information.",
+        "Use suitable font sizes, styles and alignment.",
+        "Arrange the content professionally.",
+        "Check spelling and save the document."
+      ],
+      task: "Create a sales advertisement by using the reference image as your guide."
     },
+
     {
       id: 4,
       title: "Project 4",
-      topic: "MS Word Practical Project",
-      description: "Complete the project by following the example.",
-      image: "Project 4.png"
+      topic: "Book Cover Page",
+      description: "Prepare a professional cover page of a book.",
+      duration: "75 Minutes",
+      image: "Project 4.png",
+      objective: "Learn how to design a book cover using text, images and formatting.",
+      steps: [
+        "Open Microsoft Word and create a blank document.",
+        "Study the book cover example.",
+        "Add the book title and other required text.",
+        "Insert and position the required image.",
+        "Format the title and other text appropriately.",
+        "Adjust spacing and alignment to match the example.",
+        "Save your completed book cover."
+      ],
+      task: "Design your own book cover page based on the reference."
     },
+
     {
       id: 5,
       title: "Project 5",
-      topic: "MS Word Practical Project",
-      description: "Complete the project by following the example.",
-      image: "Project 5.png"
+      topic: "Sales Advertisement",
+      description: "Create another professional sales advertisement in MS Word.",
+      duration: "75 Minutes",
+      image: "Project 5.png",
+      objective: "Practice text formatting, layout and visual presentation.",
+      steps: [
+        "Open a blank Word document.",
+        "Study the reference advertisement.",
+        "Type all required information.",
+        "Format the heading and important information.",
+        "Insert and arrange required elements.",
+        "Check the page layout.",
+        "Save your final advertisement."
+      ],
+      task: "Create the sales advertisement shown in the reference as closely as possible."
     },
+
     {
       id: 6,
       title: "Project 6",
-      topic: "MS Word Practical Project",
-      description: "Complete the project by following the example.",
-      image: "Project 6.png"
+      topic: "Marketing Planning Cycle",
+      description: "Prepare a marketing planning cycle using MS Word.",
+      duration: "75 Minutes",
+      image: "Project 6.png",
+      objective: "Practice creating a structured diagram using Word shapes and text.",
+      steps: [
+        "Open Microsoft Word.",
+        "Study the marketing planning cycle in the example.",
+        "Insert the required shapes.",
+        "Arrange the shapes in the correct sequence.",
+        "Enter the required text inside the shapes.",
+        "Use alignment and formatting tools to make the diagram neat.",
+        "Check the completed cycle and save the document."
+      ],
+      task: "Recreate the marketing planning cycle shown in the reference using Word shapes."
     },
+
     {
       id: 7,
       title: "Project 7",
       topic: "Visitor's Information Sheet",
       description: "Prepare a visitor's information sheet in MS Word.",
-      image: "Project 7.png"
+      duration: "75 Minutes",
+      image: "Project 7.png",
+      objective: "Practice creating a structured information sheet.",
+      steps: [
+        "Open a new Word document.",
+        "Study the visitor information sheet.",
+        "Create the required headings and fields.",
+        "Use a table where required.",
+        "Format the headings and information clearly.",
+        "Adjust the table, spacing and alignment.",
+        "Check the complete form and save it."
+      ],
+      task: "Create your own visitor's information sheet following the reference."
     },
+
     {
       id: 8,
       title: "Project 8",
       topic: "Sales Chart",
-      description: "Create a sales chart using tables and charts.",
-      image: "Project 8.png"
+      description: "Prepare a sales chart using MS Word.",
+      duration: "75 Minutes",
+      image: "Project 8.png",
+      objective: "Practice presenting sales information using tables and charts.",
+      steps: [
+        "Open Microsoft Word.",
+        "Study the sales chart example.",
+        "Enter the required sales information.",
+        "Create the required table or chart.",
+        "Add headings and labels.",
+        "Format the chart and information neatly.",
+        "Review the final document and save it."
+      ],
+      task: "Create a sales chart similar to the reference image."
     },
+
     {
       id: 9,
       title: "Project 9",
-      topic: "MS Word Practical Project",
-      description: "Complete the project by following the example.",
-      image: "Project 9.png"
+      topic: "Global Climate Change",
+      description: "Prepare an information page about global climate change.",
+      duration: "75 Minutes",
+      image: "Project 9.png",
+      objective: "Practice creating an informative document using text, images and formatting.",
+      steps: [
+        "Open a new Word document.",
+        "Study the global climate change example.",
+        "Type the required heading and information.",
+        "Insert the required image or visual elements.",
+        "Format headings and paragraphs.",
+        "Arrange the content neatly on the page.",
+        "Check the final document and save it."
+      ],
+      task: "Create an informative page about global climate change following the reference."
     },
+
     {
       id: 10,
       title: "Project 10",
-      topic: "MS Word Practical Project",
-      description: "Complete the project by following the example.",
-      image: "Project 10.png"
+      topic: "Globalization",
+      description: "Prepare an informative document about globalization.",
+      duration: "75 Minutes",
+      image: "Project 10.png",
+      objective: "Practice creating a well-formatted informational page.",
+      steps: [
+        "Open Microsoft Word.",
+        "Study the globalization reference.",
+        "Enter the required text and headings.",
+        "Format the heading and paragraphs.",
+        "Insert and position required visual elements.",
+        "Check page alignment and spacing.",
+        "Save your completed project."
+      ],
+      task: "Create the globalization information page shown in the reference."
     },
+
     {
       id: 11,
       title: "Project 11",
-      topic: "MS Word Practical Project",
-      description: "Complete the project by following the example.",
-      image: "Project 11.png"
+      topic: "Comparative Analysis of Admission",
+      description: "Prepare a comparative admission analysis using MS Word.",
+      duration: "75 Minutes",
+      image: "Project 11.png",
+      objective: "Practice presenting comparative information clearly.",
+      steps: [
+        "Open a new Word document.",
+        "Study the admission comparison example.",
+        "Enter the required information.",
+        "Create the required table or comparison structure.",
+        "Format headings and data properly.",
+        "Adjust column widths and alignment.",
+        "Check the final analysis and save it."
+      ],
+      task: "Create the comparative admission analysis based on the reference."
     },
+
     {
       id: 12,
       title: "Project 12",
-      topic: "MS Word Practical Project",
-      description: "Complete the project by following the example.",
-      image: "Project 12.png"
+      topic: "Water Pollution",
+      description: "Prepare an informative document about water pollution.",
+      duration: "75 Minutes",
+      image: "Project 12.png",
+      objective: "Practice creating an informative page with text and visual elements.",
+      steps: [
+        "Open Microsoft Word.",
+        "Study the water pollution example.",
+        "Type the required heading and information.",
+        "Insert the required visual elements.",
+        "Format the text and headings.",
+        "Arrange the content neatly.",
+        "Review and save your document."
+      ],
+      task: "Create an information page about water pollution following the reference."
     },
+
     {
       id: 13,
       title: "Project 13",
       topic: "Education",
       description: "Create an educational information page using MS Word.",
-      image: "Project 13.png"
+      duration: "75 Minutes",
+      image: "Project 13.png",
+      objective: "Practice creating a visually organized educational page.",
+      steps: [
+        "Open a new Word document.",
+        "Study the education project example.",
+        "Add the required heading and text.",
+        "Insert the required images or shapes.",
+        "Format the content properly.",
+        "Arrange all elements according to the reference.",
+        "Check and save your completed project."
+      ],
+      task: "Create the education project shown in the reference image."
     },
+
     {
       id: 14,
       title: "Project 14",
       topic: "Kid Helper",
       description: "Create an attractive information page using text, shapes and images.",
-      image: "Project 14.png"
+      duration: "75 Minutes",
+      image: "Project 14.png",
+      objective: "Practice combining text, shapes, images and formatting in one project.",
+      steps: [
+        "Open Microsoft Word and create a blank document.",
+        "Study the Kid Helper example carefully.",
+        "Add the required heading and text.",
+        "Insert the required shapes and images.",
+        "Arrange the elements according to the reference.",
+        "Use proper alignment, spacing and formatting.",
+        "Review the completed page and save it."
+      ],
+      task: "Create your own Kid Helper project by following the reference image."
     }
   ],
 
@@ -163,14 +341,12 @@ function showHome() {
 
   app.innerHTML = `
     <div class="hero">
-
       <h1>Learn & Practice</h1>
 
       <p>
         Welcome to Joining Hands AI Computer Learning & Practical Lab.
         Choose a course and start learning through practical projects.
       </p>
-
     </div>
 
     <h2>Courses</h2>
@@ -257,6 +433,16 @@ function showCourse(course) {
             ${item.description}
           </p>
 
+          ${
+            item.duration
+              ? `
+                <p class="project-duration">
+                  ⏱️ ${item.duration}
+                </p>
+              `
+              : ""
+          }
+
           <button onclick="showLesson('${course}', ${item.id})">
             Open Project
           </button>
@@ -287,6 +473,13 @@ function showLesson(course, id) {
   const app =
     document.getElementById("app");
 
+  const steps = lesson.steps || [
+    "Open the required Microsoft Office application.",
+    "Study the example project carefully.",
+    "Create your own version of the project.",
+    "Check your work and save the completed file."
+  ];
+
   app.innerHTML = `
 
     <button
@@ -302,18 +495,44 @@ function showLesson(course, id) {
 
       <div class="lesson-header">
 
-        <h1>${lesson.title}</h1>
+        <h1>
+          ${lesson.title}
+        </h1>
 
-        <h2>${lesson.topic}</h2>
+        <h2>
+          ${lesson.topic}
+        </h2>
 
         <p>
           ${lesson.description}
         </p>
 
+        ${
+          lesson.duration
+            ? `
+              <p>
+                <strong>⏱️ Duration:</strong>
+                ${lesson.duration}
+              </p>
+            `
+            : ""
+        }
+
+        ${
+          lesson.objective
+            ? `
+              <p>
+                <strong>🎯 Objective:</strong>
+                ${lesson.objective}
+              </p>
+            `
+            : ""
+        }
+
       </div>
 
 
-      <!-- EXAMPLE -->
+      <!-- EXAMPLE PROJECT -->
 
       ${
         lesson.image
@@ -336,7 +555,7 @@ function showLesson(course, id) {
               </div>
 
               <p class="image-note">
-                Click the image to view it larger.
+                🔍 Click the image to view it larger.
               </p>
 
             </div>
@@ -345,72 +564,47 @@ function showLesson(course, id) {
       }
 
 
-      <!-- PRACTICE INSTRUCTIONS -->
+      <!-- INSTRUCTIONS -->
 
       <div class="practice-instructions">
 
         <h2>
-          📝 How to Practice
+          📝 Step-by-Step Instructions
         </h2>
 
-        <div class="step">
+        ${steps.map((step, index) => `
 
-          <strong>Step 1:</strong>
+          <div class="step">
 
-          Open Microsoft Word on your computer.
+            <strong>
+              Step ${index + 1}:
+            </strong>
 
-        </div>
+            ${step}
 
-        <div class="step">
+          </div>
 
-          <strong>Step 2:</strong>
-
-          Look carefully at the example shown above.
-
-        </div>
-
-        <div class="step">
-
-          <strong>Step 3:</strong>
-
-          Create your own copy of the project in MS Word.
-
-        </div>
-
-        <div class="step">
-
-          <strong>Step 4:</strong>
-
-          Try to make your project as similar to the example as possible.
-
-        </div>
-
-        <div class="step">
-
-          <strong>Step 5:</strong>
-
-          Save your completed project on your computer.
-
-        </div>
+        `).join("")}
 
       </div>
 
 
-      <!-- PRACTICE -->
+      <!-- PRACTICE TASK -->
 
       <div class="practice-box">
 
         <h3>
-          🎯 Ready to Practice?
+          🎯 Practice Task
         </h3>
 
         <p>
-          Create your own copy of this project in Microsoft Word.
+          ${
+            lesson.task ||
+            "Create your own copy of this project and complete it in Microsoft Word."
+          }
         </p>
 
-        <button
-          onclick="startPractice()"
-        >
+        <button onclick="startPractice()">
           💻 Start Practice
         </button>
 
@@ -434,43 +628,15 @@ function showLesson(course, id) {
 
 function startPractice() {
 
-  const message =
+  alert(
     "Practice Time!\n\n" +
-
     "1. Open Microsoft Word on your computer.\n" +
-
     "2. Create a new blank document.\n" +
+    "3. Keep the example project visible for reference.\n" +
+    "4. Create your own version of the project.\n" +
+    "5. Save your completed work."
+  );
 
-    "3. Look at the example project.\n" +
-
-    "4. Create your own copy of the project.\n" +
-
-    "5. Save your work when finished.";
-
-  alert(message);
-
-}
-
-
-// ==========================================
-// OPEN MICROSOFT WORD
-// ==========================================
-
-function openWord() {
-
-  window.location.href = "ms-word:";
-
-  setTimeout(function () {
-
-    alert(
-      "Microsoft Word could not be opened automatically.\n\n" +
-
-      "Please open Microsoft Word from your computer " +
-
-      "and create a new blank document."
-    );
-
-  }, 1500);
 }
 
 
@@ -486,6 +652,11 @@ function showHelp(course, project) {
   if (old) {
     old.remove();
   }
+
+  const lesson =
+    curriculum[course].find(
+      item => item.id == project
+    );
 
   document.body.insertAdjacentHTML(
     "beforeend",
@@ -506,21 +677,25 @@ function showHelp(course, project) {
           ×
         </button>
 
-
         <h2>
           🤖 Ask Your AI Teacher
         </h2>
 
         <p>
-          Type your question below.
+          You are working on:
+          <strong>
+            ${lesson ? lesson.title : "this project"}
+          </strong>
         </p>
 
+        <p>
+          Ask me anything about this project or MS Word.
+        </p>
 
         <textarea
           id="studentQuestion"
           placeholder="Example: How do I insert a table in MS Word?"
         ></textarea>
-
 
         <button
           id="askButton"
@@ -529,7 +704,6 @@ function showHelp(course, project) {
         >
           Ask Question
         </button>
-
 
         <div id="helpAnswer"></div>
 
@@ -580,7 +754,6 @@ async function askQuestion(course, project) {
   const question =
     questionElement.value.trim();
 
-
   if (!question) {
 
     answer.innerHTML = `
@@ -598,12 +771,10 @@ async function askQuestion(course, project) {
     return;
   }
 
-
   button.disabled = true;
 
   button.innerText =
     "⏳ AI Teacher is thinking...";
-
 
   answer.innerHTML = `
 
@@ -621,7 +792,6 @@ async function askQuestion(course, project) {
 
   `;
 
-
   try {
 
     const response =
@@ -630,8 +800,7 @@ async function askQuestion(course, project) {
         method: "POST",
 
         headers: {
-          "Content-Type":
-            "application/json"
+          "Content-Type": "application/json"
         },
 
         body: JSON.stringify({
@@ -646,10 +815,8 @@ async function askQuestion(course, project) {
 
       });
 
-
     const data =
       await response.json();
-
 
     if (!response.ok) {
 
@@ -659,7 +826,6 @@ async function askQuestion(course, project) {
       );
 
     }
-
 
     answer.innerHTML = `
 
@@ -675,17 +841,14 @@ async function askQuestion(course, project) {
 
     `;
 
-
     const responseBox =
       answer.querySelector(
         ".ai-response"
       );
 
-
     responseBox.textContent =
       data.answer ||
       "No answer received.";
-
 
   }
 
@@ -695,7 +858,6 @@ async function askQuestion(course, project) {
       "AI Teacher Error:",
       error
     );
-
 
     answer.innerHTML = `
 
@@ -719,7 +881,6 @@ async function askQuestion(course, project) {
 
   }
 
-
   button.disabled = false;
 
   button.innerText =
@@ -740,7 +901,6 @@ function openImage(imageSrc) {
   if (old) {
     old.remove();
   }
-
 
   document.body.insertAdjacentHTML(
 
