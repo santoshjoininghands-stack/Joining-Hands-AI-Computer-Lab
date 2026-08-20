@@ -758,3 +758,160 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+/* =========================================
+   PROJECT / LESSON PAGE
+   Keep everything inside the screen
+========================================= */
+
+.lesson-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.lesson-header {
+  background: white;
+  padding: 28px 34px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.lesson-header h1 {
+  font-size: 38px;
+  margin: 0 0 10px;
+}
+
+.lesson-header h2 {
+  font-size: 25px;
+  margin: 0 0 10px;
+}
+
+.lesson-header p {
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Example area */
+.example-section {
+  background: white;
+  padding: 22px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.example-section h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+/* IMPORTANT:
+   Image will NEVER exceed screen/container
+*/
+.example-image-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #f5f7fa;
+  border-radius: 10px;
+  padding: 10px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.example-image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 650px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+/* Practice instructions */
+.practice-instructions {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.practice-instructions h2 {
+  margin-top: 0;
+}
+
+.practice-instructions .step {
+  margin-bottom: 10px;
+}
+
+/* Practice box */
+.practice-box {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.practice-box button {
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+/* AI button */
+.help-button {
+  background: #5b3cc4 !important;
+}
+
+/* Laptop/tablet */
+@media (max-width: 1200px) {
+
+  .lesson-content {
+    max-width: 95%;
+  }
+
+  .example-image {
+    max-height: 550px;
+  }
+
+  .lesson-header h1 {
+    font-size: 34px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+
+  .lesson-header {
+    padding: 20px;
+  }
+
+  .lesson-header h1 {
+    font-size: 28px;
+  }
+
+  .lesson-header h2 {
+    font-size: 20px;
+  }
+
+  .example-section {
+    padding: 15px;
+  }
+
+  .example-image-container {
+    padding: 5px;
+  }
+
+  .example-image {
+    max-height: 500px;
+  }
+
+  .practice-box,
+  .practice-instructions {
+    padding: 20px;
+  }
+}
