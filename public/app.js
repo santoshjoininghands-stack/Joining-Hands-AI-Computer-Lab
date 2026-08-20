@@ -190,71 +190,46 @@ function showHome() {
 // ==========================================
 
 function showCourse(course) {
-
   const app = document.getElementById("app");
 
   app.innerHTML = `
-
     <button class="back" onclick="showHome()">
       ← Back to Courses
     </button>
 
-    <div class="hero">
-
+    <div class="hero course-hero">
       <h1>${course}</h1>
-
-      <p>
-        Select a lesson/project to start learning.
-      </p>
-
+      <p>Select a lesson/project to start learning.</p>
     </div>
 
-    <div class="lesson-grid">
+    <div class="lesson-grid compact-grid">
+      ${curriculum[course].map(item => `
+        <div class="lesson-card compact-card">
 
-      ${curriculum[course].map(item => {
-
-        let imageHTML = "";
-
-        if (course === "MS Word") {
-
-          imageHTML = `
-            <div class="project-image">
-              <img
-                src="/Project ${item.id}.png"
-                alt="${item.title}"
-                onclick="openImage('/Project ${item.id}.png')"
-              >
-            </div>
-          `;
-
-        }
-
-        return `
-
-          <div class="lesson-card">
-
-            ${imageHTML}
-
-            <h3>${item.title}</h3>
-
-            <p>
-              <strong>${item.topic}</strong>
-            </p>
-
-            <p>
-              ${item.description}
-            </p>
-
-            <button onclick="showLesson('${course}', ${item.id})">
-              Open Project
-            </button>
-
+          <div class="project-image">
+            <img
+              src="${item.image || `Project ${item.id}.png`}"
+              alt="${item.title}"
+              onerror="this.style.display='none'"
+            >
           </div>
 
-        `;
+          <h3>${item.title}</h3>
 
-      }).join("")}
+          <p class="project-topic">
+            ${item.topic}
+          </p>
 
+          <p class="project-description">
+            ${item.description}
+          </p>
+
+          <button onclick="showLesson('${course}', ${item.id})">
+            Open Project
+          </button>
+
+        </div>
+      `).join("")}
     </div>
   `;
 }
