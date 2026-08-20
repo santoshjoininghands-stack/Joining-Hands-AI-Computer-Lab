@@ -240,162 +240,90 @@ function showCourse(course) {
 // ==========================================
 
 function showLesson(course, id) {
-
-  const lesson = curriculum[course].find(
-    item => item.id === id
-  );
+  const lesson = curriculum[course].find(item => item.id === id);
 
   const app = document.getElementById("app");
 
-  let imageHTML = "";
-
-  if (course === "MS Word") {
-
-    imageHTML = `
-      <div class="large-project-image">
-
-        <img
-          src="/Project ${lesson.id}.png"
-          alt="${lesson.title}"
-          onclick="openImage('/Project ${lesson.id}.png')"
-        >
-
-        <p>
-          👆 Click the image to view it larger
-        </p>
-
-      </div>
-    `;
-
-  }
-
   app.innerHTML = `
-
-    <button
-      class="back"
-      onclick="showCourse('${course}')">
-
+    <button class="back" onclick="showCourse('${course}')">
       ← Back to ${course}
-
     </button>
 
     <div class="lesson-content">
 
-      <h1>${lesson.title}</h1>
+      <div class="lesson-header">
+        <h1>${lesson.title}</h1>
+        <h2>${lesson.topic}</h2>
+        <p>${lesson.description}</p>
+      </div>
 
-      <h2>${lesson.topic}</h2>
+      <!-- Example Project -->
+      <div class="example-section">
 
-      <p>
-        ${lesson.description}
-      </p>
+        <h2>📘 Example Project</h2>
 
-      ${imageHTML}
-
-
-      <!-- INSTRUCTIONS -->
-
-      <div class="instructions">
-
-        <h2>📋 Instructions</h2>
-
-        <div class="step">
-          <strong>Step 1</strong>
-          <p>
-            Look carefully at the example project.
-          </p>
-        </div>
-
-        <div class="step">
-          <strong>Step 2</strong>
-          <p>
-            Open Microsoft Word on your computer.
-          </p>
-        </div>
-
-        <div class="step">
-          <strong>Step 3</strong>
-          <p>
-            Create a new blank document.
-          </p>
-        </div>
-
-        <div class="step">
-          <strong>Step 4</strong>
-          <p>
-            Create your own copy of the project.
-            Do not simply copy the picture.
-          </p>
-        </div>
-
-        <div class="step">
-          <strong>Step 5</strong>
-          <p>
-            Try to match the text, formatting, tables,
-            images, shapes and layout.
-          </p>
-        </div>
-
-        <div class="step">
-          <strong>Step 6</strong>
-          <p>
-            Check your work carefully before finishing.
-          </p>
+        <div class="example-image-container">
+          <img
+            src="${lesson.image || `Project ${lesson.id}.png`}"
+            alt="${lesson.title}"
+            class="example-image"
+          >
         </div>
 
       </div>
 
+      <!-- Practice Instructions -->
+      <div class="practice-instructions">
 
-      <!-- PRACTICE -->
+        <h2>📝 How to Practice</h2>
 
+        <div class="step">
+          <strong>Step 1:</strong>
+          Open Microsoft Word on your computer.
+        </div>
+
+        <div class="step">
+          <strong>Step 2:</strong>
+          Look at the example shown above.
+        </div>
+
+        <div class="step">
+          <strong>Step 3:</strong>
+          Create your own copy of the project in MS Word.
+        </div>
+
+        <div class="step">
+          <strong>Step 4:</strong>
+          Try to make your project as similar to the example as possible.
+        </div>
+
+        <div class="step">
+          <strong>Step 5:</strong>
+          Save your completed project on your computer.
+        </div>
+
+      </div>
+
+      <!-- Practice -->
       <div class="practice-box">
 
-        <h2>🎯 Practice</h2>
+        <h3>🎯 Ready to Practice?</h3>
 
         <p>
-          Now create this project yourself in Microsoft Word.
+          Create your own copy of this project in Microsoft Word.
         </p>
 
-        <button
-          class="practice-button"
-          onclick="openWord()">
-
-          📝 Open Microsoft Word
-
+        <button onclick="startPractice('${course}', ${lesson.id})">
+          💻 Start Practice
         </button>
 
-        <p class="small-note">
-
-          If Microsoft Word does not open automatically,
-          open Word manually from your computer.
-
-        </p>
-
-      </div>
-
-
-      <!-- AI HELP -->
-
-      <div class="help-box">
-
-        <h2>🤖 AI Teacher</h2>
-
-        <p>
-          Don't know how to do something?
-          Ask your AI Teacher.
-        </p>
-
-        <button
-          class="help-button"
-          onclick="showHelp('${course}', '${lesson.title}')">
-
-          💬 Ask a Question
-
+        <button class="help-button" onclick="openAIHelp('${course}', ${lesson.id})">
+          🤖 Ask AI Teacher
         </button>
 
       </div>
 
     </div>
-
   `;
 }
 
