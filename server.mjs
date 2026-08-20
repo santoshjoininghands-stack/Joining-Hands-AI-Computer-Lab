@@ -8,15 +8,13 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Allow JSON requests
 app.use(express.json());
 
-// Serve website files
 app.use(express.static(path.join(__dirname, "public")));
 
 
 // ==========================================
-// AI TEACHER API
+// AI TEACHER - GOOGLE GEMINI
 // ==========================================
 
 app.post("/api/ask", async (req, res) => {
@@ -25,60 +23,88 @@ app.post("/api/ask", async (req, res) => {
 
     const { question, course, project } = req.body;
 
-    if (!question) {
+    if (!question || !question.trim()) {
       return res.status(400).json({
         error: "Please enter a question."
       });
     }
 
-
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
 
-      console.error("OPENAI_API_KEY is missing.");
+      console.error("GEMINI_API_KEY is missing.");
 
       return res.status(500).json({
-        error: "OpenAI API key is not configured on the server."
+        error: "Gemini API key is not configured on the server."
       });
-
     }
 
 
     const prompt = `
 You are the AI Teacher for Joining Hands AI Computer Learning & Practical Lab.
 
-Student is currently learning:
+The student is currently learning:
+
 Course: ${course || "Computer"}
 Project: ${project || "Practical Project"}
 
 Student's question:
 ${question}
 
-Give a simple, clear and practical answer suitable for a beginner student.
+Your job is to help the student understand the task.
 
-If the question is about Microsoft Word:
-- Explain the exact steps.
-- Mention the menu/tab/button names.
-- Keep the explanation easy to follow.
-- Give an example when useful.
-- Do not assume the student already knows advanced features.
+IMPORTANT RULES:
+
+1. Give simple answers suitable for beginners.
+2. If the question is about MS Word, give exact step-by-step instructions.
+3. Mention the correct MS Word tab/menu/button names.
+4. Explain one step at a time.
+5. Give a small example when useful.
+6. Do not use complicated technical language.
+7. Do not do the student's project for them.
+8. Help them understand how to complete it themselves.
+9. Keep the answer reasonably short.
+10. If the question is unrelated to computer learning, politely say that you are the Joining Hands AI Teacher and ask them to ask a computer-learning question.
+
+Example style:
+
+Question:
+How do I add a shape?
+
+Answer:
+To add a shape in MS Word:
+
+1. Open the Insert tab.
+2. Click Shapes.
+3. Choose the shape you want.
+4. Click and drag on the page to draw the shape.
+5. Use Shape Format to change its colour, outline or size.
+
+Now answer the student's question.
 `;
 
 
     const response = await fetch(
-      "https://api.openai.com/v1/responses",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
       {
         method: "POST",
 
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
+          "x-goog-api-key": apiKey
         },
 
         body: JSON.stringify({
-          model: "gpt-5.6-luna",
-          input: prompt
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt
+                }
+              ]
+            }
+          ]
         })
       }
     );
@@ -89,20 +115,28 @@ If the question is about Microsoft Word:
 
     if (!response.ok) {
 
-      console.error("OpenAI API Error:", data);
+      console.error("Gemini API Error:", data);
 
       return res.status(response.status).json({
         error:
           data?.error?.message ||
-          "OpenAI API request failed."
+          "Gemini AI request failed."
       });
 
     }
 
 
     const answer =
-      data.output_text ||
-      "Sorry, I could not generate an answer.";
+      data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+
+    if (!answer) {
+
+      return res.status(500).json({
+        error: "Gemini did not return an answer."
+      });
+
+    }
 
 
     res.json({
@@ -112,10 +146,11 @@ If the question is about Microsoft Word:
 
   } catch (error) {
 
-    console.error("Server AI Error:", error);
+    console.error("AI Teacher Error:", error);
 
     res.status(500).json({
-      error: "AI Teacher could not answer right now. Please try again."
+      error:
+        "AI Teacher could not answer right now. Please try again."
     });
 
   }
@@ -124,7 +159,7 @@ If the question is about Microsoft Word:
 
 
 // ==========================================
-// WEBSITE ROUTE
+// WEBSITE
 // ==========================================
 
 app.get("*", (req, res) => {
