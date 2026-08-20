@@ -1,552 +1,236 @@
+// ==========================================================
+// JOINING HANDS
+// AI COMPUTER LEARNING & PRACTICAL LAB
+// COMPLETE APP.JS
+// ==========================================================
+
+
+// ==========================================================
+// SETTINGS
+// ==========================================================
+
+const WORD_HOME_IMAGE = "Home.png";
+
+
+// ==========================================================
+// CURRICULUM
+// ==========================================================
+
 const curriculum = {
+
   "MS Word": [
+
     {
       id: 1,
       title: "Project 1",
-      topic: "Application Form",
-      description: "Prepare an application form in MS Word.",
-      duration: "75 Minutes",
-      image: "Project 1.png",
-      objective: "Create a neat and properly formatted application form.",
-      skills: [
-        "Entering and editing text",
-        "Changing font size and style",
-        "Using bold, italic and underline",
-        "Text alignment",
-        "Creating a simple table or form structure",
-        "Using borders and spacing"
-      ],
-      miniPractice:
-        "Create a small form with your name, father's name, address and phone number. Format the headings and information neatly.",
-      steps: [
-        "Open Microsoft Word and create a new blank document.",
-        "Study the example project carefully.",
-        "Type the required headings, labels and information.",
-        "Use proper alignment, spacing and formatting.",
-        "Create the required lines, boxes or table structure.",
-        "Check the complete document and save your work."
-      ],
-      task:
-        "Create your own application form by following the reference image."
+      topic: "MS Word Practical Project",
+      description: "Complete the project by following the example.",
+      image: "Project 1.png"
     },
 
     {
       id: 2,
       title: "Project 2",
-      topic: "Admissions Advertisement",
-      description: "Prepare an attractive admissions advertisement in MS Word.",
-      duration: "75 Minutes",
-      image: "Project 2.png",
-      objective:
-        "Create an attractive advertisement using text formatting and page layout.",
-      skills: [
-        "Text formatting",
-        "Changing font size and colour",
-        "Text alignment",
-        "Using WordArt",
-        "Inserting pictures",
-        "Using shapes",
-        "Page layout and spacing"
-      ],
-      miniPractice:
-        "Create a small advertisement for a computer course. Add a heading, course name, fee and contact number.",
-      steps: [
-        "Open a new Word document.",
-        "Study the admissions advertisement shown in the example.",
-        "Type the required heading and admission information.",
-        "Use different font sizes and formatting where required.",
-        "Arrange the text neatly on the page.",
-        "Add the required visual elements.",
-        "Review the final advertisement and save it."
-      ],
-      task:
-        "Create your own admissions advertisement similar to the reference."
+      topic: "MS Word Practical Project",
+      description: "Complete the project by following the example.",
+      image: "Project 2.png"
     },
 
     {
       id: 3,
       title: "Project 3",
-      topic: "Sales Advertisement",
-      description: "Prepare a sales advertisement using MS Word.",
-      duration: "75 Minutes",
-      image: "Project 3.png",
-      objective:
-        "Practice creating an attractive sales advertisement.",
-      skills: [
-        "Text formatting",
-        "Font size and colour",
-        "Inserting images",
-        "Using shapes",
-        "Borders",
-        "Text alignment",
-        "Page layout"
-      ],
-      miniPractice:
-        "Create a small product advertisement with a product name, price, offer and contact number.",
-      steps: [
-        "Open a new Word document.",
-        "Look carefully at the sales advertisement example.",
-        "Enter the required product and sales information.",
-        "Use suitable font sizes, styles and alignment.",
-        "Arrange the content professionally.",
-        "Add the required visual elements.",
-        "Check spelling and save the document."
-      ],
-      task:
-        "Create a sales advertisement by using the reference image as your guide."
+      topic: "MS Word Practical Project",
+      description: "Complete the project by following the example.",
+      image: "Project 3.png"
     },
 
     {
       id: 4,
       title: "Project 4",
-      topic: "Book Cover Page",
-      description: "Prepare a professional cover page of a book.",
-      duration: "75 Minutes",
-      image: "Project 4.png",
-      objective:
-        "Learn how to design a book cover using text, images and formatting.",
-      skills: [
-        "Page design",
-        "Text formatting",
-        "Inserting pictures",
-        "Changing picture size",
-        "Text alignment",
-        "Using shapes",
-        "Positioning objects"
-      ],
-      miniPractice:
-        "Create a simple book cover with a book title, author name and one picture.",
-      steps: [
-        "Open Microsoft Word and create a blank document.",
-        "Study the book cover example.",
-        "Add the book title and other required text.",
-        "Insert and position the required image.",
-        "Format the title and other text appropriately.",
-        "Adjust spacing and alignment to match the example.",
-        "Save your completed book cover."
-      ],
-      task:
-        "Design your own book cover page based on the reference."
+      topic: "MS Word Practical Project",
+      description: "Complete the project by following the example.",
+      image: "Project 4.png"
     },
 
     {
       id: 5,
       title: "Project 5",
-      topic: "Sales Advertisement",
-      description:
-        "Create another professional sales advertisement in MS Word.",
-      duration: "75 Minutes",
-      image: "Project 5.png",
-      objective:
-        "Practice text formatting, layout and visual presentation.",
-      skills: [
-        "Text formatting",
-        "Images",
-        "Shapes",
-        "Borders",
-        "Font colour",
-        "Alignment",
-        "Page layout"
-      ],
-      miniPractice:
-        "Create a simple offer poster with a product name, old price, new price and special offer.",
-      steps: [
-        "Open a blank Word document.",
-        "Study the reference advertisement.",
-        "Type all required information.",
-        "Format the heading and important information.",
-        "Insert and arrange required elements.",
-        "Check the page layout.",
-        "Save your final advertisement."
-      ],
-      task:
-        "Create the sales advertisement shown in the reference as closely as possible."
+      topic: "MS Word Practical Project",
+      description: "Complete the project by following the example.",
+      image: "Project 5.png"
     },
 
     {
       id: 6,
       title: "Project 6",
-      topic: "Marketing Planning Cycle",
-      description:
-        "Prepare a marketing planning cycle using MS Word.",
-      duration: "75 Minutes",
-      image: "Project 6.png",
-      objective:
-        "Practice creating a structured diagram using Word shapes and text.",
-      skills: [
-        "Inserting Shapes",
-        "Typing text inside Shapes",
-        "Changing Shape Fill",
-        "Changing Shape Outline",
-        "Moving and resizing Shapes",
-        "Inserting Arrows",
-        "Aligning Shapes",
-        "Copying and pasting Shapes"
-      ],
-      miniPractice:
-        "Insert three shapes. Type A, B and C inside them and connect the shapes with arrows.",
-      steps: [
-        "Open Microsoft Word.",
-        "Study the marketing planning cycle in the example.",
-        "Insert the required shapes.",
-        "Arrange the shapes in the correct sequence.",
-        "Enter the required text inside the shapes.",
-        "Insert the required arrows.",
-        "Use alignment and formatting tools to make the diagram neat.",
-        "Check the completed cycle and save the document."
-      ],
-      task:
-        "Recreate the marketing planning cycle shown in the reference using Word shapes."
+      topic: "MS Word Practical Project",
+      description: "Complete the project by following the example.",
+      image: "Project 6.png"
     },
 
     {
       id: 7,
       title: "Project 7",
       topic: "Visitor's Information Sheet",
-      description:
-        "Prepare a visitor's information sheet in MS Word.",
-      duration: "75 Minutes",
-      image: "Project 7.png",
-      objective:
-        "Practice creating a structured information sheet.",
-      skills: [
-        "Creating tables",
-        "Adding rows and columns",
-        "Entering information in cells",
-        "Changing column width",
-        "Cell alignment",
-        "Table borders",
-        "Table formatting"
-      ],
-      miniPractice:
-        "Create a small table with Name, Phone Number, Address and Purpose columns. Enter information for three visitors.",
-      steps: [
-        "Open a new Word document.",
-        "Study the visitor information sheet.",
-        "Create the required headings and fields.",
-        "Use a table where required.",
-        "Format the headings and information clearly.",
-        "Adjust the table, spacing and alignment.",
-        "Check the complete form and save it."
-      ],
-      task:
-        "Create your own visitor's information sheet following the reference."
+      description: "Prepare a visitor's information sheet in MS Word.",
+      image: "Project 7.png"
     },
 
     {
       id: 8,
       title: "Project 8",
       topic: "Sales Chart",
-      description:
-        "Prepare a sales chart using MS Word.",
-      duration: "75 Minutes",
-      image: "Project 8.png",
-      objective:
-        "Practice presenting sales information using tables and charts.",
-      skills: [
-        "Entering data",
-        "Creating tables",
-        "Inserting charts",
-        "Selecting chart types",
-        "Editing chart data",
-        "Adding chart titles",
-        "Formatting charts"
-      ],
-      miniPractice:
-        "Create a small table containing sales of three products for three months. Use the data to create a simple chart.",
-      steps: [
-        "Open Microsoft Word.",
-        "Study the sales chart example.",
-        "Enter the required sales information.",
-        "Create the required table or chart.",
-        "Add headings and labels.",
-        "Format the chart and information neatly.",
-        "Review the final document and save it."
-      ],
-      task:
-        "Create a sales chart similar to the reference image."
+      description: "Create a sales chart using tables and charts.",
+      image: "Project 8.png"
     },
 
     {
       id: 9,
       title: "Project 9",
-      topic: "Global Climate Change",
-      description:
-        "Prepare an information page about global climate change.",
-      duration: "75 Minutes",
-      image: "Project 9.png",
-      objective:
-        "Practice creating an informative document using text, images and formatting.",
-      skills: [
-        "Creating headings",
-        "Formatting paragraphs",
-        "Changing font size",
-        "Inserting images",
-        "Image positioning",
-        "Text alignment",
-        "Page layout"
-      ],
-      miniPractice:
-        "Create a short page with the heading 'Climate Change', one paragraph and one related image.",
-      steps: [
-        "Open a new Word document.",
-        "Study the global climate change example.",
-        "Type the required heading and information.",
-        "Insert the required image or visual elements.",
-        "Format headings and paragraphs.",
-        "Arrange the content neatly on the page.",
-        "Check the final document and save it."
-      ],
-      task:
-        "Create an informative page about global climate change following the reference."
+      topic: "MS Word Practical Project",
+      description: "Complete the project by following the example.",
+      image: "Project 9.png"
     },
 
     {
       id: 10,
       title: "Project 10",
-      topic: "Globalization",
-      description:
-        "Prepare an informative document about globalization.",
-      duration: "75 Minutes",
-      image: "Project 10.png",
-      objective:
-        "Practice creating a well-formatted informational page.",
-      skills: [
-        "Headings",
-        "Paragraph formatting",
-        "Font formatting",
-        "Inserting images",
-        "Image positioning",
-        "Alignment",
-        "Page layout"
-      ],
-      miniPractice:
-        "Create a one-page document about globalization with a heading, short paragraph and image.",
-      steps: [
-        "Open Microsoft Word.",
-        "Study the globalization reference.",
-        "Enter the required text and headings.",
-        "Format the heading and paragraphs.",
-        "Insert and position required visual elements.",
-        "Check page alignment and spacing.",
-        "Save your completed project."
-      ],
-      task:
-        "Create the globalization information page shown in the reference."
+      topic: "MS Word Practical Project",
+      description: "Complete the project by following the example.",
+      image: "Project 10.png"
     },
 
     {
       id: 11,
       title: "Project 11",
-      topic: "Comparative Analysis of Admission",
-      description:
-        "Prepare a comparative admission analysis using MS Word.",
-      duration: "75 Minutes",
-      image: "Project 11.png",
-      objective:
-        "Practice presenting comparative information clearly.",
-      skills: [
-        "Creating tables",
-        "Adding rows and columns",
-        "Entering data",
-        "Formatting table headings",
-        "Cell alignment",
-        "Borders",
-        "Comparing information"
-      ],
-      miniPractice:
-        "Create a small comparison table for two colleges with columns for Course, Fees and Duration.",
-      steps: [
-        "Open a new Word document.",
-        "Study the admission comparison example.",
-        "Enter the required information.",
-        "Create the required table or comparison structure.",
-        "Format headings and data properly.",
-        "Adjust column widths and alignment.",
-        "Check the final analysis and save it."
-      ],
-      task:
-        "Create the comparative admission analysis based on the reference."
+      topic: "MS Word Practical Project",
+      description: "Complete the project by following the example.",
+      image: "Project 11.png"
     },
 
     {
       id: 12,
       title: "Project 12",
-      topic: "Water Pollution",
-      description:
-        "Prepare an informative document about water pollution.",
-      duration: "75 Minutes",
-      image: "Project 12.png",
-      objective:
-        "Practice creating an informative page with text and visual elements.",
-      skills: [
-        "Creating headings",
-        "Paragraph formatting",
-        "Text alignment",
-        "Inserting images",
-        "Image resizing",
-        "Using shapes",
-        "Page design"
-      ],
-      miniPractice:
-        "Create a small information page about water pollution with a heading, short paragraph and image.",
-      steps: [
-        "Open Microsoft Word.",
-        "Study the water pollution example.",
-        "Type the required heading and information.",
-        "Insert the required visual elements.",
-        "Format the text and headings.",
-        "Arrange the content neatly.",
-        "Review and save your document."
-      ],
-      task:
-        "Create an information page about water pollution following the reference."
+      topic: "MS Word Practical Project",
+      description: "Complete the project by following the example.",
+      image: "Project 12.png"
     },
 
     {
       id: 13,
       title: "Project 13",
       topic: "Education",
-      description:
-        "Create an educational information page using MS Word.",
-      duration: "75 Minutes",
-      image: "Project 13.png",
-      objective:
-        "Practice creating a visually organized educational page.",
-      skills: [
-        "Text formatting",
-        "Headings",
-        "Inserting images",
-        "Inserting shapes",
-        "Image resizing",
-        "Object positioning",
-        "Page design"
-      ],
-      miniPractice:
-        "Create a simple education poster with a heading, short message and one picture.",
-      steps: [
-        "Open a new Word document.",
-        "Study the education project example.",
-        "Add the required heading and text.",
-        "Insert the required images or shapes.",
-        "Format the content properly.",
-        "Arrange all elements according to the reference.",
-        "Check and save your completed project."
-      ],
-      task:
-        "Create the education project shown in the reference image."
+      description: "Create an educational information page using MS Word.",
+      image: "Project 13.png"
     },
 
     {
       id: 14,
       title: "Project 14",
       topic: "Kid Helper",
-      description:
-        "Create an attractive information page using text, shapes and images.",
-      duration: "75 Minutes",
-      image: "Project 14.png",
-      objective:
-        "Practice combining text, shapes, images and formatting in one project.",
-      skills: [
-        "Inserting shapes",
-        "Adding text to shapes",
-        "Inserting images",
-        "Resizing images",
-        "Moving objects",
-        "Text formatting",
-        "Object alignment",
-        "Page design"
-      ],
-      miniPractice:
-        "Create a small poster for children using one heading, two shapes and one picture.",
-      steps: [
-        "Open Microsoft Word and create a blank document.",
-        "Study the Kid Helper example carefully.",
-        "Add the required heading and text.",
-        "Insert the required shapes and images.",
-        "Arrange the elements according to the reference.",
-        "Use proper alignment, spacing and formatting.",
-        "Review the completed page and save it."
-      ],
-      task:
-        "Create your own Kid Helper project by following the reference image."
+      description: "Create an attractive information page using text, shapes and images.",
+      image: "Project 14.png"
     }
+
   ],
 
+
   "MS Excel": [
+
     {
       id: 1,
       title: "Project 1",
       topic: "Basic Excel",
       description: "Learn rows, columns, cells and basic data entry."
     },
+
     {
       id: 2,
       title: "Project 2",
       topic: "Basic Formulas",
       description: "Practice SUM, AVERAGE, MIN and MAX."
     },
+
     {
       id: 3,
       title: "Project 3",
       topic: "Formatting",
       description: "Format an Excel worksheet professionally."
     }
+
   ],
 
+
   "MS PowerPoint": [
+
     {
       id: 1,
       title: "Project 1",
       topic: "Create a Presentation",
       description: "Create your first PowerPoint presentation."
     },
+
     {
       id: 2,
       title: "Project 2",
       topic: "Design and Formatting",
       description: "Practice themes, pictures, shapes and text."
     }
+
   ],
 
+
   "English": [
+
     {
       id: 1,
       title: "Lesson 1",
       topic: "Basic English",
       description: "Practice basic English words and sentences."
     },
+
     {
       id: 2,
       title: "Lesson 2",
       topic: "Daily Conversation",
       description: "Practice common conversations used in daily life."
     }
+
   ]
+
 };
 
 
-// ==========================================
-// HOME
-// ==========================================
+// ==========================================================
+// HOME PAGE
+// ==========================================================
 
 function showHome() {
 
   const app = document.getElementById("app");
 
   app.innerHTML = `
+
     <div class="hero">
 
-      <h1>Learn & Practice</h1>
+      <h1>
+        Learn & Practice
+      </h1>
 
       <p>
-        Welcome to Joining Hands AI Computer Learning & Practical Lab.
-        Choose a course and start learning through practical projects.
+        Welcome to Joining Hands AI Computer Learning
+        & Practical Lab.
+        Choose a course and start learning through
+        practical projects.
       </p>
 
     </div>
 
-    <h2>Courses</h2>
+
+    <h2>
+      Courses
+    </h2>
+
 
     <div class="grid">
 
@@ -554,14 +238,18 @@ function showHome() {
 
         <div class="course-card">
 
-          <h3>${course}</h3>
+          <h3>
+            ${course}
+          </h3>
 
           <p>
             ${curriculum[course].length}
             practical lessons/projects
           </p>
 
-          <button onclick="showCourse('${course}')">
+          <button
+            onclick="showCourse('${course}')"
+          >
             Start Learning
           </button>
 
@@ -570,27 +258,132 @@ function showHome() {
       `).join("")}
 
     </div>
+
   `;
 }
 
 
-// ==========================================
+// ==========================================================
 // COURSE PAGE
-// ==========================================
+// ==========================================================
 
 function showCourse(course) {
 
   const app = document.getElementById("app");
 
+
+  // --------------------------------------------------------
+  // SPECIAL MS WORD PAGE
+  // --------------------------------------------------------
+
+  if (course === "MS Word") {
+
+    app.innerHTML = `
+
+      <button
+        class="back"
+        onclick="showHome()"
+      >
+        ← Back to Courses
+      </button>
+
+
+      <div class="hero course-hero">
+
+        <h1>
+          MS Word
+        </h1>
+
+        <p>
+          Learn MS Word first and then practice
+          through 14 practical projects.
+        </p>
+
+      </div>
+
+
+      <div class="word-options">
+
+
+        <!-- LEARNING -->
+
+        <div class="word-option-card">
+
+          <div class="option-icon">
+            📚
+          </div>
+
+          <h2>
+            Learning
+          </h2>
+
+          <p>
+            Learn MS Word tabs, tools, formatting,
+            shortcuts and their uses.
+          </p>
+
+          <button
+            onclick="showWordLearning()"
+          >
+            📚 Start Learning
+          </button>
+
+        </div>
+
+
+        <!-- PROJECTS -->
+
+        <div class="word-option-card">
+
+          <div class="option-icon">
+            💻
+          </div>
+
+          <h2>
+            Practical Projects
+          </h2>
+
+          <p>
+            Practice all 14 MS Word practical
+            projects with reference images.
+          </p>
+
+          <button
+            onclick="showWordProjects()"
+          >
+            💻 Start Projects
+          </button>
+
+        </div>
+
+
+      </div>
+
+    `;
+
+    return;
+  }
+
+
+  // --------------------------------------------------------
+  // OTHER COURSES
+  // --------------------------------------------------------
+
   app.innerHTML = `
 
-    <button class="back" onclick="showHome()">
+    <button
+      class="back"
+      onclick="showHome()"
+    >
       ← Back to Courses
     </button>
 
+
     <div class="hero course-hero">
 
-      <h1>${course}</h1>
+      <h1>
+        ${course}
+      </h1>
 
       <p>
         Select a lesson/project to start learning.
@@ -598,15 +391,18 @@ function showCourse(course) {
 
     </div>
 
+
     <div class="lesson-grid compact-grid">
 
       ${curriculum[course].map(item => `
 
         <div class="lesson-card compact-card">
 
+
           ${
             item.image
               ? `
+
                 <div class="project-image">
 
                   <img
@@ -616,31 +412,26 @@ function showCourse(course) {
                   >
 
                 </div>
+
               `
               : ""
           }
+
 
           <h3>
             ${item.title}
           </h3>
 
+
           <p class="project-topic">
             ${item.topic}
           </p>
+
 
           <p class="project-description">
             ${item.description}
           </p>
 
-          ${
-            item.duration
-              ? `
-                <p class="project-duration">
-                  ⏱️ ${item.duration}
-                </p>
-              `
-              : ""
-          }
 
           <button
             onclick="showLesson('${course}', ${item.id})"
@@ -648,46 +439,1380 @@ function showCourse(course) {
             Open Project
           </button>
 
+
         </div>
 
       `).join("")}
 
     </div>
+
   `;
+
 }
 
 
-// ==========================================
+// ==========================================================
+// MS WORD LEARNING PAGE
+// ==========================================================
+
+function showWordLearning() {
+
+  const app = document.getElementById("app");
+
+
+  app.innerHTML = `
+
+    <button
+      class="back"
+      onclick="showCourse('MS Word')"
+    >
+      ← Back to MS Word
+    </button>
+
+
+    <div class="hero course-hero">
+
+      <h1>
+        📚 MS Word Learning
+      </h1>
+
+      <p>
+        Learn MS Word tabs, tools, formatting
+        and keyboard shortcuts.
+      </p>
+
+    </div>
+
+
+    <!-- TAB MENU -->
+
+    <div class="word-tab-menu">
+
+
+      <button
+        class="active-tab"
+        onclick="showWordTab('Home', this)"
+      >
+        🏠 Home
+      </button>
+
+
+      <button
+        onclick="showWordTab('Insert', this)"
+      >
+        ➕ Insert
+      </button>
+
+
+      <button
+        onclick="showWordTab('Design', this)"
+      >
+        🎨 Design
+      </button>
+
+
+      <button
+        onclick="showWordTab('Layout', this)"
+      >
+        📄 Layout
+      </button>
+
+
+      <button
+        onclick="showWordTab('References', this)"
+      >
+        📚 References
+      </button>
+
+
+      <button
+        onclick="showWordTab('Mailings', this)"
+      >
+        ✉️ Mailings
+      </button>
+
+
+      <button
+        onclick="showWordTab('Review', this)"
+      >
+        ✅ Review
+      </button>
+
+
+      <button
+        onclick="showWordTab('View', this)"
+      >
+        👁️ View
+      </button>
+
+
+    </div>
+
+
+    <div id="wordLearningContent">
+
+      ${getHomeTabContent()}
+
+    </div>
+
+  `;
+
+}
+
+
+// ==========================================================
+// WORD TAB SWITCHING
+// ==========================================================
+
+function showWordTab(tab, button) {
+
+
+  document
+    .querySelectorAll(".word-tab-menu button")
+    .forEach(btn => {
+
+      btn.classList.remove("active-tab");
+
+    });
+
+
+  if (button) {
+
+    button.classList.add("active-tab");
+
+  }
+
+
+  const content =
+    document.getElementById("wordLearningContent");
+
+
+  if (!content) {
+    return;
+  }
+
+
+  if (tab === "Home") {
+
+    content.innerHTML =
+      getHomeTabContent();
+
+    return;
+
+  }
+
+
+  content.innerHTML = `
+
+    <div class="learning-content">
+
+
+      <div class="note-section">
+
+        <h2>
+          📚 ${tab} Tab
+        </h2>
+
+
+        <p>
+
+          The learning material for the
+          <strong>${tab}</strong> tab will be added here.
+
+        </p>
+
+
+        <div class="important-note">
+
+          <strong>
+            Coming Soon
+          </strong>
+
+          <p>
+
+            This section is prepared for
+            detailed ${tab} Tab learning,
+            including its image, tools,
+            explanations and practical exercises.
+
+          </p>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+// ==========================================================
+// HOME TAB LEARNING CONTENT
+// ==========================================================
+
+function getHomeTabContent() {
+
+  return `
+
+    <div class="learning-content">
+
+
+      <!-- TITLE -->
+
+      <div class="learning-title">
+
+        <h1>
+          MS Word – Home Tab
+        </h1>
+
+        <p>
+          MS Word Home Tab – सभी महत्वपूर्ण विकल्पों की जानकारी
+        </p>
+
+      </div>
+
+
+      <!-- IMAGE -->
+
+      <div class="learning-image-box">
+
+        <img
+          src="${WORD_HOME_IMAGE}"
+          alt="MS Word Home Tab"
+          class="word-tab-image"
+          onclick="openImage('${WORD_HOME_IMAGE}')"
+        >
+
+        <p>
+          🔍 Click the image to view it larger.
+        </p>
+
+      </div>
+
+
+      <!-- INTRODUCTION -->
+
+      <div class="note-section">
+
+        <h2>
+          📖 Home Tab क्या है?
+        </h2>
+
+
+        <p>
+
+          MS Word का <strong>Home Tab</strong>
+          document में text को type, edit,
+          format और arrange करने के लिए
+          सबसे ज्यादा इस्तेमाल होने वाला tab है।
+
+        </p>
+
+
+        <h3>
+          Home Tab के मुख्य Groups
+        </h3>
+
+
+        <ol>
+
+          <li>
+            Clipboard
+          </li>
+
+          <li>
+            Font
+          </li>
+
+          <li>
+            Paragraph
+          </li>
+
+          <li>
+            Styles
+          </li>
+
+          <li>
+            Editing
+          </li>
+
+        </ol>
+
+      </div>
+
+
+      <!-- CLIPBOARD -->
+
+      <div class="note-section">
+
+        <h2>
+          1️⃣ Clipboard Group
+        </h2>
+
+
+        <p>
+
+          Clipboard का उपयोग content को
+          Copy, Cut और Paste करने के लिए
+          किया जाता है।
+
+        </p>
+
+
+        <div class="tool-grid">
+
+
+          <div class="mini-tool">
+
+            <h3>
+              📋 Paste
+            </h3>
+
+            <p>
+              Cut या Copy किए हुए content को
+              document में insert करता है।
+            </p>
+
+            <strong>
+              Ctrl + V
+            </strong>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              ✂️ Cut
+            </h3>
+
+            <p>
+              Selected content को हटाकर
+              Clipboard में रखता है।
+            </p>
+
+            <strong>
+              Ctrl + X
+            </strong>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              📄 Copy
+            </h3>
+
+            <p>
+              Selected content की copy बनाता है।
+            </p>
+
+            <strong>
+              Ctrl + C
+            </strong>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              🖌️ Format Painter
+            </h3>
+
+            <p>
+              एक text की formatting को
+              दूसरे text पर apply करता है।
+            </p>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <!-- FONT -->
+
+      <div class="note-section">
+
+        <h2>
+          2️⃣ Font Group
+        </h2>
+
+
+        <p>
+
+          Font Group का उपयोग text की
+          appearance और formatting बदलने के
+          लिए किया जाता है।
+
+        </p>
+
+
+        <div class="tool-grid">
+
+
+          <div class="mini-tool">
+
+            <h3>
+              🔤 Font Name
+            </h3>
+
+            <p>
+              Text का font बदलता है।
+            </p>
+
+            <small>
+              Example: Arial, Calibri,
+              Times New Roman
+            </small>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              🔢 Font Size
+            </h3>
+
+            <p>
+              Text का size बदलता है।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              🔼 Increase Font Size
+            </h3>
+
+            <p>
+              Font का आकार बड़ा करता है।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              🔽 Decrease Font Size
+            </h3>
+
+            <p>
+              Font का आकार छोटा करता है।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              🔠 Change Case
+            </h3>
+
+            <p>
+              Text को UPPERCASE,
+              lowercase आदि में बदलता है।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              🧹 Clear All Formatting
+            </h3>
+
+            <p>
+              Text की formatting हटाकर
+              normal text बनाता है।
+            </p>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <!-- TEXT FORMATTING -->
+
+      <div class="note-section">
+
+        <h2>
+          3️⃣ Text Formatting
+        </h2>
+
+
+        <div class="tool-grid">
+
+
+          <div class="mini-tool">
+
+            <h3>
+              <b>Bold</b>
+            </h3>
+
+            <p>
+              Text को मोटा/dark करता है।
+            </p>
+
+            <strong>
+              Ctrl + B
+            </strong>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              <i>Italic</i>
+            </h3>
+
+            <p>
+              Text को तिरछा करता है।
+            </p>
+
+            <strong>
+              Ctrl + I
+            </strong>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              <u>Underline</u>
+            </h3>
+
+            <p>
+              Text के नीचे line लगाता है।
+            </p>
+
+            <strong>
+              Ctrl + U
+            </strong>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Strikethrough
+            </h3>
+
+            <p>
+              Text के बीच में line लगाता है।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Subscript
+            </h3>
+
+            <p>
+              Text को नीचे छोटा करके लिखता है।
+            </p>
+
+            <strong>
+              H₂O
+            </strong>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Superscript
+            </h3>
+
+            <p>
+              Text को ऊपर छोटा करके लिखता है।
+            </p>
+
+            <strong>
+              X²
+            </strong>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Text Highlight Color
+            </h3>
+
+            <p>
+              Text के पीछे highlight color
+              लगाता है।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Font Color
+            </h3>
+
+            <p>
+              Text का color बदलता है।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Text Effects
+            </h3>
+
+            <p>
+              Text पर अलग-अलग visual effects
+              apply करता है।
+            </p>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <!-- PARAGRAPH -->
+
+      <div class="note-section">
+
+        <h2>
+          4️⃣ Paragraph Group
+        </h2>
+
+
+        <div class="tool-grid">
+
+
+          <div class="mini-tool">
+
+            <h3>
+              • Bullets
+            </h3>
+
+            <p>
+              Bullet वाली list बनाने के लिए।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              1. Numbering
+            </h3>
+
+            <p>
+              Number वाली list बनाने के लिए।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Multilevel List
+            </h3>
+
+            <p>
+              अलग-अलग levels वाली list
+              बनाने के लिए।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Increase Indent
+            </h3>
+
+            <p>
+              Paragraph को अंदर shift करता है।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Decrease Indent
+            </h3>
+
+            <p>
+              Paragraph को वापस left side
+              की तरफ लाता है।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Sort
+            </h3>
+
+            <p>
+              Text को A-Z या Z-A order में
+              arrange करता है।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Show/Hide ¶
+            </h3>
+
+            <p>
+              Spaces, paragraph marks और
+              formatting marks दिखाता है।
+            </p>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <!-- ALIGNMENT -->
+
+      <div class="note-section">
+
+        <h2>
+          5️⃣ Text Alignment
+        </h2>
+
+
+        <div class="tool-grid">
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Align Left
+            </h3>
+
+            <p>
+              Text को left side align करता है।
+            </p>
+
+            <strong>
+              Ctrl + L
+            </strong>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Center
+            </h3>
+
+            <p>
+              Text को center में रखता है।
+            </p>
+
+            <strong>
+              Ctrl + E
+            </strong>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Align Right
+            </h3>
+
+            <p>
+              Text को right side align करता है।
+            </p>
+
+            <strong>
+              Ctrl + R
+            </strong>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Justify
+            </h3>
+
+            <p>
+              Text को दोनों margins के
+              साथ align करता है।
+            </p>
+
+            <strong>
+              Ctrl + J
+            </strong>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <!-- SPACING -->
+
+      <div class="note-section">
+
+        <h2>
+          6️⃣ Line & Paragraph Spacing
+        </h2>
+
+
+        <p>
+
+          Lines और paragraphs के बीच की
+          दूरी को control करने के लिए
+          इसका उपयोग किया जाता है।
+
+        </p>
+
+
+        <ul>
+
+          <li>
+            1.0 – Single
+          </li>
+
+          <li>
+            1.15
+          </li>
+
+          <li>
+            1.5 – One and a half
+          </li>
+
+          <li>
+            2.0 – Double
+          </li>
+
+        </ul>
+
+      </div>
+
+
+      <!-- SHADING & BORDER -->
+
+      <div class="note-section">
+
+        <h2>
+          7️⃣ Shading & Borders
+        </h2>
+
+
+        <div class="tool-grid">
+
+
+          <div class="mini-tool">
+
+            <h3>
+              🎨 Shading
+            </h3>
+
+            <p>
+              Paragraph या text के पीछे
+              background color लगाता है।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              ▣ Borders
+            </h3>
+
+            <p>
+              Text या paragraph के चारों
+              ओर border लगाता है।
+            </p>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <!-- STYLES -->
+
+      <div class="note-section">
+
+        <h2>
+          8️⃣ Styles
+        </h2>
+
+
+        <p>
+
+          Styles predefined formatting
+          combinations हैं जिनसे document
+          को जल्दी और professionally
+          format किया जा सकता है।
+
+        </p>
+
+
+        <div class="tool-grid">
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Normal
+            </h3>
+
+            <p>
+              Normal paragraph text के लिए।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              No Spacing
+            </h3>
+
+            <p>
+              Extra paragraph spacing हटाने
+              के लिए।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Heading 1
+            </h3>
+
+            <p>
+              Main heading के लिए।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Heading 2
+            </h3>
+
+            <p>
+              Sub-heading के लिए।
+            </p>
+
+          </div>
+
+
+          <div class="mini-tool">
+
+            <h3>
+              Title
+            </h3>
+
+            <p>
+              Document के main title के लिए।
+            </p>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <!-- SHORTCUTS -->
+
+      <div class="note-section">
+
+        <h2>
+          ⌨️ Important Keyboard Shortcuts
+        </h2>
+
+
+        <div class="shortcut-grid">
+
+
+          <div>
+            Copy
+            <strong>Ctrl + C</strong>
+          </div>
+
+
+          <div>
+            Cut
+            <strong>Ctrl + X</strong>
+          </div>
+
+
+          <div>
+            Paste
+            <strong>Ctrl + V</strong>
+          </div>
+
+
+          <div>
+            Undo
+            <strong>Ctrl + Z</strong>
+          </div>
+
+
+          <div>
+            Save
+            <strong>Ctrl + S</strong>
+          </div>
+
+
+          <div>
+            Select All
+            <strong>Ctrl + A</strong>
+          </div>
+
+
+          <div>
+            Bold
+            <strong>Ctrl + B</strong>
+          </div>
+
+
+          <div>
+            Italic
+            <strong>Ctrl + I</strong>
+          </div>
+
+
+          <div>
+            Underline
+            <strong>Ctrl + U</strong>
+          </div>
+
+
+          <div>
+            Align Left
+            <strong>Ctrl + L</strong>
+          </div>
+
+
+          <div>
+            Center
+            <strong>Ctrl + E</strong>
+          </div>
+
+
+          <div>
+            Align Right
+            <strong>Ctrl + R</strong>
+          </div>
+
+
+          <div>
+            Justify
+            <strong>Ctrl + J</strong>
+          </div>
+
+
+          <div>
+            Find
+            <strong>Ctrl + F</strong>
+          </div>
+
+
+          <div>
+            Print
+            <strong>Ctrl + P</strong>
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <!-- PRACTICE -->
+
+      <div class="practice-box">
+
+        <h2>
+          🧪 Practice Before Starting Projects
+        </h2>
+
+
+        <p>
+
+          पहले MS Word में एक page बनाइए
+          और नीचे दिए गए सभी options को practice कीजिए।
+
+        </p>
+
+
+        <ol>
+
+          <li>
+            एक suitable title लिखें।
+          </li>
+
+          <li>
+            Title Style apply करें।
+          </li>
+
+          <li>
+            Font और Font Size change करें।
+          </li>
+
+          <li>
+            Bold apply करें।
+          </li>
+
+          <li>
+            Italic apply करें।
+          </li>
+
+          <li>
+            Underline apply करें।
+          </li>
+
+          <li>
+            Bullets वाली list बनाएं।
+          </li>
+
+          <li>
+            Numbering वाली list बनाएं।
+          </li>
+
+          <li>
+            Text को Center करें।
+          </li>
+
+          <li>
+            Paragraph को Justify करें।
+          </li>
+
+          <li>
+            Line spacing change करें।
+          </li>
+
+          <li>
+            Text highlight करें।
+          </li>
+
+          <li>
+            Font color change करें।
+          </li>
+
+          <li>
+            Paragraph पर border लगाएं।
+          </li>
+
+          <li>
+            Document को save करें।
+          </li>
+
+        </ol>
+
+      </div>
+
+
+      <!-- PROJECT BUTTON -->
+
+      <div class="learning-next">
+
+        <h2>
+          🎯 अब Practical Projects शुरू करें
+        </h2>
+
+
+        <p>
+
+          Home Tab के basic tools समझने के
+          बाद अब 14 practical projects complete करें।
+
+        </p>
+
+
+        <button
+          onclick="showWordProjects()"
+        >
+          💻 Start 14 Projects
+        </button>
+
+      </div>
+
+
+    </div>
+
+  `;
+
+}
+
+
+// ==========================================================
+// MS WORD PROJECTS PAGE
+// ==========================================================
+
+function showWordProjects() {
+
+  const app = document.getElementById("app");
+
+
+  app.innerHTML = `
+
+    <button
+      class="back"
+      onclick="showCourse('MS Word')"
+    >
+      ← Back to MS Word
+    </button>
+
+
+    <div class="hero course-hero">
+
+      <h1>
+        💻 MS Word Practical Projects
+      </h1>
+
+      <p>
+        Complete all 14 practical projects.
+      </p>
+
+    </div>
+
+
+    <div class="lesson-grid compact-grid">
+
+
+      ${curriculum["MS Word"].map(item => `
+
+        <div class="lesson-card compact-card">
+
+
+          <div class="project-image">
+
+            <img
+              src="${item.image}"
+              alt="${item.title}"
+              onerror="this.style.display='none'"
+            >
+
+          </div>
+
+
+          <h3>
+            ${item.title}
+          </h3>
+
+
+          <p class="project-topic">
+            ${item.topic}
+          </p>
+
+
+          <p class="project-description">
+            ${item.description}
+          </p>
+
+
+          <button
+            onclick="showLesson('MS Word', ${item.id})"
+          >
+            Open Project
+          </button>
+
+
+        </div>
+
+      `).join("")}
+
+
+    </div>
+
+  `;
+
+}
+
+
+// ==========================================================
 // PROJECT PAGE
-// ==========================================
+// ==========================================================
 
 function showLesson(course, id) {
 
+
   const lesson =
-    curriculum[course].find(
-      item => item.id === id
-    );
+    curriculum[course].find(item => item.id === id);
+
 
   if (!lesson) {
 
     alert("Project not found.");
 
     return;
+
   }
+
 
   const app =
     document.getElementById("app");
 
-  const skills =
-    lesson.skills || [];
-
-  const steps =
-    lesson.steps || [
-      "Open the required Microsoft Office application.",
-      "Study the example project carefully.",
-      "Create your own version of the project.",
-      "Check your work and save the completed file."
-    ];
 
   app.innerHTML = `
 
@@ -702,9 +1827,7 @@ function showLesson(course, id) {
     <div class="lesson-content">
 
 
-      <!-- =================================
-           PROJECT HEADER
-      ================================= -->
+      <!-- PROJECT INFORMATION -->
 
       <div class="lesson-header">
 
@@ -720,102 +1843,10 @@ function showLesson(course, id) {
           ${lesson.description}
         </p>
 
-        ${
-          lesson.duration
-            ? `
-              <p>
-                <strong>⏱️ Duration:</strong>
-                ${lesson.duration}
-              </p>
-            `
-            : ""
-        }
-
-        ${
-          lesson.objective
-            ? `
-              <p>
-                <strong>🎯 Objective:</strong>
-                ${lesson.objective}
-              </p>
-            `
-            : ""
-        }
-
       </div>
 
 
-      <!-- =================================
-           LEARN BEFORE YOU START
-      ================================= -->
-
-      ${
-        skills.length > 0
-          ? `
-
-            <div class="practice-instructions">
-
-              <h2>
-                📚 Learn Before You Start
-              </h2>
-
-              <p>
-                Before starting the final project,
-                learn these MS Word skills first:
-              </p>
-
-              <ul>
-
-                ${skills.map(skill => `
-                  <li>
-                    ${skill}
-                  </li>
-                `).join("")}
-
-              </ul>
-
-            </div>
-
-          `
-          : ""
-      }
-
-
-      <!-- =================================
-           QUICK PRACTICE
-      ================================= -->
-
-      ${
-        lesson.miniPractice
-          ? `
-
-            <div class="practice-box">
-
-              <h3>
-                🧪 Quick Practice
-              </h3>
-
-              <p>
-                Try this small exercise before
-                starting the final project.
-              </p>
-
-              <div class="task-box">
-
-                ${lesson.miniPractice}
-
-              </div>
-
-            </div>
-
-          `
-          : ""
-      }
-
-
-      <!-- =================================
-           EXAMPLE PROJECT
-      ================================= -->
+      <!-- EXAMPLE -->
 
       ${
         lesson.image
@@ -824,13 +1855,9 @@ function showLesson(course, id) {
             <div class="example-section">
 
               <h2>
-                👀 Example Project
+                📘 Example Project
               </h2>
 
-              <p>
-                Study this example carefully before
-                creating your own project.
-              </p>
 
               <div class="example-image-container">
 
@@ -843,6 +1870,7 @@ function showLesson(course, id) {
 
               </div>
 
+
               <p class="image-note">
                 🔍 Click the image to view it larger.
               </p>
@@ -854,125 +1882,202 @@ function showLesson(course, id) {
       }
 
 
-      <!-- =================================
-           STEP BY STEP
-      ================================= -->
+      <!-- PRACTICE INSTRUCTIONS -->
 
       <div class="practice-instructions">
 
         <h2>
-          📝 How to Create the Project
+          📝 How to Practice
         </h2>
 
-        ${steps.map((step, index) => `
 
-          <div class="step">
+        <div class="step">
 
-            <strong>
-              Step ${index + 1}:
-            </strong>
+          <strong>
+            Step 1:
+          </strong>
 
-            ${step}
+          Open Microsoft Word on your computer.
 
-          </div>
+        </div>
 
-        `).join("")}
+
+        <div class="step">
+
+          <strong>
+            Step 2:
+          </strong>
+
+          Look carefully at the example shown above.
+
+        </div>
+
+
+        <div class="step">
+
+          <strong>
+            Step 3:
+          </strong>
+
+          Create your own copy of the project
+          in MS Word.
+
+        </div>
+
+
+        <div class="step">
+
+          <strong>
+            Step 4:
+          </strong>
+
+          Try to make your project as similar
+          to the example as possible.
+
+        </div>
+
+
+        <div class="step">
+
+          <strong>
+            Step 5:
+          </strong>
+
+          Save your completed project.
+
+        </div>
+
 
       </div>
 
 
-      <!-- =================================
-           FINAL PROJECT
-      ================================= -->
+      <!-- PRACTICE -->
 
       <div class="practice-box">
 
         <h3>
-          🎯 Final Project
+          🎯 Ready to Practice?
         </h3>
 
-        <p>
-          ${
-            lesson.task ||
-            "Now create your own version of the project."
-          }
-        </p>
 
         <p>
-          <strong>
-            Important:
-          </strong>
-
-          Try to create the project yourself.
-          Do not simply copy the instructions.
+          Create your own copy of this project
+          in Microsoft Word.
         </p>
+
 
         <button
-          class="practice-button"
-          onclick="startPractice()"
+          onclick="startPractice('${course}', ${lesson.id})"
         >
           💻 Start Practice
         </button>
 
+
         <button
           class="help-button"
-          onclick="showHelp('${course}', '${lesson.id}')"
+          onclick="showHelp('${course}', '${lesson.title}')"
         >
           🤖 Ask AI Teacher
         </button>
+
 
       </div>
 
 
     </div>
+
   `;
+
 }
 
 
-// ==========================================
+// ==========================================================
 // START PRACTICE
-// ==========================================
+// ==========================================================
 
-function startPractice() {
+function startPractice(course, id) {
 
-  alert(
+  const lesson =
+    curriculum[course].find(item => item.id === id);
 
-    "Practice Time!\n\n" +
 
-    "1. Open Microsoft Word on your computer.\n" +
+  if (!lesson) {
 
-    "2. Create a new blank document.\n" +
+    alert("Project not found.");
 
-    "3. Keep the example project visible for reference.\n" +
+    return;
 
-    "4. Create your own version of the project.\n" +
+  }
 
-    "5. Try to complete the project yourself.\n" +
 
-    "6. Save your completed work."
+  const confirmed =
+    confirm(
+      "Open Microsoft Word and start this project?\n\n" +
+      lesson.title
+    );
 
-  );
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  openWord();
 
 }
 
 
-// ==========================================
+// ==========================================================
+// OPEN MICROSOFT WORD
+// ==========================================================
+
+function openWord() {
+
+  try {
+
+    window.location.href = "ms-word:";
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+
+  setTimeout(function () {
+
+    alert(
+
+      "Microsoft Word could not be opened automatically.\n\n" +
+
+      "Please open Microsoft Word manually and " +
+
+      "create a new blank document."
+
+    );
+
+  }, 1500);
+
+}
+
+
+// ==========================================================
 // AI HELP MODAL
-// ==========================================
+// ==========================================================
 
 function showHelp(course, project) {
+
 
   const old =
     document.getElementById("helpModal");
 
+
   if (old) {
+
     old.remove();
+
   }
 
-  const lesson =
-    curriculum[course].find(
-      item => item.id == project
-    );
 
   document.body.insertAdjacentHTML(
 
@@ -985,7 +2090,9 @@ function showHelp(course, project) {
       class="help-modal"
     >
 
+
       <div class="help-modal-content">
+
 
         <button
           class="close-help"
@@ -1001,16 +2108,8 @@ function showHelp(course, project) {
 
 
         <p>
-          You are working on:
-          <strong>
-            ${lesson ? lesson.title : "this project"}
-          </strong>
-        </p>
-
-
-        <p>
-          Ask me anything about this project
-          or MS Word.
+          Ask anything about
+          ${escapeHTML(project)}.
         </p>
 
 
@@ -1034,58 +2133,52 @@ function showHelp(course, project) {
 
       </div>
 
+
     </div>
 
     `
+
   );
+
 }
 
 
-// ==========================================
+// ==========================================================
 // CLOSE HELP
-// ==========================================
+// ==========================================================
 
 function closeHelp() {
 
   const modal =
     document.getElementById("helpModal");
 
+
   if (modal) {
+
     modal.remove();
+
   }
 
 }
 
 
-// ==========================================
+// ==========================================================
 // ASK AI TEACHER
-// ==========================================
+// ==========================================================
 
 async function askQuestion(course, project) {
 
+
   const questionElement =
-    document.getElementById(
-      "studentQuestion"
-    );
+    document.getElementById("studentQuestion");
+
 
   const answer =
-    document.getElementById(
-      "helpAnswer"
-    );
+    document.getElementById("helpAnswer");
+
 
   const button =
-    document.getElementById(
-      "askButton"
-    );
-
-
-  if (
-    !questionElement ||
-    !answer ||
-    !button
-  ) {
-    return;
-  }
+    document.getElementById("askButton");
 
 
   const question =
@@ -1107,6 +2200,7 @@ async function askQuestion(course, project) {
     `;
 
     return;
+
   }
 
 
@@ -1135,33 +2229,30 @@ async function askQuestion(course, project) {
 
   try {
 
+
     const response =
-      await fetch(
+      await fetch("/api/ask", {
 
-        "/api/ask",
+        method: "POST",
 
-        {
+        headers: {
 
-          method: "POST",
+          "Content-Type":
+            "application/json"
 
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
+        },
 
-          body: JSON.stringify({
+        body: JSON.stringify({
 
-            question: question,
+          question: question,
 
-            course: course,
+          course: course,
 
-            project: project
+          project: project
 
-          })
+        })
 
-        }
-
-      );
+      });
 
 
     const data =
@@ -1188,9 +2279,7 @@ async function askQuestion(course, project) {
           💡 AI Teacher
         </h3>
 
-        <div
-          class="ai-response"
-        ></div>
+        <div class="ai-response"></div>
 
       </div>
 
@@ -1198,9 +2287,7 @@ async function askQuestion(course, project) {
 
 
     const responseBox =
-      answer.querySelector(
-        ".ai-response"
-      );
+      answer.querySelector(".ai-response");
 
 
     responseBox.textContent =
@@ -1210,7 +2297,9 @@ async function askQuestion(course, project) {
 
   }
 
+
   catch (error) {
+
 
     console.error(
       "AI Teacher Error:",
@@ -1226,11 +2315,11 @@ async function askQuestion(course, project) {
           ❌ AI Teacher Error
         </h3>
 
+
         <p>
-          ${escapeHTML(
-            error.message
-          )}
+          ${escapeHTML(error.message)}
         </p>
+
 
         <p>
           Please try again.
@@ -1251,19 +2340,21 @@ async function askQuestion(course, project) {
 }
 
 
-// ==========================================
+// ==========================================================
 // IMAGE VIEWER
-// ==========================================
+// ==========================================================
 
 function openImage(imageSrc) {
 
+
   const old =
-    document.getElementById(
-      "imageModal"
-    );
+    document.getElementById("imageModal");
+
 
   if (old) {
+
     old.remove();
+
   }
 
 
@@ -1279,70 +2370,81 @@ function openImage(imageSrc) {
       onclick="closeImage()"
     >
 
-      <div
-        class="image-modal-content"
-      >
+
+      <div class="image-modal-content">
+
 
         <img
           src="${imageSrc}"
-          alt="Project Example"
+          alt="Preview"
         >
+
 
         <p>
           Click anywhere to close
         </p>
 
+
       </div>
+
 
     </div>
 
     `
+
   );
+
 }
 
 
-// ==========================================
+// ==========================================================
 // CLOSE IMAGE
-// ==========================================
+// ==========================================================
 
 function closeImage() {
 
+
   const modal =
-    document.getElementById(
-      "imageModal"
-    );
+    document.getElementById("imageModal");
+
 
   if (modal) {
+
     modal.remove();
+
   }
 
 }
 
 
-// ==========================================
+// ==========================================================
 // SECURITY
-// ==========================================
+// ==========================================================
 
 function escapeHTML(text) {
 
+
   const div =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
+
 
   div.textContent =
     text;
+
 
   return div.innerHTML;
 
 }
 
 
-// ==========================================
+// ==========================================================
 // START WEBSITE
-// ==========================================
+// ==========================================================
 
 document.addEventListener(
+
   "DOMContentLoaded",
+
   showHome
+
 );
