@@ -915,3 +915,71 @@ footer {
     padding: 20px;
   }
 }
+/* =========================================
+   FINAL PROJECT IMAGE SIZE FIX
+   ========================================= */
+
+/* Project / Lesson page */
+.lesson-content {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Example image section */
+.example-section {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Image container */
+.example-image-container {
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 10px;
+  background: #f5f7fa;
+  border-radius: 10px;
+  text-align: center;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Actual project image */
+.example-image {
+  display: block;
+  width: auto !important;
+  max-width: 100% !important;
+  max-height: 70vh !important;
+  height: auto !important;
+  object-fit: contain;
+  margin: 0 auto;
+  cursor: zoom-in;
+}
+
+/* Project image on smaller screens */
+@media (max-width: 1200px) {
+  .example-image-container {
+    max-width: 800px;
+  }
+
+  .example-image {
+    max-height: 65vh !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .example-section {
+    padding: 12px;
+  }
+
+  .example-image-container {
+    max-width: 100%;
+    padding: 6px;
+  }
+
+  .example-image {
+    max-height: 60vh !important;
+  }
+}
