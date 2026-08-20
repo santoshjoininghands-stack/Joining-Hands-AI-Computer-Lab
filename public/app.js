@@ -4,85 +4,99 @@ const curriculum = {
       id: 1,
       title: "Project 1",
       topic: "MS Word Practical Project",
-      description: "Complete the project by following the example."
+      description: "Complete the project by following the example.",
+      image: "Project 1.png"
     },
     {
       id: 2,
       title: "Project 2",
       topic: "MS Word Practical Project",
-      description: "Complete the project by following the example."
+      description: "Complete the project by following the example.",
+      image: "Project 2.png"
     },
     {
       id: 3,
       title: "Project 3",
       topic: "MS Word Practical Project",
-      description: "Complete the project by following the example."
+      description: "Complete the project by following the example.",
+      image: "Project 3.png"
     },
     {
       id: 4,
       title: "Project 4",
       topic: "MS Word Practical Project",
-      description: "Complete the project by following the example."
+      description: "Complete the project by following the example.",
+      image: "Project 4.png"
     },
     {
       id: 5,
       title: "Project 5",
       topic: "MS Word Practical Project",
-      description: "Complete the project by following the example."
+      description: "Complete the project by following the example.",
+      image: "Project 5.png"
     },
     {
       id: 6,
       title: "Project 6",
       topic: "MS Word Practical Project",
-      description: "Complete the project by following the example."
+      description: "Complete the project by following the example.",
+      image: "Project 6.png"
     },
     {
       id: 7,
       title: "Project 7",
       topic: "Visitor's Information Sheet",
-      description: "Prepare a visitor's information sheet in MS Word."
+      description: "Prepare a visitor's information sheet in MS Word.",
+      image: "Project 7.png"
     },
     {
       id: 8,
       title: "Project 8",
       topic: "Sales Chart",
-      description: "Create a sales chart using tables and charts."
+      description: "Create a sales chart using tables and charts.",
+      image: "Project 8.png"
     },
     {
       id: 9,
       title: "Project 9",
       topic: "MS Word Practical Project",
-      description: "Complete the project by following the example."
+      description: "Complete the project by following the example.",
+      image: "Project 9.png"
     },
     {
       id: 10,
       title: "Project 10",
       topic: "MS Word Practical Project",
-      description: "Complete the project by following the example."
+      description: "Complete the project by following the example.",
+      image: "Project 10.png"
     },
     {
       id: 11,
       title: "Project 11",
       topic: "MS Word Practical Project",
-      description: "Complete the project by following the example."
+      description: "Complete the project by following the example.",
+      image: "Project 11.png"
     },
     {
       id: 12,
       title: "Project 12",
       topic: "MS Word Practical Project",
-      description: "Complete the project by following the example."
+      description: "Complete the project by following the example.",
+      image: "Project 12.png"
     },
     {
       id: 13,
       title: "Project 13",
       topic: "Education",
-      description: "Create an educational information page using MS Word."
+      description: "Create an educational information page using MS Word.",
+      image: "Project 13.png"
     },
     {
       id: 14,
       title: "Project 14",
       topic: "Kid Helper",
-      description: "Create an attractive information page using text, shapes and images."
+      description: "Create an attractive information page using text, shapes and images.",
+      image: "Project 14.png"
     }
   ],
 
@@ -149,12 +163,14 @@ function showHome() {
 
   app.innerHTML = `
     <div class="hero">
+
       <h1>Learn & Practice</h1>
 
       <p>
         Welcome to Joining Hands AI Computer Learning & Practical Lab.
         Choose a course and start learning through practical projects.
       </p>
+
     </div>
 
     <h2>Courses</h2>
@@ -190,29 +206,46 @@ function showHome() {
 // ==========================================
 
 function showCourse(course) {
+
   const app = document.getElementById("app");
 
   app.innerHTML = `
+
     <button class="back" onclick="showHome()">
       ← Back to Courses
     </button>
 
     <div class="hero course-hero">
+
       <h1>${course}</h1>
-      <p>Select a lesson/project to start learning.</p>
+
+      <p>
+        Select a lesson/project to start learning.
+      </p>
+
     </div>
 
     <div class="lesson-grid compact-grid">
+
       ${curriculum[course].map(item => `
+
         <div class="lesson-card compact-card">
 
-          <div class="project-image">
-            <img
-              src="${item.image || `Project ${item.id}.png`}"
-              alt="${item.title}"
-              onerror="this.style.display='none'"
-            >
-          </div>
+          ${
+            item.image
+              ? `
+                <div class="project-image">
+
+                  <img
+                    src="${item.image}"
+                    alt="${item.title}"
+                    onerror="this.style.display='none'"
+                  >
+
+                </div>
+              `
+              : ""
+          }
 
           <h3>${item.title}</h3>
 
@@ -229,7 +262,9 @@ function showCourse(course) {
           </button>
 
         </div>
+
       `).join("")}
+
     </div>
   `;
 }
@@ -240,84 +275,149 @@ function showCourse(course) {
 // ==========================================
 
 function showLesson(course, id) {
-  const lesson = curriculum[course].find(item => item.id === id);
 
-  const app = document.getElementById("app");
+  const lesson =
+    curriculum[course].find(item => item.id === id);
+
+  if (!lesson) {
+    alert("Project not found.");
+    return;
+  }
+
+  const app =
+    document.getElementById("app");
 
   app.innerHTML = `
-    <button class="back" onclick="showCourse('${course}')">
+
+    <button
+      class="back"
+      onclick="showCourse('${course}')"
+    >
       ← Back to ${course}
     </button>
 
     <div class="lesson-content">
 
+      <!-- PROJECT INFORMATION -->
+
       <div class="lesson-header">
+
         <h1>${lesson.title}</h1>
+
         <h2>${lesson.topic}</h2>
-        <p>${lesson.description}</p>
-      </div>
 
-      <!-- Example Project -->
-      <div class="example-section">
-
-        <h2>📘 Example Project</h2>
-
-        <div class="example-image-container">
-          <img
-            src="${lesson.image || `Project ${lesson.id}.png`}"
-            alt="${lesson.title}"
-            class="example-image"
-          >
-        </div>
+        <p>
+          ${lesson.description}
+        </p>
 
       </div>
 
-      <!-- Practice Instructions -->
+
+      <!-- EXAMPLE -->
+
+      ${
+        lesson.image
+          ? `
+            <div class="example-section">
+
+              <h2>
+                📘 Example Project
+              </h2>
+
+              <div class="example-image-container">
+
+                <img
+                  src="${lesson.image}"
+                  alt="${lesson.title}"
+                  class="example-image"
+                  onclick="openImage('${lesson.image}')"
+                >
+
+              </div>
+
+              <p class="image-note">
+                Click the image to view it larger.
+              </p>
+
+            </div>
+          `
+          : ""
+      }
+
+
+      <!-- PRACTICE INSTRUCTIONS -->
+
       <div class="practice-instructions">
 
-        <h2>📝 How to Practice</h2>
+        <h2>
+          📝 How to Practice
+        </h2>
 
         <div class="step">
+
           <strong>Step 1:</strong>
+
           Open Microsoft Word on your computer.
+
         </div>
 
         <div class="step">
+
           <strong>Step 2:</strong>
-          Look at the example shown above.
+
+          Look carefully at the example shown above.
+
         </div>
 
         <div class="step">
+
           <strong>Step 3:</strong>
+
           Create your own copy of the project in MS Word.
+
         </div>
 
         <div class="step">
+
           <strong>Step 4:</strong>
+
           Try to make your project as similar to the example as possible.
+
         </div>
 
         <div class="step">
+
           <strong>Step 5:</strong>
+
           Save your completed project on your computer.
+
         </div>
 
       </div>
 
-      <!-- Practice -->
+
+      <!-- PRACTICE -->
+
       <div class="practice-box">
 
-        <h3>🎯 Ready to Practice?</h3>
+        <h3>
+          🎯 Ready to Practice?
+        </h3>
 
         <p>
           Create your own copy of this project in Microsoft Word.
         </p>
 
-        <button onclick="startPractice('${course}', ${lesson.id})">
+        <button
+          onclick="startPractice()"
+        >
           💻 Start Practice
         </button>
 
-        <button class="help-button" onclick="openAIHelp('${course}', ${lesson.id})">
+        <button
+          class="help-button"
+          onclick="showHelp('${course}', '${lesson.id}')"
+        >
           🤖 Ask AI Teacher
         </button>
 
@@ -325,6 +425,30 @@ function showLesson(course, id) {
 
     </div>
   `;
+}
+
+
+// ==========================================
+// START PRACTICE
+// ==========================================
+
+function startPractice() {
+
+  const message =
+    "Practice Time!\n\n" +
+
+    "1. Open Microsoft Word on your computer.\n" +
+
+    "2. Create a new blank document.\n" +
+
+    "3. Look at the example project.\n" +
+
+    "4. Create your own copy of the project.\n" +
+
+    "5. Save your work when finished.";
+
+  alert(message);
+
 }
 
 
@@ -340,7 +464,9 @@ function openWord() {
 
     alert(
       "Microsoft Word could not be opened automatically.\n\n" +
+
       "Please open Microsoft Word from your computer " +
+
       "and create a new blank document."
     );
 
@@ -354,45 +480,56 @@ function openWord() {
 
 function showHelp(course, project) {
 
-  const old = document.getElementById("helpModal");
+  const old =
+    document.getElementById("helpModal");
 
   if (old) {
     old.remove();
   }
 
-  document.body.insertAdjacentHTML("beforeend", `
+  document.body.insertAdjacentHTML(
+    "beforeend",
 
-    <div id="helpModal" class="help-modal">
+    `
+
+    <div
+      id="helpModal"
+      class="help-modal"
+    >
 
       <div class="help-modal-content">
 
         <button
           class="close-help"
-          onclick="closeHelp()">
-
+          onclick="closeHelp()"
+        >
           ×
-
         </button>
 
-        <h2>🤖 Ask Your AI Teacher</h2>
+
+        <h2>
+          🤖 Ask Your AI Teacher
+        </h2>
 
         <p>
           Type your question below.
         </p>
+
 
         <textarea
           id="studentQuestion"
           placeholder="Example: How do I insert a table in MS Word?"
         ></textarea>
 
+
         <button
           id="askButton"
           class="ask-button"
-          onclick="askQuestion('${course}', '${project}')">
-
+          onclick="askQuestion('${course}', '${project}')"
+        >
           Ask Question
-
         </button>
+
 
         <div id="helpAnswer"></div>
 
@@ -400,7 +537,8 @@ function showHelp(course, project) {
 
     </div>
 
-  `);
+    `
+  );
 }
 
 
@@ -435,6 +573,10 @@ async function askQuestion(course, project) {
   const button =
     document.getElementById("askButton");
 
+  if (!questionElement || !answer || !button) {
+    return;
+  }
+
   const question =
     questionElement.value.trim();
 
@@ -442,11 +584,15 @@ async function askQuestion(course, project) {
   if (!question) {
 
     answer.innerHTML = `
+
       <div class="help-answer">
+
         <p>
           Please type your question first.
         </p>
+
       </div>
+
     `;
 
     return;
@@ -454,80 +600,110 @@ async function askQuestion(course, project) {
 
 
   button.disabled = true;
-  button.innerText = "⏳ AI Teacher is thinking...";
+
+  button.innerText =
+    "⏳ AI Teacher is thinking...";
+
 
   answer.innerHTML = `
+
     <div class="help-answer">
-      <h3>🤔 AI Teacher</h3>
+
+      <h3>
+        🤔 AI Teacher
+      </h3>
+
       <p>
         Please wait while I prepare the answer...
       </p>
+
     </div>
+
   `;
 
 
   try {
 
-    const response = await fetch("/api/ask", {
+    const response =
+      await fetch("/api/ask", {
 
-      method: "POST",
+        method: "POST",
 
-      headers: {
-        "Content-Type": "application/json"
-      },
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
 
-      body: JSON.stringify({
+        body: JSON.stringify({
 
-        question: question,
+          question: question,
 
-        course: course,
+          course: course,
 
-        project: project
+          project: project
 
-      })
+        })
 
-    });
+      });
 
 
-    const data = await response.json();
+    const data =
+      await response.json();
 
 
     if (!response.ok) {
 
       throw new Error(
-        data.error || "AI Teacher could not answer."
+        data.error ||
+        "AI Teacher could not answer."
       );
 
     }
 
 
     answer.innerHTML = `
+
       <div class="help-answer">
 
-        <h3>💡 AI Teacher</h3>
+        <h3>
+          💡 AI Teacher
+        </h3>
 
         <div class="ai-response"></div>
 
       </div>
+
     `;
 
 
     const responseBox =
-      answer.querySelector(".ai-response");
+      answer.querySelector(
+        ".ai-response"
+      );
+
 
     responseBox.textContent =
-      data.answer || "No answer received.";
+      data.answer ||
+      "No answer received.";
 
 
-  } catch (error) {
+  }
 
-    console.error("AI Teacher Error:", error);
+  catch (error) {
+
+    console.error(
+      "AI Teacher Error:",
+      error
+    );
+
 
     answer.innerHTML = `
 
       <div class="help-answer">
 
-        <h3>❌ AI Teacher Error</h3>
+        <h3>
+          ❌ AI Teacher Error
+        </h3>
 
         <p>
           ${escapeHTML(error.message)}
@@ -545,7 +721,9 @@ async function askQuestion(course, project) {
 
 
   button.disabled = false;
-  button.innerText = "Ask Question";
+
+  button.innerText =
+    "Ask Question";
 
 }
 
@@ -556,16 +734,32 @@ async function askQuestion(course, project) {
 
 function openImage(imageSrc) {
 
-  document.body.insertAdjacentHTML("beforeend", `
+  const old =
+    document.getElementById("imageModal");
+
+  if (old) {
+    old.remove();
+  }
+
+
+  document.body.insertAdjacentHTML(
+
+    "beforeend",
+
+    `
 
     <div
       id="imageModal"
       class="image-modal"
-      onclick="closeImage()">
+      onclick="closeImage()"
+    >
 
       <div class="image-modal-content">
 
-        <img src="${imageSrc}">
+        <img
+          src="${imageSrc}"
+          alt="Project Example"
+        >
 
         <p>
           Click anywhere to close
@@ -575,9 +769,14 @@ function openImage(imageSrc) {
 
     </div>
 
-  `);
+    `
+  );
 }
 
+
+// ==========================================
+// CLOSE IMAGE
+// ==========================================
 
 function closeImage() {
 
@@ -600,7 +799,8 @@ function escapeHTML(text) {
   const div =
     document.createElement("div");
 
-  div.textContent = text;
+  div.textContent =
+    text;
 
   return div.innerHTML;
 
