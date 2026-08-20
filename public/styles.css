@@ -644,3 +644,117 @@ footer {
 .error-message {
   color: #d33;
 }
+/* ================================
+   COMPACT PROJECT DASHBOARD
+================================ */
+
+.course-hero {
+  margin-bottom: 18px;
+  padding: 28px 36px;
+}
+
+.course-hero h1 {
+  font-size: 42px;
+  margin-bottom: 8px;
+}
+
+/* Compact project grid */
+.compact-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 1450px;
+  margin: 0 auto;
+}
+
+/* Project card */
+.compact-card {
+  padding: 14px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Project image */
+.project-image {
+  width: 100%;
+  height: 125px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f7fa;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Project title */
+.compact-card h3 {
+  font-size: 18px;
+  margin: 5px 0 8px;
+}
+
+/* Topic */
+.project-topic {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+/* Description */
+.project-description {
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0 0 12px;
+  flex-grow: 1;
+}
+
+/* Button */
+.compact-card button {
+  width: 100%;
+  padding: 9px 10px;
+  font-size: 14px;
+  border-radius: 7px;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 1300px) {
+  .compact-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 1000px) {
+  .compact-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 750px) {
+  .compact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .course-hero h1 {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .compact-grid {
+    grid-template-columns: 1fr;
+  }
+}
