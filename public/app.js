@@ -7425,3 +7425,931 @@ const wordLearning = {
 
     ]
   },
+// ============================================================
+// END OF MS WORD LEARNING DATA + WEBSITE FUNCTIONS
+// ============================================================
+
+// Close the Layout section and the complete wordLearning object
+  }
+};
+
+
+// ============================================================
+// WEBSITE STATE
+// ============================================================
+
+let currentLanguage = "en";
+let currentScreen = "home";
+let currentTab = null;
+let currentTool = null;
+
+
+// ============================================================
+// MAIN APP
+// ============================================================
+
+const app = document.getElementById("app");
+
+
+// ============================================================
+// BASIC HELPERS
+// ============================================================
+
+function escapeHTML(value) {
+  if (value === undefined || value === null) return "";
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+function getToolText(tool) {
+  return tool[currentLanguage] || tool.en || tool.hi || {};
+}
+
+
+function getLanguageName() {
+  return currentLanguage === "en"
+    ? "English"
+    : "Hindi + English";
+}
+
+
+// ============================================================
+// LANGUAGE BUTTON
+// ============================================================
+
+function languageButton() {
+  return `
+    <button
+      class="language-switch"
+      onclick="toggleLanguage()"
+      type="button"
+    >
+      🌐 ${getLanguageName()}
+    </button>
+  `;
+}
+
+
+function toggleLanguage() {
+  currentLanguage =
+    currentLanguage === "en"
+      ? "hi"
+      : "en";
+
+  renderCurrentScreen();
+}
+
+
+// ============================================================
+// HOME SCREEN
+// ============================================================
+
+function renderHome() {
+
+  currentScreen = "home";
+  currentTab = null;
+  currentTool = null;
+
+  let html = `
+
+    <div class="learning-header">
+
+      <div>
+        <h1>JOINING HANDS</h1>
+
+        <p>
+          AI Computer Learning & Practical Lab
+        </p>
+      </div>
+
+      ${languageButton()}
+
+    </div>
+
+
+    <div class="welcome-card">
+
+      <h2>Computer Learning</h2>
+
+      <p>
+        Learn step-by-step, practice every tool,
+        and complete practical projects.
+      </p>
+
+    </div>
+
+
+    <div class="course-grid">
+  `;
+
+
+  Object.keys(curriculum).forEach(courseName => {
+
+    const projects =
+      curriculum[courseName] || [];
+
+    html += `
+
+      <div class="course-card">
+
+        <div class="course-icon">
+          💻
+        </div>
+
+        <h2>
+          ${escapeHTML(courseName)}
+        </h2>
+
+        <p>
+          ${projects.length}
+          ${courseName === "English" ? "lessons" : "projects"}
+        </p>
+
+        <button
+          class="primary-button"
+          type="button"
+          onclick='openCourse(${JSON.stringify(courseName)})'
+        >
+          Start Course
+        </button>
+
+      </div>
+
+    `;
+  });
+
+
+  html += `
+    </div>
+  `;
+
+
+  app.innerHTML = html;
+}
+
+
+// ============================================================
+// OPEN COURSE
+// ============================================================
+
+function openCourse(courseName) {
+
+  currentScreen = "course";
+
+  if (courseName === "MS Word") {
+
+    renderWordCourse();
+    return;
+  }
+
+
+  const items =
+    curriculum[courseName] || [];
+
+
+  let html = `
+
+    <div class="page-top">
+
+      <button
+        class="back-button"
+        type="button"
+        onclick="renderHome()"
+      >
+        ← Back
+      </button>
+
+      ${languageButton()}
+
+    </div>
+
+
+    <div class="course-title">
+
+      <h1>
+        ${escapeHTML(courseName)}
+      </h1>
+
+      <p>
+        Select a lesson to begin.
+      </p>
+
+    </div>
+
+
+    <div class="project-grid">
+  `;
+
+
+  items.forEach(item => {
+
+    html += `
+
+      <div class="project-card">
+
+        <h3>
+          ${escapeHTML(item.title)}
+        </h3>
+
+        <p>
+          ${escapeHTML(item.topic)}
+        </p>
+
+        <p class="small-text">
+          ${escapeHTML(item.description)}
+        </p>
+
+        <button
+          class="primary-button"
+          type="button"
+          onclick='openProject(${JSON.stringify(courseName)}, ${JSON.stringify(item.id)})'
+        >
+          Open
+        </button>
+
+      </div>
+
+    `;
+  });
+
+
+  html += `
+    </div>
+  `;
+
+
+  app.innerHTML = html;
+}
+
+
+// ============================================================
+// MS WORD COURSE
+// ============================================================
+
+function renderWordCourse() {
+
+  currentScreen = "word-course";
+
+  const tabs =
+    Object.keys(wordLearning);
+
+
+  let html = `
+
+    <div class="page-top">
+
+      <button
+        class="back-button"
+        type="button"
+        onclick="renderHome()"
+      >
+        ← Back
+      </button>
+
+      ${languageButton()}
+
+    </div>
+
+
+    <div class="course-title">
+
+      <h1>
+        MS Word
+      </h1>
+
+      <p>
+        Learn every important MS Word tab
+        step-by-step.
+      </p>
+
+    </div>
+
+
+    <div class="word-learning-card">
+
+      <h2>
+        📚 Learning
+      </h2>
+
+      <p>
+        Select a tab to learn its tools.
+      </p>
+
+      <div class="word-tab-grid">
+  `;
+
+
+  tabs.forEach(tabName => {
+
+    const tab =
+      wordLearning[tabName];
+
+
+    html += `
+
+      <button
+        class="word-tab-card"
+        type="button"
+        onclick='openWordTab(${JSON.stringify(tabName)})'
+      >
+
+        ${
+          tab.image
+            ? `
+              <img
+                src="${escapeHTML(tab.image)}"
+                alt="${escapeHTML(tabName)}"
+                onerror="this.style.display='none'"
+              >
+            `
+            : ""
+        }
+
+        <span>
+          ${escapeHTML(tabName)}
+        </span>
+
+      </button>
+
+    `;
+  });
+
+
+  html += `
+
+      </div>
+
+    </div>
+
+
+    <div class="word-project-section">
+
+      <h2>
+        🛠️ Practical Projects
+      </h2>
+
+      <p>
+        Practice what you learn by completing
+        these projects.
+      </p>
+
+      <div class="project-grid">
+  `;
+
+
+  const projects =
+    curriculum["MS Word"] || [];
+
+
+  projects.forEach(project => {
+
+    html += `
+
+      <div class="project-card">
+
+        <h3>
+          ${escapeHTML(project.title)}
+        </h3>
+
+        <p>
+          ${escapeHTML(project.topic)}
+        </p>
+
+        <p class="small-text">
+          ${escapeHTML(project.description)}
+        </p>
+
+        ${
+          project.image
+            ? `
+              <img
+                class="project-preview"
+                src="${escapeHTML(project.image)}"
+                alt="${escapeHTML(project.title)}"
+                onerror="this.style.display='none'"
+              >
+            `
+            : ""
+        }
+
+        <button
+          class="primary-button"
+          type="button"
+          onclick='openProject("MS Word", ${JSON.stringify(project.id)})'
+        >
+          Open Project
+        </button>
+
+      </div>
+
+    `;
+  });
+
+
+  html += `
+
+      </div>
+
+    </div>
+  `;
+
+
+  app.innerHTML = html;
+}
+
+
+// ============================================================
+// OPEN WORD TAB
+// ============================================================
+
+function openWordTab(tabName) {
+
+  currentScreen = "word-tab";
+  currentTab = tabName;
+
+  const tab =
+    wordLearning[tabName];
+
+
+  if (!tab) {
+
+    renderWordCourse();
+    return;
+  }
+
+
+  let html = `
+
+    <div class="page-top">
+
+      <button
+        class="back-button"
+        type="button"
+        onclick="renderWordCourse()"
+      >
+        ← Back to MS Word
+      </button>
+
+      ${languageButton()}
+
+    </div>
+
+
+    <div class="tab-learning-header">
+
+      ${
+        tab.image
+          ? `
+            <img
+              src="${escapeHTML(tab.image)}"
+              alt="${escapeHTML(tabName)}"
+              class="tab-image"
+              onerror="this.style.display='none'"
+            >
+          `
+          : ""
+      }
+
+      <div>
+
+        <h1>
+          ${escapeHTML(tabName)} Tab
+        </h1>
+
+        <p>
+          Learn the tools step-by-step.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="tools-list">
+  `;
+
+
+  (tab.tools || []).forEach((tool, index) => {
+
+    const text =
+      getToolText(tool);
+
+
+    html += `
+
+      <div class="tool-learning-card">
+
+        <button
+          class="tool-title-button"
+          type="button"
+          onclick="toggleTool(${index})"
+        >
+
+          <span class="tool-icon">
+            ${tool.icon || "▣"}
+          </span>
+
+          <span>
+            ${escapeHTML(tool.name)}
+          </span>
+
+          <span class="tool-arrow">
+            ▼
+          </span>
+
+        </button>
+
+
+        <div
+          id="tool-content-${index}"
+          class="tool-content"
+          style="display:none;"
+        >
+
+          <div class="explanation-block">
+
+            <h3>
+              What does it do?
+            </h3>
+
+            <p>
+              ${escapeHTML(text.what || "")}
+            </p>
+
+          </div>
+
+
+          <div class="explanation-block">
+
+            <h3>
+              When should you use it?
+            </h3>
+
+            <p>
+              ${escapeHTML(text.when || "")}
+            </p>
+
+          </div>
+
+
+          <button
+            class="how-to-button"
+            type="button"
+            onclick="toggleSteps(${index})"
+          >
+            📖 How to use this option
+          </button>
+
+
+          <div
+            id="steps-${index}"
+            class="steps-container"
+            style="display:none;"
+          >
+
+            <h3>
+              Step-by-step
+            </h3>
+
+            <ol>
+  `;
+
+
+    (text.steps || []).forEach(step => {
+
+      html += `
+        <li>
+          ${escapeHTML(step)}
+        </li>
+      `;
+
+    });
+
+
+    html += `
+
+            </ol>
+
+          </div>
+
+
+          ${
+            text.practice
+              ? `
+                <div class="practice-box">
+
+                  <strong>
+                    🎯 Practice Task
+                  </strong>
+
+                  <p>
+                    ${escapeHTML(text.practice)}
+                  </p>
+
+                </div>
+              `
+              : ""
+          }
+
+        </div>
+
+      </div>
+
+    `;
+
+  });
+
+
+  html += `
+
+    </div>
+  `;
+
+
+  app.innerHTML = html;
+}
+
+
+// ============================================================
+// EXPAND / COLLAPSE TOOL
+// ============================================================
+
+function toggleTool(index) {
+
+  const element =
+    document.getElementById(
+      `tool-content-${index}`
+    );
+
+
+  if (!element) return;
+
+
+  if (element.style.display === "none") {
+
+    element.style.display = "block";
+
+  } else {
+
+    element.style.display = "none";
+
+  }
+}
+
+
+// ============================================================
+// EXPAND / COLLAPSE STEPS
+// ============================================================
+
+function toggleSteps(index) {
+
+  const element =
+    document.getElementById(
+      `steps-${index}`
+    );
+
+
+  if (!element) return;
+
+
+  if (element.style.display === "none") {
+
+    element.style.display = "block";
+
+  } else {
+
+    element.style.display = "none";
+
+  }
+}
+
+
+// ============================================================
+// OPEN PRACTICAL PROJECT
+// ============================================================
+
+function openProject(courseName, projectId) {
+
+  currentScreen = "project";
+
+  const projects =
+    curriculum[courseName] || [];
+
+
+  const project =
+    projects.find(
+      item => item.id === Number(projectId)
+    );
+
+
+  if (!project) {
+
+    openCourse(courseName);
+    return;
+  }
+
+
+  let html = `
+
+    <div class="page-top">
+
+      <button
+        class="back-button"
+        type="button"
+        onclick='openCourse(${JSON.stringify(courseName)})'
+      >
+        ← Back
+      </button>
+
+      ${languageButton()}
+
+    </div>
+
+
+    <div class="project-detail">
+
+      <h1>
+        ${escapeHTML(project.title)}
+      </h1>
+
+      <h2>
+        ${escapeHTML(project.topic)}
+      </h2>
+
+      <p>
+        ${escapeHTML(project.description)}
+      </p>
+
+  `;
+
+
+  if (project.image) {
+
+    html += `
+
+      <div class="project-image-container">
+
+        <img
+          src="${escapeHTML(project.image)}"
+          alt="${escapeHTML(project.title)}"
+          class="project-main-image"
+          onerror="this.style.display='none'"
+        >
+
+      </div>
+
+    `;
+  }
+
+
+  html += `
+
+      <div class="project-instructions">
+
+        <h2>
+          How to complete this project
+        </h2>
+
+        <ol>
+
+          <li>
+            Open Microsoft Word.
+          </li>
+
+          <li>
+            Study the example shown above.
+          </li>
+
+          <li>
+            Recreate the document step-by-step.
+          </li>
+
+          <li>
+            Use the Learning section to understand
+            any Word tool you do not know.
+          </li>
+
+          <li>
+            Compare your final document with the example.
+          </li>
+
+        </ol>
+
+      </div>
+
+
+      <div class="project-actions">
+
+        <button
+          class="primary-button"
+          type="button"
+          onclick="openWordCourseLearning()"
+        >
+          📚 Learn MS Word Tools
+        </button>
+
+      </div>
+
+    </div>
+  `;
+
+
+  app.innerHTML = html;
+}
+
+
+// ============================================================
+// PROJECT → WORD LEARNING
+// ============================================================
+
+function openWordCourseLearning() {
+
+  renderWordCourse();
+}
+
+
+// ============================================================
+// RENDER CURRENT SCREEN
+// ============================================================
+
+function renderCurrentScreen() {
+
+  if (currentScreen === "home") {
+
+    renderHome();
+    return;
+  }
+
+
+  if (currentScreen === "word-course") {
+
+    renderWordCourse();
+    return;
+  }
+
+
+  if (currentScreen === "word-tab") {
+
+    if (currentTab) {
+
+      openWordTab(currentTab);
+
+    } else {
+
+      renderWordCourse();
+
+    }
+
+    return;
+  }
+
+
+  renderHome();
+}
+
+
+// ============================================================
+// BASIC BACKUP NAVIGATION
+// ============================================================
+
+window.goHome = function () {
+
+  renderHome();
+
+};
+
+
+// ============================================================
+// MAKE FUNCTIONS AVAILABLE TO HTML
+// ============================================================
+
+window.toggleLanguage = toggleLanguage;
+window.openCourse = openCourse;
+window.openWordTab = openWordTab;
+window.toggleTool = toggleTool;
+window.toggleSteps = toggleSteps;
+window.openProject = openProject;
+window.openWordCourseLearning = openWordCourseLearning;
+window.renderHome = renderHome;
+window.renderWordCourse = renderWordCourse;
+window.renderCurrentScreen = renderCurrentScreen;
+
+
+// ============================================================
+// START WEBSITE
+// ============================================================
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+
+    renderHome();
+
+  }
+);
