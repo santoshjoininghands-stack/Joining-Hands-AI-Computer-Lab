@@ -1,3 +1,8 @@
+/* =========================================================
+   JOINING HANDS
+   MS WORD LEARNING & PRACTICAL LAB
+   ========================================================= */
+
 const state = {
   lang: "en",
   dark: false,
@@ -8,6 +13,11 @@ const state = {
   practicalOpen: false,
   projectId: null
 };
+
+
+/* =========================================================
+   TAB ICONS
+   ========================================================= */
 
 const icons = {
   Home: "🏠",
@@ -20,909 +30,1741 @@ const icons = {
   View: "👁️"
 };
 
+
+/* =========================================================
+   MS WORD LEARNING DATA
+   ========================================================= */
+
 const tabData = {
+
   Home: [
-    ["📋","Paste","Inserts copied or cut content into the document.","Use Paste when you want to place copied text, pictures or other content somewhere else in the document.","Select the content → Copy/Cut → place the cursor → Home → Paste → choose the required paste option.",[
-      "Select the content you want to copy or cut.",
-      "Go to the Home tab.",
-      "Click Paste in the Clipboard group.",
-      "The content is inserted at the cursor position."
-    ]],
 
-    ["✂️","Cut","Removes selected content and places it on the Clipboard.","Use Cut when you want to move text, pictures or other content to another location.","Select the content → Home → Cut → place the cursor at the new location → Paste.",[
-      "Select the content.",
-      "Go to Home → Cut.",
-      "Click the new location.",
-      "Use Paste to insert the content."
-    ]],
+    [
+      "📋",
+      "Paste",
+      "Inserts copied or cut content into the document.",
+      "Use Paste when you want to place copied text, pictures or other content somewhere else in the document.",
+      "Select the content → Copy/Cut → place the cursor → Home → Paste → choose the required paste option.",
+      [
+        "Select the content you want to copy or cut.",
+        "Go to the Home tab.",
+        "Click Paste in the Clipboard group.",
+        "The content is inserted at the cursor position."
+      ]
+    ],
 
-    ["📄","Copy","Creates a duplicate of selected content without removing the original.","Use Copy when the same content is needed in more than one place.","Select content → Home → Copy → place the cursor → Paste.",[
-      "Select the text, image or object.",
-      "Choose Home → Copy.",
-      "Click where the copy should go.",
-      "Choose Paste."
-    ]],
+    [
+      "✂️",
+      "Cut",
+      "Removes selected content and places it on the Clipboard.",
+      "Use Cut when you want to move text, pictures or other content to another location.",
+      "Select the content → Home → Cut → place the cursor at the new location → Paste.",
+      [
+        "Select the content.",
+        "Go to Home → Cut.",
+        "Click the new location.",
+        "Use Paste to insert the content."
+      ]
+    ],
 
-    ["🖌️","Format Painter","Copies formatting from one item and applies it to another.","Use it when two pieces of text should have the same font, size, color, spacing or style.","Select correctly formatted text → Home → Format Painter → select the target text.",[
-      "Select the text whose formatting you want to copy.",
-      "Click Format Painter in the Clipboard group.",
-      "Select or drag over the target text.",
-      "The target receives the same formatting. Double-click Format Painter to reuse it several times."
-    ]],
+    [
+      "📄",
+      "Copy",
+      "Creates a duplicate of selected content without removing the original.",
+      "Use Copy when the same content is needed in more than one place.",
+      "Select content → Home → Copy → place the cursor → Paste.",
+      [
+        "Select the text, image or object.",
+        "Choose Home → Copy.",
+        "Click where the copy should go.",
+        "Choose Paste."
+      ]
+    ],
 
-    ["A","Font","Changes the typeface used by selected text.","Use it to choose a readable or required font such as Arial, Calibri or Times New Roman.","Select text → Home → Font Name box → choose a font.",[
-      "Select the text.",
-      "Open the Font Name list.",
-      "Choose the required font.",
-      "The selected text changes immediately."
-    ]],
+    [
+      "🖌️",
+      "Format Painter",
+      "Copies formatting from one item and applies it to another.",
+      "Use it when two pieces of text should have the same font, size, color, spacing or style.",
+      "Select correctly formatted text → Home → Format Painter → select the target text.",
+      [
+        "Select the text whose formatting you want to copy.",
+        "Click Format Painter in the Clipboard group.",
+        "Select or drag over the target text.",
+        "The target receives the same formatting. Double-click Format Painter to reuse it several times."
+      ]
+    ],
 
-    ["A²","Font Size","Changes the size of selected text.","Use it to make headings larger or body text smaller/larger.","Select text → Home → Font Size → type/select a size.",[
-      "Select the text.",
-      "Open Font Size.",
-      "Choose a size or type a number.",
-      "Press Enter if you typed the size."
-    ]],
+    [
+      "A",
+      "Font",
+      "Changes the typeface used by selected text.",
+      "Use it to choose a readable or required font such as Arial, Calibri or Times New Roman.",
+      "Select text → Home → Font Name box → choose a font.",
+      [
+        "Select the text.",
+        "Open the Font Name list.",
+        "Choose the required font.",
+        "The selected text changes immediately."
+      ]
+    ],
 
-    ["B","Bold","Makes text darker and thicker.","Use Bold to highlight important words, headings or key information.","Select text → Home → Bold, or use Ctrl+B.",[
-      "Select the text.",
-      "Go to Home → Font group.",
-      "Click Bold.",
-      "Click Bold again to remove it."
-    ]],
+    [
+      "A²",
+      "Font Size",
+      "Changes the size of selected text.",
+      "Use it to make headings larger or body text smaller/larger.",
+      "Select text → Home → Font Size → type/select a size.",
+      [
+        "Select the text.",
+        "Open Font Size.",
+        "Choose a size or type a number.",
+        "Press Enter if you typed the size."
+      ]
+    ],
 
-    ["I","Italic","Makes text slanted.","Use Italic to emphasize words, titles, terms or special notes.","Select text → Home → Italic, or Ctrl+I.",[
-      "Select the text.",
-      "Click Italic in the Font group.",
-      "The selected text becomes slanted.",
-      "Click again to turn it off."
-    ]],
+    [
+      "B",
+      "Bold",
+      "Makes text darker and thicker.",
+      "Use Bold to highlight important words, headings or key information.",
+      "Select text → Home → Bold, or use Ctrl+B.",
+      [
+        "Select the text.",
+        "Go to Home → Font group.",
+        "Click Bold.",
+        "Click Bold again to remove it."
+      ]
+    ],
 
-    ["U","Underline","Adds a line underneath selected text.","Use Underline when you want to emphasize important text.","Select text → Home → Underline, or Ctrl+U.",[
-      "Select the text.",
-      "Click Underline.",
-      "The underline is applied.",
-      "Use the drop-down arrow beside Underline for other underline styles."
-    ]],
+    [
+      "I",
+      "Italic",
+      "Makes text slanted.",
+      "Use Italic to emphasize words, titles, terms or special notes.",
+      "Select text → Home → Italic, or Ctrl+I.",
+      [
+        "Select the text.",
+        "Click Italic in the Font group.",
+        "The selected text becomes slanted.",
+        "Click again to turn it off."
+      ]
+    ],
 
-    ["🖍️","Text Highlight","Adds a highlight color behind text.","Use it to mark important words or sentences for study or review.","Select text → Home → Text Highlight Color → choose a color.",[
-      "Select the text.",
-      "Click Text Highlight Color.",
-      "Choose a color.",
-      "The background behind the text is highlighted."
-    ]],
+    [
+      "U",
+      "Underline",
+      "Adds a line underneath selected text.",
+      "Use Underline when you want to emphasize important text.",
+      "Select text → Home → Underline, or Ctrl+U.",
+      [
+        "Select the text.",
+        "Click Underline.",
+        "The underline is applied.",
+        "Use the drop-down arrow beside Underline for other underline styles."
+      ]
+    ],
 
-    ["🎨","Font Color","Changes the color of selected text.","Use it for headings, emphasis or visual organization.","Select text → Home → Font Color → choose a color.",[
-      "Select the text.",
-      "Click the Font Color arrow.",
-      "Choose a color.",
-      "The selected text changes color."
-    ]],
+    [
+      "🖍️",
+      "Text Highlight",
+      "Adds a highlight color behind text.",
+      "Use it to mark important words or sentences for study or review.",
+      "Select text → Home → Text Highlight Color → choose a color.",
+      [
+        "Select the text.",
+        "Click Text Highlight Color.",
+        "Choose a color.",
+        "The background behind the text is highlighted."
+      ]
+    ],
 
-    ["•","Bullets","Creates a bulleted list.","Use bullets when the order of items is not important.","Select lines → Home → Bullets → choose a bullet style.",[
-      "Place the cursor in the list or select existing lines.",
-      "Click Bullets.",
-      "Choose a bullet style if required.",
-      "Press Enter for the next bullet; press Enter twice to finish."
-    ]],
+    [
+      "🎨",
+      "Font Color",
+      "Changes the color of selected text.",
+      "Use it for headings, emphasis or visual organization.",
+      "Select text → Home → Font Color → choose a color.",
+      [
+        "Select the text.",
+        "Click the Font Color arrow.",
+        "Choose a color.",
+        "The selected text changes color."
+      ]
+    ],
 
-    ["1.","Numbering","Creates a numbered list.","Use numbering when items need a sequence or order.","Select lines → Home → Numbering → choose a numbering style.",[
-      "Select the list items or place the cursor at the start.",
-      "Click Numbering.",
-      "Choose a numbering style.",
-      "Press Enter to continue the sequence."
-    ]],
+    [
+      "•",
+      "Bullets",
+      "Creates a bulleted list.",
+      "Use bullets when the order of items is not important.",
+      "Select lines → Home → Bullets → choose a bullet style.",
+      [
+        "Place the cursor in the list or select existing lines.",
+        "Click Bullets.",
+        "Choose a bullet style if required.",
+        "Press Enter for the next bullet; press Enter twice to finish."
+      ]
+    ],
 
-    ["↔","Increase Indent","Moves a paragraph farther from the left margin.","Use it for sub-points or to show hierarchy.","Place the cursor in the paragraph → Home → Increase Indent.",[
-      "Click inside the paragraph.",
-      "Click Increase Indent.",
-      "The paragraph moves inward.",
-      "Click again for a deeper level if needed."
-    ]],
+    [
+      "1.",
+      "Numbering",
+      "Creates a numbered list.",
+      "Use numbering when items need a sequence or order.",
+      "Select lines → Home → Numbering → choose a numbering style.",
+      [
+        "Select the list items or place the cursor at the start.",
+        "Click Numbering.",
+        "Choose a numbering style.",
+        "Press Enter to continue the sequence."
+      ]
+    ],
 
-    ["↔","Decrease Indent","Moves an indented paragraph back toward the left margin.","Use it to reduce indentation or return a sub-point to a higher level.","Click inside the paragraph → Home → Decrease Indent.",[
-      "Click inside the indented paragraph.",
-      "Click Decrease Indent.",
-      "The paragraph moves toward the left margin.",
-      "Repeat if necessary."
-    ]],
+    [
+      "↔",
+      "Increase Indent",
+      "Moves a paragraph farther from the left margin.",
+      "Use it for sub-points or to show hierarchy.",
+      "Place the cursor in the paragraph → Home → Increase Indent.",
+      [
+        "Click inside the paragraph.",
+        "Click Increase Indent.",
+        "The paragraph moves inward.",
+        "Click again for a deeper level if needed."
+      ]
+    ],
 
-    ["≡","Align Left","Aligns text with the left margin.","Use it for normal paragraphs and many documents.","Select text → Home → Align Left or Ctrl+L.",[
-      "Select the paragraph(s).",
-      "Click Align Left.",
-      "The left edges line up.",
-      "Use Ctrl+L as a shortcut."
-    ]],
+    [
+      "↔",
+      "Decrease Indent",
+      "Moves an indented paragraph back toward the left margin.",
+      "Use it to reduce indentation or return a sub-point to a higher level.",
+      "Click inside the paragraph → Home → Decrease Indent.",
+      [
+        "Click inside the indented paragraph.",
+        "Click Decrease Indent.",
+        "The paragraph moves toward the left margin.",
+        "Repeat if necessary."
+      ]
+    ],
 
-    ["≡","Center","Centers text between the margins.","Use it for titles, headings and short centered content.","Select text → Home → Center or Ctrl+E.",[
-      "Select the text.",
-      "Click Center.",
-      "The text moves to the middle.",
-      "Use Ctrl+E as a shortcut."
-    ]],
+    [
+      "≡",
+      "Align Left",
+      "Aligns text with the left margin.",
+      "Use it for normal paragraphs and many documents.",
+      "Select text → Home → Align Left or Ctrl+L.",
+      [
+        "Select the paragraph(s).",
+        "Click Align Left.",
+        "The left edges line up.",
+        "Use Ctrl+L as a shortcut."
+      ]
+    ],
 
-    ["≡","Align Right","Aligns text with the right margin.","Use it for dates, signatures or special layouts.","Select text → Home → Align Right or Ctrl+R.",[
-      "Select the paragraph.",
-      "Click Align Right.",
-      "The right edges line up.",
-      "Use Ctrl+R as a shortcut."
-    ]],
+    [
+      "≡",
+      "Center",
+      "Centers text between the margins.",
+      "Use it for titles, headings and short centered content.",
+      "Select text → Home → Center or Ctrl+E.",
+      [
+        "Select the text.",
+        "Click Center.",
+        "The text moves to the middle.",
+        "Use Ctrl+E as a shortcut."
+      ]
+    ],
 
-    ["☰","Justify","Aligns text evenly to both left and right margins.","Use it for formal reports, assignments and long paragraphs.","Select paragraphs → Home → Justify or Ctrl+J.",[
-      "Select the paragraphs.",
-      "Click Justify.",
-      "Word adjusts spacing so both margins look aligned.",
-      "Use Ctrl+J as a shortcut."
-    ]],
+    [
+      "≡",
+      "Align Right",
+      "Aligns text with the right margin.",
+      "Use it for dates, signatures or special layouts.",
+      "Select text → Home → Align Right or Ctrl+R.",
+      [
+        "Select the paragraph.",
+        "Click Align Right.",
+        "The right edges line up.",
+        "Use Ctrl+R as a shortcut."
+      ]
+    ],
 
-    ["¶","Show/Hide ¶","Shows non-printing formatting marks such as spaces and paragraph marks.","Use it when checking spacing, blank paragraphs, tabs and formatting problems.","Home → Show/Hide ¶.",[
-      "Go to Home → Paragraph group.",
-      "Click Show/Hide ¶.",
-      "Formatting marks become visible.",
-      "Click again to hide them."
-    ]],
+    [
+      "☰",
+      "Justify",
+      "Aligns text evenly to both left and right margins.",
+      "Use it for formal reports, assignments and long paragraphs.",
+      "Select paragraphs → Home → Justify or Ctrl+J.",
+      [
+        "Select the paragraphs.",
+        "Click Justify.",
+        "Word adjusts spacing so both margins look aligned.",
+        "Use Ctrl+J as a shortcut."
+      ]
+    ],
 
-    ["Aa","Change Case","Changes selected text between UPPERCASE, lowercase, Title Case and other cases.","Use it when text was typed with the wrong capitalization.","Select text → Home → Change Case → choose the required case.",[
-      "Select the text.",
-      "Click Change Case.",
-      "Choose UPPERCASE, lowercase, Capitalize Each Word, etc.",
-      "The selected text changes case."
-    ]],
+    [
+      "¶",
+      "Show/Hide ¶",
+      "Shows non-printing formatting marks such as spaces and paragraph marks.",
+      "Use it when checking spacing, blank paragraphs, tabs and formatting problems.",
+      "Home → Show/Hide ¶.",
+      [
+        "Go to Home → Paragraph group.",
+        "Click Show/Hide ¶.",
+        "Formatting marks become visible.",
+        "Click again to hide them."
+      ]
+    ],
 
-    ["✕","Clear All Formatting","Removes direct formatting from selected text.","Use it when text has unwanted font, color, size or style formatting.","Select text → Home → Clear All Formatting.",[
-      "Select the formatted text.",
-      "Click Clear All Formatting.",
-      "Direct formatting is removed.",
-      "The text returns to the document's normal formatting."
-    ]]
+    [
+      "Aa",
+      "Change Case",
+      "Changes selected text between UPPERCASE, lowercase, Title Case and other cases.",
+      "Use it when text was typed with the wrong capitalization.",
+      "Select text → Home → Change Case → choose the required case.",
+      [
+        "Select the text.",
+        "Click Change Case.",
+        "Choose UPPERCASE, lowercase, Capitalize Each Word, etc.",
+        "The selected text changes case."
+      ]
+    ],
+
+    [
+      "✕",
+      "Clear All Formatting",
+      "Removes direct formatting from selected text.",
+      "Use it when text has unwanted font, color, size or style formatting.",
+      "Select text → Home → Clear All Formatting.",
+      [
+        "Select the formatted text.",
+        "Click Clear All Formatting.",
+        "Direct formatting is removed.",
+        "The text returns to the document's normal formatting."
+      ]
+    ]
+
   ],
+
 
   Insert: [
-    ["📄","Cover Page","Adds a ready-made cover page.","Use it for reports, assignments and projects that need a professional first page.","Insert → Cover Page → choose a design → replace the sample information.",[
-      "Open the document.",
-      "Click Insert.",
-      "Choose Cover Page.",
-      "Select a design and replace the title, author and other sample fields."
-    ]],
 
-    ["📃","Blank Page","Adds a new blank page at the cursor position.","Use it when you need a completely empty page for a new section.","Insert → Blank Page.",[
-      "Place the cursor where the new page should begin.",
-      "Click Insert.",
-      "Click Blank Page.",
-      "A new page is inserted."
-    ]],
+    [
+      "📄",
+      "Cover Page",
+      "Adds a ready-made cover page.",
+      "Use it for reports, assignments and projects that need a professional first page.",
+      "Insert → Cover Page → choose a design → replace the sample information.",
+      [
+        "Open the document.",
+        "Click Insert.",
+        "Choose Cover Page.",
+        "Select a design and replace the title, author and other sample fields."
+      ]
+    ],
 
-    ["↵","Page Break","Starts the following content on a new page.","Use it instead of pressing Enter many times to move content to another page.","Insert → Page Break, or Ctrl+Enter.",[
-      "Place the cursor before the content that should start on the next page.",
-      "Click Insert → Page Break.",
-      "The following content moves to a new page.",
-      "Use Ctrl+Enter for the shortcut."
-    ]],
+    [
+      "📃",
+      "Blank Page",
+      "Adds a new blank page at the cursor position.",
+      "Use it when you need a completely empty page for a new section.",
+      "Insert → Blank Page.",
+      [
+        "Place the cursor where the new page should begin.",
+        "Click Insert.",
+        "Click Blank Page.",
+        "A new page is inserted."
+      ]
+    ],
 
-    ["▦","Table","Creates a table using rows and columns.","Use it for marks, attendance, price lists, schedules or structured data.","Insert → Table → choose the grid size or Insert Table → set rows/columns.",[
-      "Place the cursor where the table should go.",
-      "Click Insert → Table.",
-      "Select the required number of columns and rows.",
-      "Click a cell and type your data."
-    ]],
+    [
+      "↵",
+      "Page Break",
+      "Starts the following content on a new page.",
+      "Use it instead of pressing Enter many times to move content to another page.",
+      "Insert → Page Break, or Ctrl+Enter.",
+      [
+        "Place the cursor before the content that should start on the next page.",
+        "Click Insert → Page Break.",
+        "The following content moves to a new page.",
+        "Use Ctrl+Enter for the shortcut."
+      ]
+    ],
 
-    ["🖼️","Pictures","Inserts an image from your computer or supported location.","Use it for diagrams, photos, screenshots, logos and project illustrations.","Insert → Pictures → choose the source → select image → Insert.",[
-      "Click Insert → Pictures.",
-      "Choose the location/source.",
-      "Select the image.",
-      "Click Insert and then use Picture Format to resize or position it."
-    ]],
+    [
+      "▦",
+      "Table",
+      "Creates a table using rows and columns.",
+      "Use it for marks, attendance, price lists, schedules or structured data.",
+      "Insert → Table → choose the grid size or Insert Table → set rows/columns.",
+      [
+        "Place the cursor where the table should go.",
+        "Click Insert → Table.",
+        "Select the required number of columns and rows.",
+        "Click a cell and type your data."
+      ]
+    ],
 
-    ["🔷","Shapes","Adds lines, arrows, rectangles, circles and other shapes.","Use shapes for diagrams, flowcharts, labels and visual explanations.","Insert → Shapes → choose a shape → drag on the page.",[
-      "Click Insert → Shapes.",
-      "Choose a shape.",
-      "Click and drag on the document.",
-      "Use Shape Format to change fill, outline and effects."
-    ]],
+    [
+      "🖼️",
+      "Pictures",
+      "Inserts an image from your computer or supported location.",
+      "Use it for diagrams, photos, screenshots, logos and project illustrations.",
+      "Insert → Pictures → choose the source → select image → Insert.",
+      [
+        "Click Insert → Pictures.",
+        "Choose the location/source.",
+        "Select the image.",
+        "Click Insert and then use Picture Format to resize or position it."
+      ]
+    ],
 
-    ["⭐","Icons","Inserts ready-made icons.","Use icons to make instructions, presentations and documents more visual.","Insert → Icons → search/select an icon → Insert.",[
-      "Click Insert → Icons.",
-      "Search or browse the icon library.",
-      "Select an icon.",
-      "Click Insert and format it as needed."
-    ]],
+    [
+      "🔷",
+      "Shapes",
+      "Adds lines, arrows, rectangles, circles and other shapes.",
+      "Use shapes for diagrams, flowcharts, labels and visual explanations.",
+      "Insert → Shapes → choose a shape → drag on the page.",
+      [
+        "Click Insert → Shapes.",
+        "Choose a shape.",
+        "Click and drag on the document.",
+        "Use Shape Format to change fill, outline and effects."
+      ]
+    ],
 
-    ["🧊","3D Models","Adds a three-dimensional model.","Use it when a 3D object helps explain a concept.","Insert → 3D Models → choose a source/model → Insert.",[
-      "Click Insert → 3D Models.",
-      "Choose the available source.",
-      "Select the model.",
-      "Insert it and use the rotation controls to view it."
-    ]],
+    [
+      "⭐",
+      "Icons",
+      "Inserts ready-made icons.",
+      "Use icons to make instructions, presentations and documents more visual.",
+      "Insert → Icons → search/select an icon → Insert.",
+      [
+        "Click Insert → Icons.",
+        "Search or browse the icon library.",
+        "Select an icon.",
+        "Click Insert and format it as needed."
+      ]
+    ],
 
-    ["✨","SmartArt","Creates visual diagrams such as processes, cycles and hierarchies.","Use it to present information visually instead of using plain paragraphs.","Insert → SmartArt → choose category → choose layout → enter text.",[
-      "Click Insert → SmartArt.",
-      "Choose a category such as Process, List or Hierarchy.",
-      "Select a layout.",
-      "Enter your information in the SmartArt text pane."
-    ]],
+    [
+      "🧊",
+      "3D Models",
+      "Adds a three-dimensional model.",
+      "Use it when a 3D object helps explain a concept.",
+      "Insert → 3D Models → choose a source/model → Insert.",
+      [
+        "Click Insert → 3D Models.",
+        "Choose the available source.",
+        "Select the model.",
+        "Insert it and use the rotation controls to view it."
+      ]
+    ],
 
-    ["📊","Chart","Creates charts from numerical data.","Use charts to visually compare data and show trends.","Insert → Chart → choose chart type → enter data.",[
-      "Click Insert → Chart.",
-      "Choose a chart type.",
-      "An Excel-style data sheet opens.",
-      "Replace the sample data with your own data."
-    ]],
+    [
+      "✨",
+      "SmartArt",
+      "Creates visual diagrams such as processes, cycles and hierarchies.",
+      "Use it to present information visually instead of using plain paragraphs.",
+      "Insert → SmartArt → choose category → choose layout → enter text.",
+      [
+        "Click Insert → SmartArt.",
+        "Choose a category such as Process, List or Hierarchy.",
+        "Select a layout.",
+        "Enter your information in the SmartArt text pane."
+      ]
+    ],
 
-    ["📸","Screenshot","Captures an available window or screen area.","Use it when you need to insert a screenshot into a document.","Insert → Screenshot → choose a window or Screen Clipping.",[
-      "Open the window you want to capture.",
-      "Go to Insert → Screenshot.",
-      "Choose the available window or Screen Clipping.",
-      "The screenshot is inserted into the document."
-    ]],
+    [
+      "📊",
+      "Chart",
+      "Creates charts from numerical data.",
+      "Use charts to visually compare data and show trends.",
+      "Insert → Chart → choose chart type → enter data.",
+      [
+        "Click Insert → Chart.",
+        "Choose a chart type.",
+        "An Excel-style data sheet opens.",
+        "Replace the sample data with your own data."
+      ]
+    ],
 
-    ["🔗","Link","Creates a clickable hyperlink.","Use it to connect text to a website, file, email or location.","Select text → Insert → Link → enter address → OK.",[
-      "Select the text or object.",
-      "Click Insert → Link.",
-      "Enter or select the destination.",
-      "Click OK and test the link."
-    ]],
+    [
+      "📸",
+      "Screenshot",
+      "Captures an available window or screen area.",
+      "Use it when you need to insert a screenshot into a document.",
+      "Insert → Screenshot → choose a window or Screen Clipping.",
+      [
+        "Open the window you want to capture.",
+        "Go to Insert → Screenshot.",
+        "Choose the available window or Screen Clipping.",
+        "The screenshot is inserted into the document."
+      ]
+    ],
 
-    ["🔖","Bookmark","Marks a specific location in a document.","Use it to quickly return to an important location or create internal links.","Insert → Bookmark → name → Add.",[
-      "Place the cursor at the location.",
-      "Click Insert → Bookmark.",
-      "Enter a bookmark name without spaces.",
-      "Click Add."
-    ]],
+    [
+      "🔗",
+      "Link",
+      "Creates a clickable hyperlink.",
+      "Use it to connect text to a website, file, email or location.",
+      "Select text → Insert → Link → enter address → OK.",
+      [
+        "Select the text or object.",
+        "Click Insert → Link.",
+        "Enter or select the destination.",
+        "Click OK and test the link."
+      ]
+    ],
 
-    ["💬","Comment","Adds a comment or note to selected content.","Use it for feedback, review and collaboration.","Select text → Insert → Comment.",[
-      "Select the relevant text.",
-      "Click Insert → Comment.",
-      "Type your comment.",
-      "Post or save the comment."
-    ]],
+    [
+      "🔖",
+      "Bookmark",
+      "Marks a specific location in a document.",
+      "Use it to quickly return to an important location or create internal links.",
+      "Insert → Bookmark → name → Add.",
+      [
+        "Place the cursor at the location.",
+        "Click Insert → Bookmark.",
+        "Enter a bookmark name without spaces.",
+        "Click Add."
+      ]
+    ],
 
-    ["⬆️","Header","Adds content at the top of pages.","Use it for document titles, company names or running information.","Insert → Header → choose a design → enter content.",[
-      "Click Insert → Header.",
-      "Choose a header design.",
-      "Type your header information.",
-      "Close Header and Footer mode."
-    ]],
+    [
+      "💬",
+      "Comment",
+      "Adds a comment or note to selected content.",
+      "Use it for feedback, review and collaboration.",
+      "Select text → Insert → Comment.",
+      [
+        "Select the relevant text.",
+        "Click Insert → Comment.",
+        "Type your comment.",
+        "Post or save the comment."
+      ]
+    ],
 
-    ["⬇️","Footer","Adds content at the bottom of pages.","Use it for contact information, document names or repeated information.","Insert → Footer → choose a design → enter content.",[
-      "Click Insert → Footer.",
-      "Choose a footer design.",
-      "Enter your information.",
-      "Close Header and Footer mode."
-    ]],
+    [
+      "⬆️",
+      "Header",
+      "Adds content at the top of pages.",
+      "Use it for document titles, company names or running information.",
+      "Insert → Header → choose a design → enter content.",
+      [
+        "Click Insert → Header.",
+        "Choose a header design.",
+        "Type your header information.",
+        "Close Header and Footer mode."
+      ]
+    ],
 
-    ["#","Page Number","Adds page numbers to the document.","Use it for reports, assignments and multi-page documents.","Insert → Page Number → choose location and style.",[
-      "Click Insert → Page Number.",
-      "Choose Top of Page, Bottom of Page or another position.",
-      "Choose a numbering style.",
-      "Word inserts page numbers automatically."
-    ]],
+    [
+      "⬇️",
+      "Footer",
+      "Adds content at the bottom of pages.",
+      "Use it for contact information, document names or repeated information.",
+      "Insert → Footer → choose a design → enter content.",
+      [
+        "Click Insert → Footer.",
+        "Choose a footer design.",
+        "Enter your information.",
+        "Close Header and Footer mode."
+      ]
+    ],
 
-    ["🔲","Text Box","Creates a movable box containing text.","Use it for callouts, side notes, labels and special layouts.","Insert → Text Box → choose/draw a box → type text.",[
-      "Click Insert → Text Box.",
-      "Choose a built-in box or Draw Text Box.",
-      "Click and drag if drawing one.",
-      "Type your text and format the box."
-    ]],
+    [
+      "#",
+      "Page Number",
+      "Adds page numbers to the document.",
+      "Use it for reports, assignments and multi-page documents.",
+      "Insert → Page Number → choose location and style.",
+      [
+        "Click Insert → Page Number.",
+        "Choose Top of Page, Bottom of Page or another position.",
+        "Choose a numbering style.",
+        "Word inserts page numbers automatically."
+      ]
+    ],
 
-    ["🎨","WordArt","Creates decorative stylized text.","Use it for titles, posters and visually attractive headings.","Insert → WordArt → choose a style → type text.",[
-      "Click Insert → WordArt.",
-      "Choose a style.",
-      "Type your text.",
-      "Use Shape Format to change its appearance."
-    ]],
+    [
+      "🔲",
+      "Text Box",
+      "Creates a movable box containing text.",
+      "Use it for callouts, side notes, labels and special layouts.",
+      "Insert → Text Box → choose/draw a box → type text.",
+      [
+        "Click Insert → Text Box.",
+        "Choose a built-in box or Draw Text Box.",
+        "Click and drag if drawing one.",
+        "Type your text and format the box."
+      ]
+    ],
 
-    ["⬇️","Drop Cap","Makes the first letter of a paragraph large.","Use it mainly in magazines, newsletters and decorative documents.","Select paragraph → Insert → Drop Cap → choose style.",[
-      "Place the cursor in the paragraph.",
-      "Click Insert → Drop Cap.",
-      "Choose Dropped or In Margin.",
-      "Adjust options if required."
-    ]],
+    [
+      "🎨",
+      "WordArt",
+      "Creates decorative stylized text.",
+      "Use it for titles, posters and visually attractive headings.",
+      "Insert → WordArt → choose a style → type text.",
+      [
+        "Click Insert → WordArt.",
+        "Choose a style.",
+        "Type your text.",
+        "Use Shape Format to change its appearance."
+      ]
+    ],
 
-    ["✍️","Signature Line","Adds a signature placeholder.","Use it when a document needs a formal signature.","Insert → Signature Line → enter signer information → OK.",[
-      "Click Insert → Signature Line.",
-      "Enter the requested signer information.",
-      "Click OK.",
-      "The signature line is inserted."
-    ]],
+    [
+      "⬇️",
+      "Drop Cap",
+      "Makes the first letter of a paragraph large.",
+      "Use it mainly in magazines, newsletters and decorative documents.",
+      "Select paragraph → Insert → Drop Cap → choose style.",
+      [
+        "Place the cursor in the paragraph.",
+        "Click Insert → Drop Cap.",
+        "Choose Dropped or In Margin.",
+        "Adjust options if required."
+      ]
+    ],
 
-    ["📅","Date & Time","Inserts the current date and/or time.","Use it for letters, reports and official documents.","Insert → Date & Time → choose format → OK.",[
-      "Place the cursor where the date/time should appear.",
-      "Click Insert → Date & Time.",
-      "Choose the desired format.",
-      "Click OK."
-    ]],
+    [
+      "✍️",
+      "Signature Line",
+      "Adds a signature placeholder.",
+      "Use it when a document needs a formal signature.",
+      "Insert → Signature Line → enter signer information → OK.",
+      [
+        "Click Insert → Signature Line.",
+        "Enter the requested signer information.",
+        "Click OK.",
+        "The signature line is inserted."
+      ]
+    ],
 
-    ["∑","Equation","Inserts mathematical equations and symbols.","Use it for mathematical, scientific and engineering documents.","Insert → Equation → choose a structure or type an equation.",[
-      "Click Insert → Equation.",
-      "Choose a built-in equation or create a new one.",
-      "Enter the mathematical expression.",
-      "Use Equation tools to format it."
-    ]],
+    [
+      "📅",
+      "Date & Time",
+      "Inserts the current date and/or time.",
+      "Use it for letters, reports and official documents.",
+      "Insert → Date & Time → choose format → OK.",
+      [
+        "Place the cursor where the date/time should appear.",
+        "Click Insert → Date & Time.",
+        "Choose the desired format.",
+        "Click OK."
+      ]
+    ],
 
-    ["Ω","Symbol","Inserts special characters and symbols.","Use it for characters not available directly on the keyboard.","Insert → Symbol → choose a symbol → Insert.",[
-      "Place the cursor where the symbol should go.",
-      "Click Insert → Symbol.",
-      "Choose a symbol or More Symbols.",
-      "Click Insert."
-    ]]
+    [
+      "∑",
+      "Equation",
+      "Inserts mathematical equations and symbols.",
+      "Use it for mathematical, scientific and engineering documents.",
+      "Insert → Equation → choose a structure or type an equation.",
+      [
+        "Click Insert → Equation.",
+        "Choose a built-in equation or create a new one.",
+        "Enter the mathematical expression.",
+        "Use Equation tools to format it."
+      ]
+    ],
+
+    [
+      "Ω",
+      "Symbol",
+      "Inserts special characters and symbols.",
+      "Use it for characters not available directly on the keyboard.",
+      "Insert → Symbol → choose a symbol → Insert.",
+      [
+        "Place the cursor where the symbol should go.",
+        "Click Insert → Symbol.",
+        "Choose a symbol or More Symbols.",
+        "Click Insert."
+      ]
+    ]
+
   ],
+
 
   Design: [
-    ["🎨","Themes","Applies a coordinated visual theme to the document.","Use it when you want a consistent professional design.","Design → Themes → choose a theme.",[
-      "Open Design.",
-      "Click Themes.",
-      "Preview the available designs.",
-      "Choose the theme you want."
-    ]],
 
-    ["🌈","Colors","Changes the theme color palette.","Use it to quickly coordinate headings, shapes and accents.","Design → Colors → choose a color set.",[
-      "Open Design → Colors.",
-      "Preview a palette.",
-      "Choose the color set.",
-      "The document theme colors update."
-    ]],
+    [
+      "🎨",
+      "Themes",
+      "Applies a coordinated visual theme to the document.",
+      "Use it when you want a consistent professional design.",
+      "Design → Themes → choose a theme.",
+      [
+        "Open Design.",
+        "Click Themes.",
+        "Preview the available designs.",
+        "Choose the theme you want."
+      ]
+    ],
 
-    ["🔤","Fonts","Changes the theme font pairing.","Use it to give the whole document consistent typography.","Design → Fonts → choose a font set.",[
-      "Open Design → Fonts.",
-      "Preview font combinations.",
-      "Choose a set.",
-      "Theme-linked headings and body text update."
-    ]],
+    [
+      "🌈",
+      "Colors",
+      "Changes the theme color palette.",
+      "Use it to quickly coordinate headings, shapes and accents.",
+      "Design → Colors → choose a color set.",
+      [
+        "Open Design → Colors.",
+        "Preview a palette.",
+        "Choose the color set.",
+        "The document theme colors update."
+      ]
+    ],
 
-    ["💧","Watermark","Places faint text or an image behind page content.","Use it for Draft, Confidential, Sample, Approved or branding.","Design → Watermark → choose preset or Custom Watermark.",[
-      "Open the Design tab.",
-      "Click Watermark.",
-      "Choose a preset watermark OR click Custom Watermark.",
-      "Choose Text watermark or Picture watermark and set the required options.",
-      "Click Apply/OK.",
-      "The watermark appears behind the document content."
-    ]],
+    [
+      "🔤",
+      "Fonts",
+      "Changes the theme font pairing.",
+      "Use it to give the whole document consistent typography.",
+      "Design → Fonts → choose a font set.",
+      [
+        "Open Design → Fonts.",
+        "Preview font combinations.",
+        "Choose a set.",
+        "Theme-linked headings and body text update."
+      ]
+    ],
 
-    ["🎨","Page Color","Changes the page background color.","Use it for visual worksheets or digital documents.","Design → Page Color.",[
-      "Click Design → Page Color.",
-      "Choose a color.",
-      "Use More Colors if required.",
-      "Check readability and printing requirements."
-    ]],
+    [
+      "💧",
+      "Watermark",
+      "Places faint text or an image behind page content.",
+      "Use it for Draft, Confidential, Sample, Approved or branding.",
+      "Design → Watermark → choose preset or Custom Watermark.",
+      [
+        "Open the Design tab.",
+        "Click Watermark.",
+        "Choose a preset watermark OR click Custom Watermark.",
+        "Choose Text watermark or Picture watermark and set the required options.",
+        "Click Apply/OK.",
+        "The watermark appears behind the document content."
+      ]
+    ],
 
-    ["▣","Page Borders","Adds a border around pages.","Use it for certificates, invitations and decorative pages.","Design → Page Borders.",[
-      "Click Design → Page Borders.",
-      "Choose Box, Shadow or another border setting.",
-      "Choose style, color and width.",
-      "Select Apply to and click OK."
-    ]]
+    [
+      "🎨",
+      "Page Color",
+      "Changes the page background color.",
+      "Use it for visual worksheets or digital documents.",
+      "Design → Page Color.",
+      [
+        "Click Design → Page Color.",
+        "Choose a color.",
+        "Use More Colors if required.",
+        "Check readability and printing requirements."
+      ]
+    ],
+
+    [
+      "▣",
+      "Page Borders",
+      "Adds a border around pages.",
+      "Use it for certificates, invitations and decorative pages.",
+      "Design → Page Borders.",
+      [
+        "Click Design → Page Borders.",
+        "Choose Box, Shadow or another border setting.",
+        "Choose style, color and width.",
+        "Select Apply to and click OK."
+      ]
+    ]
+
   ],
+
 
   Layout: [
-    ["📏","Margins","Sets the blank space around the page.","Use it when preparing assignments, reports or documents for printing.","Layout → Margins → choose preset or Custom Margins.",[
-      "Open Layout.",
-      "Click Margins.",
-      "Choose Normal, Narrow, Wide or another preset.",
-      "For custom values, choose Custom Margins and enter Top, Bottom, Left and Right values."
-    ]],
 
-    ["↔️","Orientation","Changes the page between Portrait and Landscape.","Use Landscape for wide tables, charts and documents.","Layout → Orientation → Portrait or Landscape.",[
-      "Open Layout.",
-      "Click Orientation.",
-      "Choose Portrait or Landscape.",
-      "The page orientation changes."
-    ]],
+    [
+      "📏",
+      "Margins",
+      "Sets the blank space around the page.",
+      "Use it when preparing assignments, reports or documents for printing.",
+      "Layout → Margins → choose preset or Custom Margins.",
+      [
+        "Open Layout.",
+        "Click Margins.",
+        "Choose Normal, Narrow, Wide or another preset.",
+        "For custom values, choose Custom Margins and enter Top, Bottom, Left and Right values."
+      ]
+    ],
 
-    ["📄","Size","Changes the paper size.","Use it when a document must follow a specific paper standard such as A4 or Letter.","Layout → Size → choose paper size.",[
-      "Open Layout.",
-      "Click Size.",
-      "Choose A4, Letter, Legal or another available size.",
-      "The page size changes."
-    ]],
+    [
+      "↔️",
+      "Orientation",
+      "Changes the page between Portrait and Landscape.",
+      "Use Landscape for wide tables, charts and documents.",
+      "Layout → Orientation → Portrait or Landscape.",
+      [
+        "Open Layout.",
+        "Click Orientation.",
+        "Choose Portrait or Landscape.",
+        "The page orientation changes."
+      ]
+    ],
 
-    ["▤","Columns","Divides text into multiple columns.","Use it for newsletters, brochures and newspaper-style layouts.","Layout → Columns → choose number of columns.",[
-      "Select the text if only part of the document should use columns.",
-      "Open Layout → Columns.",
-      "Choose Two, Three or another option.",
-      "The selected text or document is arranged into columns."
-    ]],
+    [
+      "📄",
+      "Size",
+      "Changes the paper size.",
+      "Use it when a document must follow a specific paper standard such as A4 or Letter.",
+      "Layout → Size → choose paper size.",
+      [
+        "Open Layout.",
+        "Click Size.",
+        "Choose A4, Letter, Legal or another available size.",
+        "The page size changes."
+      ]
+    ],
 
-    ["↪️","Breaks","Adds page, section or column breaks.","Use it when different sections need different layouts or when content must start at a controlled point.","Layout → Breaks.",[
-      "Place the cursor where the break should occur.",
-      "Click Layout → Breaks.",
-      "Choose Page Break, Column Break or a Section Break.",
-      "Continue editing the new section."
-    ]],
+    [
+      "▤",
+      "Columns",
+      "Divides text into multiple columns.",
+      "Use it for newsletters, brochures and newspaper-style layouts.",
+      "Layout → Columns → choose number of columns.",
+      [
+        "Select the text if only part of the document should use columns.",
+        "Open Layout → Columns.",
+        "Choose Two, Three or another option.",
+        "The selected text or document is arranged into columns."
+      ]
+    ],
 
-    ["🔢","Line Numbers","Adds numbers beside lines of text.","Use it for legal documents, scripts, coding notes and review work.","Layout → Line Numbers.",[
-      "Open Layout.",
-      "Click Line Numbers.",
-      "Choose Continuous, Restart Each Page or another option.",
-      "Line numbers appear beside the document text."
-    ]],
+    [
+      "↪️",
+      "Breaks",
+      "Adds page, section or column breaks.",
+      "Use it when different sections need different layouts or when content must start at a controlled point.",
+      "Layout → Breaks.",
+      [
+        "Place the cursor where the break should occur.",
+        "Click Layout → Breaks.",
+        "Choose Page Break, Column Break or a Section Break.",
+        "Continue editing the new section."
+      ]
+    ],
 
-    ["↔️","Indent","Controls the left and right paragraph indentation.","Use it to structure paragraphs and create professional layouts.","Layout → Paragraph → set Left and Right indent values.",[
-      "Select the paragraph(s).",
-      "Open Layout → Paragraph.",
-      "Set Left and Right indent values.",
-      "Review the paragraph position."
-    ]],
+    [
+      "🔢",
+      "Line Numbers",
+      "Adds numbers beside lines of text.",
+      "Use it for legal documents, scripts, coding notes and review work.",
+      "Layout → Line Numbers.",
+      [
+        "Open Layout.",
+        "Click Line Numbers.",
+        "Choose Continuous, Restart Each Page or another option.",
+        "Line numbers appear beside the document text."
+      ]
+    ],
 
-    ["↕️","Spacing","Controls the space before and after paragraphs.","Use it to improve readability and document structure.","Layout → Paragraph → Before/After spacing.",[
-      "Select the paragraph(s).",
-      "Open Layout → Paragraph.",
-      "Set Before and After spacing.",
-      "Review the distance between paragraphs."
-    ]],
+    [
+      "↔️",
+      "Indent",
+      "Controls the left and right paragraph indentation.",
+      "Use it to structure paragraphs and create professional layouts.",
+      "Layout → Paragraph → set Left and Right indent values.",
+      [
+        "Select the paragraph(s).",
+        "Open Layout → Paragraph.",
+        "Set Left and Right indent values.",
+        "Review the paragraph position."
+      ]
+    ],
 
-    ["📍","Position","Controls the position of a selected object.","Use it when placing pictures, shapes or other floating objects.","Select object → Layout → Position → choose a position.",[
-      "Select the picture or object.",
-      "Open Layout.",
-      "Click Position.",
-      "Choose the desired placement."
-    ]],
+    [
+      "↕️",
+      "Spacing",
+      "Controls the space before and after paragraphs.",
+      "Use it to improve readability and document structure.",
+      "Layout → Paragraph → Before/After spacing.",
+      [
+        "Select the paragraph(s).",
+        "Open Layout → Paragraph.",
+        "Set Before and After spacing.",
+        "Review the distance between paragraphs."
+      ]
+    ],
 
-    ["🔲","Wrap Text","Controls how text flows around an object.","Use it when a picture or shape needs text beside, above or below it.","Select object → Layout → Wrap Text → choose option.",[
-      "Select the object.",
-      "Click Wrap Text.",
-      "Choose Square, Tight, Behind Text, In Front of Text or another option.",
-      "Move the object and check how the text flows around it."
-    ]],
+    [
+      "📍",
+      "Position",
+      "Controls the position of a selected object.",
+      "Use it when placing pictures, shapes or other floating objects.",
+      "Select object → Layout → Position → choose a position.",
+      [
+        "Select the picture or object.",
+        "Open Layout.",
+        "Click Position.",
+        "Choose the desired placement."
+      ]
+    ],
 
-    ["⬆️","Bring Forward","Moves an object in front of another object.","Use it when objects overlap and one needs to appear above another.","Select object → Layout → Bring Forward.",[
-      "Select the object.",
-      "Open Layout → Bring Forward.",
-      "Choose Bring Forward or Bring to Front.",
-      "Check the stacking order."
-    ]],
+    [
+      "🔲",
+      "Wrap Text",
+      "Controls how text flows around an object.",
+      "Use it when a picture or shape needs text beside, above or below it.",
+      "Select object → Layout → Wrap Text → choose option.",
+      [
+        "Select the object.",
+        "Click Wrap Text.",
+        "Choose Square, Tight, Behind Text, In Front of Text or another option.",
+        "Move the object and check how the text flows around it."
+      ]
+    ],
 
-    ["⬇️","Send Backward","Moves an object behind another object.","Use it when an image or shape should sit behind another object.","Select object → Layout → Send Backward.",[
-      "Select the object.",
-      "Open Layout → Send Backward.",
-      "Choose Send Backward or Send to Back.",
-      "Check the stacking order."
-    ]],
+    [
+      "⬆️",
+      "Bring Forward",
+      "Moves an object in front of another object.",
+      "Use it when objects overlap and one needs to appear above another.",
+      "Select object → Layout → Bring Forward.",
+      [
+        "Select the object.",
+        "Open Layout → Bring Forward.",
+        "Choose Bring Forward or Bring to Front.",
+        "Check the stacking order."
+      ]
+    ],
 
-    ["📋","Selection Pane","Shows and manages objects in the document.","Use it when many pictures, shapes or objects overlap.","Layout → Selection Pane.",[
-      "Open Layout.",
-      "Click Selection Pane.",
-      "Use the list to select, hide or rename objects.",
-      "Arrange objects more easily from the pane."
-    ]],
+    [
+      "⬇️",
+      "Send Backward",
+      "Moves an object behind another object.",
+      "Use it when an image or shape should sit behind another object.",
+      "Select object → Layout → Send Backward.",
+      [
+        "Select the object.",
+        "Open Layout → Send Backward.",
+        "Choose Send Backward or Send to Back.",
+        "Check the stacking order."
+      ]
+    ],
 
-    ["↔️","Align","Aligns objects relative to each other or the page.","Use it for clean diagrams and professional layouts.","Select multiple objects → Layout → Align → choose alignment.",[
-      "Select two or more objects.",
-      "Open Layout → Align.",
-      "Choose Left, Center, Right, Top, Middle or Bottom.",
-      "Use Align to Page or Align Selected Objects as needed."
-    ]],
+    [
+      "📋",
+      "Selection Pane",
+      "Shows and manages objects in the document.",
+      "Use it when many pictures, shapes or objects overlap.",
+      "Layout → Selection Pane.",
+      [
+        "Open Layout.",
+        "Click Selection Pane.",
+        "Use the list to select, hide or rename objects.",
+        "Arrange objects more easily from the pane."
+      ]
+    ],
 
-    ["🔗","Group","Combines multiple objects into one movable group.","Use it when several shapes or pictures should move together.","Select objects → Layout → Group → Group.",[
-      "Select multiple objects.",
-      "Open Layout → Group.",
-      "Choose Group.",
-      "The objects now move and resize together."
-    ]],
+    [
+      "↔️",
+      "Align",
+      "Aligns objects relative to each other or the page.",
+      "Use it for clean diagrams and professional layouts.",
+      "Select multiple objects → Layout → Align → choose alignment.",
+      [
+        "Select two or more objects.",
+        "Open Layout → Align.",
+        "Choose Left, Center, Right, Top, Middle or Bottom.",
+        "Use Align to Page or Align Selected Objects as needed."
+      ]
+    ],
 
-    ["🔄","Rotate","Rotates or flips a selected object.","Use it to change the direction of pictures, shapes and diagrams.","Select object → Layout → Rotate.",[
-      "Select the object.",
-      "Open Layout → Rotate.",
-      "Choose Rotate Right, Rotate Left or Flip.",
-      "Check the final orientation."
-    ]]
+    [
+      "🔗",
+      "Group",
+      "Combines multiple objects into one movable group.",
+      "Use it when several shapes or pictures should move together.",
+      "Select objects → Layout → Group → Group.",
+      [
+        "Select multiple objects.",
+        "Open Layout → Group.",
+        "Choose Group.",
+        "The objects now move and resize together."
+      ]
+    ],
+
+    [
+      "🔄",
+      "Rotate",
+      "Rotates or flips a selected object.",
+      "Use it to change the direction of pictures, shapes and diagrams.",
+      "Select object → Layout → Rotate.",
+      [
+        "Select the object.",
+        "Open Layout → Rotate.",
+        "Choose Rotate Right, Rotate Left or Flip.",
+        "Check the final orientation."
+      ]
+    ]
+
   ],
+
 
   References: [
-    ["📑","Table of Contents","Creates a table of contents from document headings.","Use it in reports, projects, books and long documents.","References → Table of Contents → choose a style.",[
-      "Apply Heading 1, Heading 2 and other heading styles.",
-      "Open References.",
-      "Click Table of Contents.",
-      "Choose an automatic style."
-    ]],
 
-    ["📝","Footnotes","Adds notes at the bottom of a page.","Use it to explain information or provide a source without interrupting the main text.","References → Insert Footnote.",[
-      "Place the cursor after the relevant text.",
-      "Click References → Insert Footnote.",
-      "Type the note at the bottom of the page.",
-      "Word numbers the footnote automatically."
-    ]],
+    [
+      "📑",
+      "Table of Contents",
+      "Creates a table of contents from document headings.",
+      "Use it in reports, projects, books and long documents.",
+      "References → Table of Contents → choose a style.",
+      [
+        "Apply Heading 1, Heading 2 and other heading styles.",
+        "Open References.",
+        "Click Table of Contents.",
+        "Choose an automatic style."
+      ]
+    ],
 
-    ["📚","Citations & Bibliography","Adds source citations and creates a bibliography.","Use it for academic reports and research documents.","References → Insert Citation → Add New Source → Bibliography.",[
-      "Open References.",
-      "Choose a citation style.",
-      "Click Insert Citation → Add New Source.",
-      "Enter source details and insert the citation."
-    ]],
+    [
+      "📝",
+      "Footnotes",
+      "Adds notes at the bottom of a page.",
+      "Use it to explain information or provide a source without interrupting the main text.",
+      "References → Insert Footnote.",
+      [
+        "Place the cursor after the relevant text.",
+        "Click References → Insert Footnote.",
+        "Type the note at the bottom of the page.",
+        "Word numbers the footnote automatically."
+      ]
+    ],
 
-    ["🏷️","Captions","Adds labels to pictures, tables and other items.","Use it when figures and tables need numbered labels.","References → Insert Caption.",[
-      "Select the picture, table or object.",
-      "Click References → Insert Caption.",
-      "Choose the label such as Figure or Table.",
-      "Enter the caption and click OK."
-    ]],
+    [
+      "📚",
+      "Citations & Bibliography",
+      "Adds source citations and creates a bibliography.",
+      "Use it for academic reports and research documents.",
+      "References → Insert Citation → Add New Source → Bibliography.",
+      [
+        "Open References.",
+        "Choose a citation style.",
+        "Click Insert Citation → Add New Source.",
+        "Enter source details and insert the citation."
+      ]
+    ],
 
-    ["🔎","Cross-reference","Creates references to headings, figures, tables or numbered items.","Use it in long documents where references may change.","References → Cross-reference.",[
-      "Place the cursor where the reference should appear.",
-      "Click Cross-reference.",
-      "Choose the reference type.",
-      "Select the item and click Insert."
-    ]],
+    [
+      "🏷️",
+      "Captions",
+      "Adds labels to pictures, tables and other items.",
+      "Use it when figures and tables need numbered labels.",
+      "References → Insert Caption.",
+      [
+        "Select the picture, table or object.",
+        "Click References → Insert Caption.",
+        "Choose the label such as Figure or Table.",
+        "Enter the caption and click OK."
+      ]
+    ],
 
-    ["🔤","Index","Creates an alphabetical index of important terms.","Use it in books, manuals and long reference documents.","References → Mark Entry → Insert Index.",[
-      "Select an important word.",
-      "Click Mark Entry.",
-      "Mark the required terms throughout the document.",
-      "Click Insert Index to create the index."
-    ]]
+    [
+      "🔎",
+      "Cross-reference",
+      "Creates references to headings, figures, tables or numbered items.",
+      "Use it in long documents where references may change.",
+      "References → Cross-reference.",
+      [
+        "Place the cursor where the reference should appear.",
+        "Click Cross-reference.",
+        "Choose the reference type.",
+        "Select the item and click Insert."
+      ]
+    ],
+
+    [
+      "🔤",
+      "Index",
+      "Creates an alphabetical index of important terms.",
+      "Use it in books, manuals and long reference documents.",
+      "References → Mark Entry → Insert Index.",
+      [
+        "Select an important word.",
+        "Click Mark Entry.",
+        "Mark the required terms throughout the document.",
+        "Click Insert Index to create the index."
+      ]
+    ]
+
   ],
+
 
   Mailings: [
-    ["✉️","Envelopes","Creates and prints envelopes.","Use it when preparing physical mail.","Mailings → Envelopes.",[
-      "Open Mailings.",
-      "Click Envelopes.",
-      "Enter delivery and return addresses.",
-      "Choose printing options and click Print or Add to Document."
-    ]],
 
-    ["🏷️","Labels","Creates printable address or product labels.","Use it for mailing labels, name labels or product labels.","Mailings → Labels.",[
-      "Click Mailings → Labels.",
-      "Enter the label information.",
-      "Choose the label vendor and product number if needed.",
-      "Click Print or New Document."
-    ]],
+    [
+      "✉️",
+      "Envelopes",
+      "Creates and prints envelopes.",
+      "Use it when preparing physical mail.",
+      "Mailings → Envelopes.",
+      [
+        "Open Mailings.",
+        "Click Envelopes.",
+        "Enter delivery and return addresses.",
+        "Choose printing options and click Print or Add to Document."
+      ]
+    ],
 
-    ["📨","Start Mail Merge","Starts a mail merge document.","Use it to create personalized letters, emails, labels or envelopes for many recipients.","Mailings → Start Mail Merge → choose document type.",[
-      "Open Mailings.",
-      "Click Start Mail Merge.",
-      "Choose Letters, E-mail Messages, Labels or Envelopes.",
-      "Continue with recipient selection."
-    ]],
+    [
+      "🏷️",
+      "Labels",
+      "Creates printable address or product labels.",
+      "Use it for mailing labels, name labels or product labels.",
+      "Mailings → Labels.",
+      [
+        "Click Mailings → Labels.",
+        "Enter the label information.",
+        "Choose the label vendor and product number if needed.",
+        "Click Print or New Document."
+      ]
+    ],
 
-    ["👥","Select Recipients","Chooses the list of people for mail merge.","Use it when the same document must be personalized for many recipients.","Mailings → Select Recipients.",[
-      "Start a Mail Merge.",
-      "Click Select Recipients.",
-      "Choose an existing list or type a new list.",
-      "Confirm the recipient records."
-    ]],
+    [
+      "📨",
+      "Start Mail Merge",
+      "Starts a mail merge document.",
+      "Use it to create personalized letters, emails, labels or envelopes for many recipients.",
+      "Mailings → Start Mail Merge → choose document type.",
+      [
+        "Open Mailings.",
+        "Click Start Mail Merge.",
+        "Choose Letters, E-mail Messages, Labels or Envelopes.",
+        "Continue with recipient selection."
+      ]
+    ],
 
-    ["📝","Edit Recipient List","Edits and filters the mail merge recipient list.","Use it to remove, filter or sort recipients.","Mailings → Edit Recipient List.",[
-      "Open Mailings.",
-      "Click Edit Recipient List.",
-      "Select or clear recipients.",
-      "Use sorting and filtering if required."
-    ]],
+    [
+      "👥",
+      "Select Recipients",
+      "Chooses the list of people for mail merge.",
+      "Use it when the same document must be personalized for many recipients.",
+      "Mailings → Select Recipients.",
+      [
+        "Start a Mail Merge.",
+        "Click Select Recipients.",
+        "Choose an existing list or type a new list.",
+        "Confirm the recipient records."
+      ]
+    ],
 
-    ["📍","Address Block","Inserts a formatted recipient address.","Use it when creating personalized letters and envelopes.","Mailings → Address Block.",[
-      "Place the cursor where the address should appear.",
-      "Click Address Block.",
-      "Choose the address format.",
-      "Preview the result and click OK."
-    ]],
+    [
+      "📝",
+      "Edit Recipient List",
+      "Edits and filters the mail merge recipient list.",
+      "Use it to remove, filter or sort recipients.",
+      "Mailings → Edit Recipient List.",
+      [
+        "Open Mailings.",
+        "Click Edit Recipient List.",
+        "Select or clear recipients.",
+        "Use sorting and filtering if required."
+      ]
+    ],
 
-    ["👋","Greeting Line","Adds a personalized greeting.","Use it for letters such as Dear Name.","Mailings → Greeting Line.",[
-      "Place the cursor where the greeting should appear.",
-      "Click Greeting Line.",
-      "Choose the greeting format.",
-      "Preview and click OK."
-    ]],
+    [
+      "📍",
+      "Address Block",
+      "Inserts a formatted recipient address.",
+      "Use it when creating personalized letters and envelopes.",
+      "Mailings → Address Block.",
+      [
+        "Place the cursor where the address should appear.",
+        "Click Address Block.",
+        "Choose the address format.",
+        "Preview the result and click OK."
+      ]
+    ],
 
-    ["🔗","Insert Merge Field","Inserts a specific field from recipient data.","Use it when you want individual data such as Name, City or Date.","Mailings → Insert Merge Field.",[
-      "Place the cursor where the field should appear.",
-      "Click Insert Merge Field.",
-      "Choose a field such as First Name or City.",
-      "The field is inserted."
-    ]],
+    [
+      "👋",
+      "Greeting Line",
+      "Adds a personalized greeting.",
+      "Use it for letters such as Dear Name.",
+      "Mailings → Greeting Line.",
+      [
+        "Place the cursor where the greeting should appear.",
+        "Click Greeting Line.",
+        "Choose the greeting format.",
+        "Preview and click OK."
+      ]
+    ],
 
-    ["👁️","Preview Results","Shows how the mail merge will look for recipients.","Use it before completing the merge to check personalization.","Mailings → Preview Results.",[
-      "Click Preview Results.",
-      "Review different recipients.",
-      "Check names, addresses and other fields.",
-      "Correct any mistakes before finishing the merge."
-    ]],
+    [
+      "🔗",
+      "Insert Merge Field",
+      "Inserts a specific field from recipient data.",
+      "Use it when you want individual data such as Name, City or Date.",
+      "Mailings → Insert Merge Field.",
+      [
+        "Place the cursor where the field should appear.",
+        "Click Insert Merge Field.",
+        "Choose a field such as First Name or City.",
+        "The field is inserted."
+      ]
+    ],
 
-    ["🏁","Finish & Merge","Completes the mail merge.","Use it to print, create individual documents or send merged emails.","Mailings → Finish & Merge.",[
-      "Preview the results carefully.",
-      "Click Finish & Merge.",
-      "Choose Edit Individual Documents, Print Documents or Send E-mail Messages.",
-      "Complete the final action."
-    ]]
+    [
+      "👁️",
+      "Preview Results",
+      "Shows how the mail merge will look for recipients.",
+      "Use it before completing the merge to check personalization.",
+      "Mailings → Preview Results.",
+      [
+        "Click Preview Results.",
+        "Review different recipients.",
+        "Check names, addresses and other fields.",
+        "Correct any mistakes before finishing the merge."
+      ]
+    ],
+
+    [
+      "🏁",
+      "Finish & Merge",
+      "Completes the mail merge.",
+      "Use it to print, create individual documents or send merged emails.",
+      "Mailings → Finish & Merge.",
+      [
+        "Preview the results carefully.",
+        "Click Finish & Merge.",
+        "Choose Edit Individual Documents, Print Documents or Send E-mail Messages.",
+        "Complete the final action."
+      ]
+    ]
+
   ],
+
 
   Review: [
-    ["ABC","Spelling & Grammar","Checks spelling and grammar issues.","Use it to proofread documents before submission or sharing.","Review → Spelling & Grammar.",[
-      "Open Review.",
-      "Click Spelling & Grammar.",
-      "Review each suggested correction.",
-      "Accept, ignore or change the suggestion."
-    ]],
 
-    ["📖","Thesaurus","Shows synonyms and related words.","Use it to find alternative words and improve writing.","Review → Thesaurus.",[
-      "Select or place the cursor on a word.",
-      "Open Review → Thesaurus.",
-      "Review suggested synonyms.",
-      "Choose a suitable alternative if required."
-    ]],
+    [
+      "ABC",
+      "Spelling & Grammar",
+      "Checks spelling and grammar issues.",
+      "Use it to proofread documents before submission or sharing.",
+      "Review → Spelling & Grammar.",
+      [
+        "Open Review.",
+        "Click Spelling & Grammar.",
+        "Review each suggested correction.",
+        "Accept, ignore or change the suggestion."
+      ]
+    ],
 
-    ["🔢","Word Count","Counts words, characters, paragraphs and pages.","Use it when an assignment or document has a length requirement.","Review → Word Count.",[
-      "Open Review.",
-      "Click Word Count.",
-      "Review words, characters, paragraphs and pages.",
-      "Select text first if you want the count for only that selection."
-    ]],
+    [
+      "📖",
+      "Thesaurus",
+      "Shows synonyms and related words.",
+      "Use it to find alternative words and improve writing.",
+      "Review → Thesaurus.",
+      [
+        "Select or place the cursor on a word.",
+        "Open Review → Thesaurus.",
+        "Review suggested synonyms.",
+        "Choose a suitable alternative if required."
+      ]
+    ],
 
-    ["🔊","Read Aloud","Reads the document aloud.","Use it to proofread wording and listen for mistakes.","Review → Read Aloud.",[
-      "Open Review.",
-      "Click Read Aloud.",
-      "Use the playback controls.",
-      "Listen for errors and edit the document as needed."
-    ]],
+    [
+      "🔢",
+      "Word Count",
+      "Counts words, characters, paragraphs and pages.",
+      "Use it when an assignment or document has a length requirement.",
+      "Review → Word Count.",
+      [
+        "Open Review.",
+        "Click Word Count.",
+        "Review words, characters, paragraphs and pages.",
+        "Select text first if you want the count for only that selection."
+      ]
+    ],
 
-    ["♿","Check Accessibility","Checks the document for accessibility problems.","Use it before sharing a document with different users.","Review → Check Accessibility.",[
-      "Open Review.",
-      "Click Check Accessibility.",
-      "Review the issues shown in the Accessibility pane.",
-      "Fix the suggested problems where appropriate."
-    ]],
+    [
+      "🔊",
+      "Read Aloud",
+      "Reads the document aloud.",
+      "Use it to proofread wording and listen for mistakes.",
+      "Review → Read Aloud.",
+      [
+        "Open Review.",
+        "Click Read Aloud.",
+        "Use the playback controls.",
+        "Listen for errors and edit the document as needed."
+      ]
+    ],
 
-    ["🌐","Translate","Translates selected text or a document.","Use it when you need another language version.","Review → Translate.",[
-      "Select the text if translating only part of the document.",
-      "Open Review → Translate.",
-      "Choose the source and target language.",
-      "Review and insert the translation."
-    ]],
+    [
+      "♿",
+      "Check Accessibility",
+      "Checks the document for accessibility problems.",
+      "Use it before sharing a document with different users.",
+      "Review → Check Accessibility.",
+      [
+        "Open Review.",
+        "Click Check Accessibility.",
+        "Review the issues shown in the Accessibility pane.",
+        "Fix the suggested problems where appropriate."
+      ]
+    ],
 
-    ["🗣️","Language","Sets proofing or language preferences.","Use it to make spelling and grammar checks work with the correct language.","Review → Language.",[
-      "Select the text or document.",
-      "Click Review → Language.",
-      "Choose Set Proofing Language.",
-      "Select the correct language and confirm."
-    ]],
+    [
+      "🌐",
+      "Translate",
+      "Translates selected text or a document.",
+      "Use it when you need another language version.",
+      "Review → Translate.",
+      [
+        "Select the text if translating only part of the document.",
+        "Open Review → Translate.",
+        "Choose the source and target language.",
+        "Review and insert the translation."
+      ]
+    ],
 
-    ["💬","New Comment","Adds a new comment.","Use it to give feedback or ask a question about selected content.","Review → New Comment.",[
-      "Select the relevant text.",
-      "Click New Comment.",
-      "Type your comment.",
-      "Post or save the comment."
-    ]],
+    [
+      "🗣️",
+      "Language",
+      "Sets proofing or language preferences.",
+      "Use it to make spelling and grammar checks work with the correct language.",
+      "Review → Language.",
+      [
+        "Select the text or document.",
+        "Click Review → Language.",
+        "Choose Set Proofing Language.",
+        "Select the correct language and confirm."
+      ]
+    ],
 
-    ["⬅️","Previous","Moves to the previous comment or tracked change.","Use it while reviewing changes in sequence.","Review → Previous.",[
-      "Open the Review tab.",
-      "Make sure comments or tracked changes are visible.",
-      "Click Previous.",
-      "Word moves to the previous item."
-    ]],
+    [
+      "💬",
+      "New Comment",
+      "Adds a new comment.",
+      "Use it to give feedback or ask a question about selected content.",
+      "Review → New Comment.",
+      [
+        "Select the relevant text.",
+        "Click New Comment.",
+        "Type your comment.",
+        "Post or save the comment."
+      ]
+    ],
 
-    ["➡️","Next","Moves to the next comment or tracked change.","Use it to review items one by one.","Review → Next.",[
-      "Open Review.",
-      "Make sure comments or tracked changes are visible.",
-      "Click Next.",
-      "Word moves to the next item."
-    ]],
+    [
+      "⬅️",
+      "Previous",
+      "Moves to the previous comment or tracked change.",
+      "Use it while reviewing changes in sequence.",
+      "Review → Previous.",
+      [
+        "Open the Review tab.",
+        "Make sure comments or tracked changes are visible.",
+        "Click Previous.",
+        "Word moves to the previous item."
+      ]
+    ],
 
-    ["👁️","Show Markup","Controls which tracked changes and comments are displayed.","Use it when reviewing a document with multiple types of markup.","Review → Show Markup.",[
-      "Open Review.",
-      "Click Show Markup.",
-      "Choose comments, insertions, deletions or formatting.",
-      "Review the document with the selected markup visible."
-    ]],
+    [
+      "➡️",
+      "Next",
+      "Moves to the next comment or tracked change.",
+      "Use it to review items one by one.",
+      "Review → Next.",
+      [
+        "Open Review.",
+        "Make sure comments or tracked changes are visible.",
+        "Click Next.",
+        "Word moves to the next item."
+      ]
+    ],
 
-    ["📋","Reviewing Pane","Shows a summary of tracked changes and comments.","Use it when a document contains many changes.","Review → Reviewing Pane.",[
-      "Open Review.",
-      "Click Reviewing Pane.",
-      "Choose vertical or horizontal view if available.",
-      "Review changes and comments from the pane."
-    ]],
+    [
+      "👁️",
+      "Show Markup",
+      "Controls which tracked changes and comments are displayed.",
+      "Use it when reviewing a document with multiple types of markup.",
+      "Review → Show Markup.",
+      [
+        "Open Review.",
+        "Click Show Markup.",
+        "Choose comments, insertions, deletions or formatting.",
+        "Review the document with the selected markup visible."
+      ]
+    ],
 
-    ["✅","Accept","Accepts tracked changes.","Use it after reviewing a change and deciding to keep it.","Review → Accept.",[
-      "Select or move to a tracked change.",
-      "Click Accept.",
-      "Choose Accept This Change or another available option.",
-      "The accepted change becomes part of the document."
-    ]],
+    [
+      "📋",
+      "Reviewing Pane",
+      "Shows a summary of tracked changes and comments.",
+      "Use it when a document contains many changes.",
+      "Review → Reviewing Pane.",
+      [
+        "Open Review.",
+        "Click Reviewing Pane.",
+        "Choose vertical or horizontal view if available.",
+        "Review changes and comments from the pane."
+      ]
+    ],
 
-    ["❌","Reject","Rejects tracked changes.","Use it when a suggested change should not be kept.","Review → Reject.",[
-      "Select or move to a tracked change.",
-      "Click Reject.",
-      "Choose Reject This Change or another option.",
-      "The change is removed or reverted."
-    ]],
+    [
+      "✅",
+      "Accept",
+      "Accepts tracked changes.",
+      "Use it after reviewing a change and deciding to keep it.",
+      "Review → Accept.",
+      [
+        "Select or move to a tracked change.",
+        "Click Accept.",
+        "Choose Accept This Change or another available option.",
+        "The accepted change becomes part of the document."
+      ]
+    ],
 
-    ["🔍","Compare","Compares two versions of a document.","Use it to identify differences between two documents.","Review → Compare.",[
-      "Open Review.",
-      "Click Compare.",
-      "Select the original and revised documents.",
-      "Review the differences shown by Word."
-    ]],
+    [
+      "❌",
+      "Reject",
+      "Rejects tracked changes.",
+      "Use it when a suggested change should not be kept.",
+      "Review → Reject.",
+      [
+        "Select or move to a tracked change.",
+        "Click Reject.",
+        "Choose Reject This Change or another option.",
+        "The change is removed or reverted."
+      ]
+    ],
 
-    ["🔒","Protect","Restricts editing or protects document content.","Use it when a document should not be freely edited.","Review → Protect.",[
-      "Open Review.",
-      "Choose the available protection option.",
-      "Set the required restrictions.",
-      "Add a password only if appropriate and store it safely."
-    ]]
+    [
+      "🔍",
+      "Compare",
+      "Compares two versions of a document.",
+      "Use it to identify differences between two documents.",
+      "Review → Compare.",
+      [
+        "Open Review.",
+        "Click Compare.",
+        "Select the original and revised documents.",
+        "Review the differences shown by Word."
+      ]
+    ],
+
+    [
+      "🔒",
+      "Protect",
+      "Restricts editing or protects document content.",
+      "Use it when a document should not be freely edited.",
+      "Review → Protect.",
+      [
+        "Open Review.",
+        "Choose the available protection option.",
+        "Set the required restrictions.",
+        "Add a password only if appropriate and store it safely."
+      ]
+    ]
+
   ],
 
+
   View: [
-    ["📖","Read Mode","Shows the document in a reading-friendly layout.","Use it when you mainly want to read rather than edit.","View → Read Mode.",[
-      "Open View.",
-      "Click Read Mode.",
-      "Read through the document using navigation controls.",
-      "Exit Read Mode when you need to edit."
-    ]],
 
-    ["🎯","Focus","Reduces distractions while reading or editing.","Use it when you want to concentrate on the document.","View → Focus.",[
-      "Open View.",
-      "Click Focus.",
-      "The interface becomes less distracting.",
-      "Exit Focus when finished."
-    ]],
+    [
+      "📖",
+      "Read Mode",
+      "Shows the document in a reading-friendly layout.",
+      "Use it when you mainly want to read rather than edit.",
+      "View → Read Mode.",
+      [
+        "Open View.",
+        "Click Read Mode.",
+        "Read through the document using navigation controls.",
+        "Exit Read Mode when you need to edit."
+      ]
+    ],
 
-    ["📏","Ruler","Shows the horizontal and vertical rulers.","Use it to set tabs, margins and indents visually.","View → Ruler.",[
-      "Open View.",
-      "Check Ruler.",
-      "Use the ruler to adjust indents and tab positions.",
-      "Uncheck it when you no longer need it."
-    ]],
+    [
+      "🎯",
+      "Focus",
+      "Reduces distractions while reading or editing.",
+      "Use it when you want to concentrate on the document.",
+      "View → Focus.",
+      [
+        "Open View.",
+        "Click Focus.",
+        "The interface becomes less distracting.",
+        "Exit Focus when finished."
+      ]
+    ],
 
-    ["▦","Gridlines","Shows alignment gridlines.","Use it when positioning shapes and objects.","View → Gridlines.",[
-      "Open View.",
-      "Turn on Gridlines.",
-      "Use the grid to align objects.",
-      "Turn it off when finished."
-    ]],
+    [
+      "📏",
+      "Ruler",
+      "Shows the horizontal and vertical rulers.",
+      "Use it to set tabs, margins and indents visually.",
+      "View → Ruler.",
+      [
+        "Open View.",
+        "Check Ruler.",
+        "Use the ruler to adjust indents and tab positions.",
+        "Uncheck it when you no longer need it."
+      ]
+    ],
 
-    ["🧭","Navigation Pane","Shows headings, pages and search results in a side panel.","Use it to navigate long documents quickly.","View → Navigation Pane.",[
-      "Open View.",
-      "Turn on Navigation Pane.",
-      "Use Headings, Pages or Search.",
-      "Click a result to jump to that location."
-    ]],
+    [
+      "▦",
+      "Gridlines",
+      "Shows alignment gridlines.",
+      "Use it when positioning shapes and objects.",
+      "View → Gridlines.",
+      [
+        "Open View.",
+        "Turn on Gridlines.",
+        "Use the grid to align objects.",
+        "Turn it off when finished."
+      ]
+    ],
 
-    ["🔍","Zoom","Changes how large the document appears on screen.","Use it to inspect details or see more of a page at once.","View → Zoom.",[
-      "Click View → Zoom.",
-      "Choose a percentage or preset.",
-      "Use Page Width or Multiple Pages when useful.",
-      "Return to 100% for normal viewing."
-    ]],
+    [
+      "🧭",
+      "Navigation Pane",
+      "Shows headings, pages and search results in a side panel.",
+      "Use it to navigate long documents quickly.",
+      "View → Navigation Pane.",
+      [
+        "Open View.",
+        "Turn on Navigation Pane.",
+        "Use Headings, Pages or Search.",
+        "Click a result to jump to that location."
+      ]
+    ],
 
-    ["🪟","New Window","Opens another window for the same document.","Use it when you want to view different parts of one document simultaneously.","View → New Window.",[
-      "Click View → New Window.",
-      "A second window opens for the same document.",
-      "Scroll to a different section in each window.",
-      "Close the extra window when finished."
-    ]],
+    [
+      "🔍",
+      "Zoom",
+      "Changes how large the document appears on screen.",
+      "Use it to inspect details or see more of a page at once.",
+      "View → Zoom.",
+      [
+        "Click View → Zoom.",
+        "Choose a percentage or preset.",
+        "Use Page Width or Multiple Pages when useful.",
+        "Return to 100% for normal viewing."
+      ]
+    ],
 
-    ["✂️","Split","Splits the current document window into two panes.","Use it to compare or reference two parts of the same document.","View → Split.",[
-      "Click View → Split.",
-      "Choose the split position.",
-      "Scroll each pane independently.",
-      "Remove the split when finished."
-    ]],
+    [
+      "🪟",
+      "New Window",
+      "Opens another window for the same document.",
+      "Use it when you want to view different parts of one document simultaneously.",
+      "View → New Window.",
+      [
+        "Click View → New Window.",
+        "A second window opens for the same document.",
+        "Scroll to a different section in each window.",
+        "Close the extra window when finished."
+      ]
+    ],
 
-    ["🔄","Switch Windows","Switches between open Word windows.","Use it when multiple documents or windows are open.","View → Switch Windows.",[
-      "Click View → Switch Windows.",
-      "Choose the required document or window.",
-      "Word switches to it."
-    ]],
+    [
+      "✂️",
+      "Split",
+      "Splits the current document window into two panes.",
+      "Use it to compare or reference two parts of the same document.",
+      "View → Split.",
+      [
+        "Click View → Split.",
+        "Choose the split position.",
+        "Scroll each pane independently.",
+        "Remove the split when finished."
+      ]
+    ],
 
-    ["⚙️","Macros","Runs or manages recorded VBA macros.","Use it to automate repeated tasks only when macros are trusted.","View → Macros → View Macros / Record Macro.",[
-      "Open View → Macros.",
-      "Choose View Macros or Record Macro.",
-      "For a new macro, follow the recording prompts.",
-      "Only run macros from trusted sources."
-    ]]
+    [
+      "🔄",
+      "Switch Windows",
+      "Switches between open Word windows.",
+      "Use it when multiple documents or windows are open.",
+      "View → Switch Windows.",
+      [
+        "Click View → Switch Windows.",
+        "Choose the required document or window.",
+        "Word switches to it."
+      ]
+    ],
+
+    [
+      "⚙️",
+      "Macros",
+      "Runs or manages recorded VBA macros.",
+      "Use it to automate repeated tasks only when macros are trusted.",
+      "View → Macros → View Macros / Record Macro.",
+      [
+        "Open View → Macros.",
+        "Choose View Macros or Record Macro.",
+        "For a new macro, follow the recording prompts.",
+        "Only run macros from trusted sources."
+      ]
+    ]
+
   ]
+
 };
 
 
 /* =========================================================
-   MS WORD PRACTICAL PROJECTS
+   14 MS WORD PRACTICAL PROJECTS
    ========================================================= */
 
 const curriculum = {
+
   "MS Word": [
+
     {
       id: 1,
       title: "Project 1",
       topic: "Basic MS Word Document",
-      description: "Create and format a basic professional document using text formatting, alignment and spacing.",
+      description:
+        "Create and format a basic professional document using text formatting, alignment and spacing.",
       image: "Project 1.png"
     },
+
     {
       id: 2,
       title: "Project 2",
       topic: "Formatted Letter",
-      description: "Create a properly formatted formal letter using appropriate fonts, alignment, spacing and paragraph formatting.",
+      description:
+        "Create a properly formatted formal letter using appropriate fonts, alignment, spacing and paragraph formatting.",
       image: "Project 2.png"
     },
+
     {
       id: 3,
       title: "Project 3",
       topic: "Student Marksheet",
-      description: "Create a student marks table using rows, columns, formatting and alignment.",
+      description:
+        "Create a student marks table using rows, columns, formatting and alignment.",
       image: "Project 3.png"
     },
+
     {
       id: 4,
       title: "Project 4",
       topic: "Professional Resume",
-      description: "Create a professional resume using headings, formatting, tables and proper page layout.",
+      description:
+        "Create a professional resume using headings, formatting, tables and proper page layout.",
       image: "Project 4.png"
     },
+
     {
       id: 5,
       title: "Project 5",
       topic: "School Notice",
-      description: "Create a school or office notice using headings, borders, alignment and formatting.",
+      description:
+        "Create a school or office notice using headings, borders, alignment and formatting.",
       image: "Project 5.png"
     },
+
     {
       id: 6,
       title: "Project 6",
       topic: "Certificate",
-      description: "Create a certificate using borders, WordArt, shapes and professional formatting.",
+      description:
+        "Create a certificate using borders, WordArt, shapes and professional formatting.",
       image: "Project 6.png"
     },
+
     {
       id: 7,
       title: "Project 7",
       topic: "Invitation Card",
-      description: "Create an attractive invitation using WordArt, shapes, colors, borders and images.",
+      description:
+        "Create an attractive invitation using WordArt, shapes, colors, borders and images.",
       image: "Project 7.png"
     },
+
     {
       id: 8,
       title: "Project 8",
       topic: "Project Report",
-      description: "Create a structured project report using headings, page numbers, tables and formatting.",
+      description:
+        "Create a structured project report using headings, page numbers, tables and formatting.",
       image: "Project 8.png"
     },
+
     {
       id: 9,
       title: "Project 9",
       topic: "Newsletter",
-      description: "Create a newsletter using columns, images, headings and decorative formatting.",
+      description:
+        "Create a newsletter using columns, images, headings and decorative formatting.",
       image: "Project 9.png"
     },
+
     {
       id: 10,
       title: "Project 10",
       topic: "Timetable",
-      description: "Create a professional timetable using tables, alignment, borders and shading.",
+      description:
+        "Create a professional timetable using tables, alignment, borders and shading.",
       image: "Project 10.png"
     },
+
     {
       id: 11,
       title: "Project 11",
       topic: "Brochure",
-      description: "Create a brochure using columns, images, shapes, headings and professional design.",
+      description:
+        "Create a brochure using columns, images, shapes, headings and professional design.",
       image: "Project 11.png"
     },
+
     {
       id: 12,
       title: "Project 12",
       topic: "Office Memo",
-      description: "Create an office memo using proper headings, formatting and paragraph layout.",
+      description:
+        "Create an office memo using proper headings, formatting and paragraph layout.",
       image: "Project 12.png"
     },
+
     {
       id: 13,
       title: "Project 13",
       topic: "Advertisement",
-      description: "Create a promotional advertisement using WordArt, pictures, shapes and colors.",
+      description:
+        "Create a promotional advertisement using WordArt, pictures, shapes and colors.",
       image: "Project 13.png"
     },
+
     {
       id: 14,
       title: "Project 14",
       topic: "Final Practical Project",
-      description: "Complete a professional MS Word document combining the skills learned throughout the course.",
+      description:
+        "Complete a professional MS Word document combining the skills learned throughout the course.",
       image: "Project 14.png"
     }
+
   ]
+
 };
 
 
 /* =========================================================
-   BILINGUAL TEXT
+   HINDI TRANSLATIONS
    ========================================================= */
 
 const bilingual = {
+
   "Paste": [
     "चिपकाए गए content को document में insert करता है।",
     "जब copied या cut content को दूसरी जगह रखना हो।"
@@ -982,6 +1824,7 @@ const bilingual = {
     "Page के चारों ओर blank space सेट करता है।",
     "Assignment, report formatting और writing space नियंत्रित करने के लिए।"
   ]
+
 };
 
 
@@ -990,29 +1833,52 @@ const bilingual = {
    ========================================================= */
 
 function escapeHTML(value) {
+
   return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+
 }
+
 
 function currentTools() {
+
   return tabData[state.tab] || [];
+
 }
+
 
 function trText(text) {
-  if (state.lang === "en") return text;
+
+  if (state.lang === "en") {
+    return text;
+  }
+
   return bilingual[text]?.[0] || text;
+
 }
+
 
 function trUse(text) {
-  if (state.lang === "en") return text;
+
+  if (state.lang === "en") {
+    return text;
+  }
+
   return bilingual[text]?.[1] || text;
+
 }
 
+
+/* =========================================================
+   HINDI STEPS
+   ========================================================= */
+
 function stepHindi(text, name, index) {
+
   const common = {
 
     Paste: [
@@ -1078,12 +1944,20 @@ function stepHindi(text, name, index) {
       "Custom Margins से अपने values भी डाल सकते हैं।",
       "Page के चारों ओर का blank space बदल जाएगा।"
     ]
+
   };
 
   return common[name]?.[index] || text;
+
 }
 
+
+/* =========================================================
+   PRACTICE TASKS
+   ========================================================= */
+
 function practiceText(name) {
+
   const p = {
 
     Paste:
@@ -1112,31 +1986,45 @@ function practiceText(name) {
 
     Underline:
       "Underline the title and one important sentence."
+
   };
 
   return p[name] ||
     `Open MS Word and practice the ${name} option using a small sample document.`;
+
 }
 
 
 /* =========================================================
-   LEARNING TAB IMAGE
-   IMPORTANT: PROJECT IMAGES ARE NOT USED HERE
+   LEARNING TAB IMAGES
+   IMPORTANT:
+   PROJECT IMAGES ARE NEVER USED AS LEARNING TAB IMAGES.
    ========================================================= */
 
 function findImage() {
+
   const images = {
+
     Home: "Home.png",
+
     Insert: "Insert.png",
+
     Design: "Home.png",
-    Layout: "Page Layout(1).png",
+
+    Layout: "Page Layout.png",
+
     References: "References.png",
+
     Mailings: "Mailing.png",
+
     Review: "Review.png",
+
     View: "View.png"
+
   };
 
   return images[state.tab] || "Home.png";
+
 }
 
 
@@ -1145,6 +2033,7 @@ function findImage() {
    ========================================================= */
 
 function render() {
+
   const app = document.getElementById("app");
 
   if (!app) return;
@@ -1157,7 +2046,10 @@ function render() {
 
   const t = tools[state.toolIndex];
 
+  if (!t) return;
+
   app.innerHTML = `
+
     <div class="app ${state.dark ? "dark" : ""}">
 
       <aside class="sidebar">
@@ -1169,6 +2061,7 @@ function render() {
           </div>
 
           <div>
+
             <div class="logo-title">
               JOINING HANDS
             </div>
@@ -1177,9 +2070,11 @@ function render() {
               AI Computer Learning<br>
               & Practical Lab
             </div>
+
           </div>
 
         </div>
+
 
         <nav class="side-nav">
 
@@ -1210,9 +2105,11 @@ function render() {
 
         </nav>
 
+
         <div class="side-label">
           Quick Links
         </div>
+
 
         <nav class="side-nav">
 
@@ -1243,6 +2140,7 @@ function render() {
 
         </nav>
 
+
         <div class="promo">
 
           <b>
@@ -1265,16 +2163,19 @@ function render() {
 
       <main class="main">
 
+
         <div class="topbar">
 
           <div>
 
             <div class="welcome">
+
               ${
                 state.lang === "en"
                   ? "Welcome back! 👋"
                   : "वापसी पर स्वागत है! 👋"
               }
+
             </div>
 
             <div class="page-title">
@@ -1282,11 +2183,13 @@ function render() {
             </div>
 
             <p class="page-sub">
+
               ${
                 state.lang === "en"
                   ? "Learn every important MS Word tool step-by-step and complete practical projects."
                   : "MS Word के सभी important tools को step-by-step सीखें और practical projects पूरा करें।"
               }
+
             </p>
 
           </div>
@@ -1301,6 +2204,7 @@ function render() {
             <button class="lang-btn" id="enBtn">
               English 🌐
             </button>
+
 
             <div class="zoombar">
 
@@ -1324,6 +2228,7 @@ function render() {
 
             </div>
 
+
             <button class="dark-btn" id="darkBtn">
               ${state.dark ? "☀️" : "🌙"}
             </button>
@@ -1346,11 +2251,13 @@ function render() {
             </h2>
 
             <p>
+
               ${
                 state.lang === "en"
                   ? "Learning & Practical Work"
                   : "Learning और Practical Work"
               }
+
             </p>
 
           </div>
@@ -1359,12 +2266,16 @@ function render() {
           <div class="tabs">
 
             ${Object.keys(tabData).map(tab => `
+
               <button
                 class="tab-btn ${state.tab === tab ? "active" : ""}"
                 data-tab="${tab}"
               >
+
                 ${icons[tab]} ${tab}
+
               </button>
+
             `).join("")}
 
           </div>
@@ -1393,15 +2304,18 @@ function render() {
 
         <div class="content-grid">
 
+
           <section class="tool-panel">
 
             <div class="panel-title">
               ▦ Tools in ${state.tab} Tab
             </div>
 
+
             <div class="tool-list">
 
               ${tools.map((x, i) => `
+
                 <button
                   class="tool-btn ${i === state.toolIndex ? "active" : ""}"
                   data-tool="${i}"
@@ -1420,6 +2334,7 @@ function render() {
                   </span>
 
                 </button>
+
               `).join("")}
 
             </div>
@@ -1428,6 +2343,7 @@ function render() {
 
 
           <section class="lesson-panel">
+
 
             <div class="lesson-head">
 
@@ -1454,6 +2370,7 @@ function render() {
 
 
             <div class="cards">
+
 
               <div class="info-card blue">
 
@@ -1501,20 +2418,25 @@ function render() {
               <div class="tab-image-header">
 
                 <div>
+
                   <b>
                     🖼️ ${state.tab} Tab
                   </b>
 
                   <span>
+
                     ${
                       state.lang === "en"
                         ? "Click image to zoom"
                         : "Zoom के लिए image पर click करें"
                     }
+
                   </span>
+
                 </div>
 
               </div>
+
 
               <div class="tab-image-wrap">
 
@@ -1547,9 +2469,11 @@ function render() {
               ${
                 state.expanded
                   ? `
+
                     <div class="steps">
 
                       ${t[5].map((s, i) => `
+
                         <div class="step">
 
                           <div class="num">
@@ -1557,21 +2481,31 @@ function render() {
                           </div>
 
                           <div>
+
                             <p>
+
                               <b>
+
                                 ${
                                   state.lang === "en"
-                                    ? s
-                                    : stepHindi(s, t[1], i)
+                                    ? escapeHTML(s)
+                                    : escapeHTML(
+                                        stepHindi(s, t[1], i)
+                                      )
                                 }
+
                               </b>
+
                             </p>
+
                           </div>
 
                         </div>
+
                       `).join("")}
 
                     </div>
+
                   `
                   : ""
               }
@@ -1599,6 +2533,7 @@ function render() {
 
             </div>
 
+
           </section>
 
         </div>
@@ -1614,19 +2549,23 @@ function render() {
             <div>
 
               <h3>
+
                 ${
                   state.lang === "en"
                     ? "Practical Work — 14 Projects"
                     : "Practical Work — 14 प्रोजेक्ट्स"
                 }
+
               </h3>
 
               <p>
+
                 ${
                   state.lang === "en"
                     ? "All MS Word practical projects are available here. Open any project to see the example and ask the AI Teacher for help."
                     : "सभी MS Word practical projects यहाँ उपलब्ध हैं। किसी भी project को खोलकर example देखें और AI Teacher से मदद लें।"
                 }
+
               </p>
 
             </div>
@@ -1673,6 +2612,7 @@ function render() {
 
         </section>
 
+
       </main>
 
     </div>
@@ -1696,9 +2636,12 @@ function render() {
       >
 
     </div>
+
   `;
 
+
   bind();
+
 }
 
 
@@ -1707,6 +2650,7 @@ function render() {
    ========================================================= */
 
 function bind() {
+
 
   document
     .querySelectorAll("[data-tab]")
@@ -2045,6 +2989,10 @@ function scrollToPractical() {
 }
 
 
+/* =========================================================
+   OPEN PROJECT
+   ========================================================= */
+
 function openProject(id) {
 
   const project =
@@ -2053,15 +3001,18 @@ function openProject(id) {
 
   if (!project) return;
 
+
   document
     .getElementById("projectModal")
     ?.remove();
 
 
   document.body.insertAdjacentHTML(
+
     "beforeend",
 
     `
+
     <div
       id="projectModal"
       class="project-modal"
@@ -2080,6 +3031,7 @@ function openProject(id) {
 
         <div class="project-modal-grid">
 
+
           <div class="project-preview">
 
             <img
@@ -2097,13 +3049,16 @@ function openProject(id) {
               💻 Practical Work
             </span>
 
+
             <h2>
               ${escapeHTML(project.title)}
             </h2>
 
+
             <h3>
               ${escapeHTML(project.topic)}
             </h3>
+
 
             <p>
               ${escapeHTML(project.description)}
@@ -2168,11 +3123,17 @@ function openProject(id) {
       </div>
 
     </div>
+
     `
+
   );
 
 }
 
+
+/* =========================================================
+   CLOSE PROJECT MODAL
+   ========================================================= */
 
 function closeProjectModal(event) {
 
@@ -2200,13 +3161,17 @@ function openImage(src) {
   const old =
     document.getElementById("imagePreviewModal");
 
-  if (old) old.remove();
+  if (old) {
+    old.remove();
+  }
 
 
   document.body.insertAdjacentHTML(
+
     "beforeend",
 
     `
+
     <div
       id="imagePreviewModal"
       class="image-modal open"
@@ -2226,15 +3191,16 @@ function openImage(src) {
       >
 
     </div>
+
     `
+
   );
 
 }
 
 
 /* =========================================================
-   REAL AI TEACHER
-   Uses the existing /api/ask backend
+   AI TEACHER
    ========================================================= */
 
 function showAITeacher(
@@ -2253,9 +3219,11 @@ function showAITeacher(
 
 
   document.body.insertAdjacentHTML(
+
     "beforeend",
 
     `
+
     <div
       id="aiTeacherModal"
       class="ai-modal"
@@ -2263,6 +3231,7 @@ function showAITeacher(
     >
 
       <div class="ai-modal-card">
+
 
         <button
           class="close-help"
@@ -2332,16 +3301,21 @@ function showAITeacher(
           class="ai-answer"
         ></div>
 
+
       </div>
 
     </div>
+
     `
+
   );
 
 }
 
 
-/* Close AI Teacher */
+/* =========================================================
+   CLOSE AI TEACHER
+   ========================================================= */
 
 function closeAITeacher(event) {
 
@@ -2386,12 +3360,15 @@ async function askAIQuestion(
   if (!question) {
 
     answerBox.innerHTML = `
+
       <p>
         Please type your question first.
       </p>
+
     `;
 
     return;
+
   }
 
 
@@ -2402,9 +3379,11 @@ async function askAIQuestion(
 
 
   answerBox.innerHTML = `
+
     <p>
       Preparing your answer...
     </p>
+
   `;
 
 
@@ -2426,6 +3405,7 @@ async function askAIQuestion(
             course,
             project
           })
+
         }
       );
 
@@ -2463,6 +3443,7 @@ async function askAIQuestion(
       </div>
 
     `;
+
 
   } catch (error) {
 
