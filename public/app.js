@@ -1,4213 +1,2494 @@
-/* =========================================================
-   JOINING HANDS - AI COMPUTER LEARNING LAB
-   MAIN APPLICATION
-   ========================================================= */
-
-const state = {
-
-  section: "home",
-
-  course: null,
-
-  wordView: null,
-
-  tab: null,
-
-  toolIndex: 0,
-
-  expanded: false,
-
-  practicalOpen: false,
-
-  projectId: null,
-
-  lang: "en"
-
-};
-
-
-/* =========================================================
-   AI TEACHER STATE
-   ========================================================= */
-
-const aiState = {
-
-  open: false,
-
-  loading: false,
-
-  messages: [],
-
-  question: "",
-
-  course: "",
-
-  project: ""
-
-};
-
-
-/* =========================================================
-   APP ROOT
-   ========================================================= */
-
-function getAppRoot() {
-
-  let root = document.getElementById("app");
-
-  if (!root) {
-
-    root = document.querySelector(".app");
-
-  }
-
-  return root;
-
-}
-
-
-/* =========================================================
-   LANGUAGE
-   ========================================================= */
-
-function isHindi() {
-
-  return state.lang === "hi";
-
-}
-
-
-/* =========================================================
-   HTML ESCAPE
-   ========================================================= */
-
-function escapeHTML(value) {
-
-  return String(value ?? "")
-
-    .replace(/&/g, "&amp;")
-
-    .replace(/</g, "&lt;")
-
-    .replace(/>/g, "&gt;")
-
-    .replace(/"/g, "&quot;")
-
-    .replace(/'/g, "&#039;");
-
-}
-
-
-/* =========================================================
-   IMAGE PATH
-   ========================================================= */
-
-function imagePath(file) {
-
-  if (!file) return "";
-
-  if (
-    file.startsWith("/") ||
-    file.startsWith("http://") ||
-    file.startsWith("https://") ||
-    file.startsWith("data:")
-  ) {
-
-    return file;
-
-  }
-
-  return "/" + file;
-
-}
-
-
-/* =========================================================
-   WORD TAB DATA
-   ========================================================= */
-
-const tabImages = {
-
-  Home: "Home.png",
-
-  Insert: "Insert.png",
-
-  Design: "Design.png",
-
-  Layout: "Page Layout.png",
-
-  References: "References.png",
-
-  Mailings: "Mailing.png",
-
-  Review: "Review.png",
-
-  View: "View.png"
-
-};
-
-
-/* =========================================================
-   TAB DESCRIPTIONS
-   ========================================================= */
-
-const tabDescriptions = {
-
-  Home: {
-
-    title: "Home Tab",
-
-    description:
-      "The Home Tab contains the most commonly used tools for typing, editing and formatting text.",
-
-    hindi:
-      "Home Tab में text type करने, edit करने और formatting करने के लिए सबसे ज्यादा इस्तेमाल होने वाले tools होते हैं."
-
-  },
-
-  Insert: {
-
-    title: "Insert Tab",
-
-    description:
-      "The Insert Tab is used to add tables, pictures, shapes, charts, links, headers, footers and other objects to a document.",
-
-    hindi:
-      "Insert Tab का उपयोग document में table, picture, shapes, charts, links, header, footer और दूसरी चीजें जोड़ने के लिए किया जाता है."
-
-  },
-
-  Design: {
-
-    title: "Design Tab",
-
-    description:
-      "The Design Tab is used to change the overall appearance, theme, colors and document background.",
-
-    hindi:
-      "Design Tab का उपयोग document की overall appearance, theme, colors और background बदलने के लिए किया जाता है."
-
-  },
-
-  Layout: {
-
-    title: "Page Layout Tab",
-
-    description:
-      "The Layout Tab controls page margins, orientation, size, columns, spacing and page arrangement.",
-
-    hindi:
-      "Layout Tab का उपयोग page margins, orientation, size, columns, spacing और page arrangement को control करने के लिए किया जाता है."
-
-  },
-
-  References: {
-
-    title: "References Tab",
-
-    description:
-      "The References Tab helps create tables of contents, footnotes, citations, captions and other reference information.",
-
-    hindi:
-      "References Tab का उपयोग Table of Contents, footnotes, citations, captions और reference information बनाने के लिए किया जाता है."
-
-  },
-
-  Mailings: {
-
-    title: "Mailings Tab",
-
-    description:
-      "The Mailings Tab is mainly used for mail merge, envelopes, labels and personalized documents.",
-
-    hindi:
-      "Mailings Tab का उपयोग Mail Merge, envelopes, labels और personalized documents बनाने के लिए किया जाता है."
-
-  },
-
-  Review: {
-
-    title: "Review Tab",
-
-    description:
-      "The Review Tab provides tools for spelling, grammar, comments, tracking changes and document protection.",
-
-    hindi:
-      "Review Tab में spelling, grammar, comments, Track Changes और document protection जैसे tools होते हैं."
-
-  },
-
-  View: {
-
-    title: "View Tab",
-
-    description:
-      "The View Tab controls how the document appears on screen and provides tools such as zoom, navigation and different views.",
-
-    hindi:
-      "View Tab का उपयोग document को screen पर किस तरह देखना है, zoom, navigation और अलग-अलग views को control करने के लिए किया जाता है."
-
-  }
-
-};
-
-
-/* =========================================================
-   HOME TAB TOOLS
-   ========================================================= */
-
-const tabData = {
-
-  Home: [
-
-    [
-      "📋",
-      "Paste",
-      "Inserts copied or cut content into the document.",
-      "Use it when you want to place copied or cut content somewhere in the document.",
-      "Click Home → Clipboard → Paste.",
-      [
-        "Copy or cut the content.",
-        "Place the cursor where you want the content.",
-        "Open the Home tab.",
-        "Click Paste.",
-        "The copied or cut content will appear at the cursor position."
-      ]
-    ],
-
-    [
-      "✂️",
-      "Cut",
-      "Removes selected content and places it on the Clipboard.",
-      "Use it when you want to move content from one location to another.",
-      "Select the content → Home → Cut.",
-      [
-        "Select the text, picture or object.",
-        "Open the Home tab.",
-        "Click Cut.",
-        "The selected content will be removed.",
-        "Place the cursor at the new location.",
-        "Click Paste."
-      ]
-    ],
-
-    [
-      "📄",
-      "Copy",
-      "Creates a copy of selected content without removing the original.",
-      "Use it when you need the same content in more than one place.",
-      "Select the content → Home → Copy.",
-      [
-        "Select the text or object.",
-        "Open the Home tab.",
-        "Click Copy.",
-        "Move the cursor to the new location.",
-        "Click Paste."
-      ]
-    ],
-
-    [
-      "🖌️",
-      "Format Painter",
-      "Copies formatting from one piece of content and applies it to another.",
-      "Use it when you want two different pieces of text to have the same formatting.",
-      "Select formatted text → Format Painter → select the target text.",
-      [
-        "Select the text that already has the formatting you want.",
-        "Click Format Painter.",
-        "Move the pointer to the text where you want the formatting.",
-        "Select the target text.",
-        "The formatting will be copied."
-      ]
-    ],
-
-    [
-      "🔤",
-      "Font Name",
-      "Changes the typeface used for text.",
-      "Use it when you want to change the appearance or style of the text.",
-      "Select text → Font Name → choose a font.",
-      [
-        "Select the text.",
-        "Open the Home tab.",
-        "Find the Font group.",
-        "Open the Font Name list.",
-        "Choose a font such as Arial, Calibri or Times New Roman."
-      ]
-    ],
-
-    [
-      "🔢",
-      "Font Size",
-      "Changes the size of selected text.",
-      "Use it when you want text to be larger or smaller.",
-      "Select text → Font Size → enter or select a size.",
-      [
-        "Select the text.",
-        "Open the Home tab.",
-        "Find Font Size.",
-        "Choose the required size.",
-        "The selected text will change to that size."
-      ]
-    ],
-
-    [
-      "🔼",
-      "Increase Font Size",
-      "Makes the selected text larger.",
-      "Use it when you want to increase text size quickly.",
-      "Select text → Increase Font Size.",
-      [
-        "Select the text.",
-        "Open the Home tab.",
-        "Click Increase Font Size.",
-        "The text size will increase."
-      ]
-    ],
-
-    [
-      "🔽",
-      "Decrease Font Size",
-      "Makes the selected text smaller.",
-      "Use it when you want to reduce text size quickly.",
-      "Select text → Decrease Font Size.",
-      [
-        "Select the text.",
-        "Open the Home tab.",
-        "Click Decrease Font Size.",
-        "The text size will become smaller."
-      ]
-    ],
-
-    [
-      "🔠",
-      "Change Case",
-      "Changes text between uppercase, lowercase and other letter cases.",
-      "Use it when you want to change capitalization without typing the text again.",
-      "Select text → Change Case → choose the required case.",
-      [
-        "Select the text.",
-        "Open the Home tab.",
-        "Click Change Case.",
-        "Choose UPPERCASE, lowercase, Sentence case or another option.",
-        "The selected text will change."
-      ]
-    ],
-
-    [
-      "🧹",
-      "Clear All Formatting",
-      "Removes formatting from selected text and returns it to normal formatting.",
-      "Use it when unwanted formatting has been applied to text.",
-      "Select text → Clear All Formatting.",
-      [
-        "Select the formatted text.",
-        "Open the Home tab.",
-        "Click Clear All Formatting.",
-        "The formatting will be removed."
-      ]
-    ],
-
-    [
-      "B",
-      "Bold",
-      "Makes text thicker and darker.",
-      "Use it for important words, headings or information you want to emphasize.",
-      "Select text → Bold.",
-      [
-        "Select the text.",
-        "Open the Home tab.",
-        "Click Bold.",
-        "The selected text becomes bold.",
-        "Shortcut: Ctrl + B."
-      ]
-    ],
-
-    [
-      "I",
-      "Italic",
-      "Makes text slanted.",
-      "Use it to emphasize words or phrases.",
-      "Select text → Italic.",
-      [
-        "Select the text.",
-        "Open the Home tab.",
-        "Click Italic.",
-        "The text becomes slanted.",
-        "Shortcut: Ctrl + I."
-      ]
-    ],
-
-    [
-      "U",
-      "Underline",
-      "Places a line below selected text.",
-      "Use it to emphasize important text.",
-      "Select text → Underline.",
-      [
-        "Select the text.",
-        "Open the Home tab.",
-        "Click Underline.",
-        "A line will appear below the text.",
-        "Shortcut: Ctrl + U."
-      ]
-    ],
-
-    [
-      "S",
-      "Strikethrough",
-      "Places a line through the middle of selected text.",
-      "Use it when showing deleted, cancelled or outdated information.",
-      "Select text → Strikethrough.",
-      [
-        "Select the text.",
-        "Open the Home tab.",
-        "Open the Font group.",
-        "Click Strikethrough.",
-        "A line appears through the selected text."
-      ]
-    ],
-
-    [
-      "H₂",
-      "Subscript",
-      "Places text slightly below the normal text line and makes it smaller.",
-      "Use it for chemical formulas such as H₂O.",
-      "Select text → Subscript.",
-      [
-        "Select the character or text.",
-        "Open the Home tab.",
-        "Click Subscript.",
-        "The selected text moves below the normal text line."
-      ]
-    ],
-
-    [
-      "X²",
-      "Superscript",
-      "Places text slightly above the normal text line and makes it smaller.",
-      "Use it for mathematical powers such as X².",
-      "Select text → Superscript.",
-      [
-        "Select the character or text.",
-        "Open the Home tab.",
-        "Click Superscript.",
-        "The selected text moves above the normal text line."
-      ]
-    ],
-
-    [
-      "🖍️",
-      "Text Highlight Color",
-      "Adds a colored highlight behind selected text.",
-      "Use it to make important text easy to notice.",
-      "Select text → Text Highlight Color → choose a color.",
-      [
-        "Select the text.",
-        "Open the Home tab.",
-        "Click Text Highlight Color.",
-        "Choose a color.",
-        "The selected text will be highlighted."
-      ]
-    ],
-
-    [
-      "A",
-      "Font Color",
-      "Changes the color of selected text.",
-      "Use it to emphasize or visually organize information.",
-      "Select text → Font Color → choose a color.",
-      [
-        "Select the text.",
-        "Open the Home tab.",
-        "Click Font Color.",
-        "Choose the required color.",
-        "The selected text changes color."
-      ]
-    ],
-
-    [
-      "✨",
-      "Text Effects",
-      "Applies visual effects such as outline, shadow, glow and other effects.",
-      "Use it for decorative headings or special text.",
-      "Select text → Text Effects → choose an effect.",
-      [
-        "Select the text.",
-        "Open the Home tab.",
-        "Open Text Effects.",
-        "Choose the required effect.",
-        "The selected text receives the effect."
-      ]
-    ],
-
-    [
-      "•",
-      "Bullets",
-      "Creates a bulleted list.",
-      "Use it when the order of items is not important.",
-      "Select text or place the cursor → Bullets.",
-      [
-        "Place the cursor where you want the list.",
-        "Open the Home tab.",
-        "Click Bullets.",
-        "Type the first item.",
-        "Press Enter for the next bullet.",
-        "Press Enter twice to finish the list."
-      ]
-    ],
-
-    [
-      "1.",
-      "Numbering",
-      "Creates a numbered list.",
-      "Use it when items need a sequence or order.",
-      "Place the cursor → Numbering → type the list.",
-      [
-        "Place the cursor where you want the list.",
-        "Open the Home tab.",
-        "Click Numbering.",
-        "Type the first item.",
-        "Press Enter for the next number.",
-        "Press Enter twice to finish."
-      ]
-    ],
-
-    [
-      "1.1",
-      "Multilevel List",
-      "Creates lists with multiple levels or sub-levels.",
-      "Use it for outlines, chapters, topics and subtopics.",
-      "Home → Multilevel List → choose a style.",
-      [
-        "Place the cursor where you want the list.",
-        "Open the Home tab.",
-        "Click Multilevel List.",
-        "Choose a list style.",
-        "Type the main item.",
-        "Use Tab to create a lower level."
-      ]
-    ],
-
-    [
-      "→",
-      "Increase Indent",
-      "Moves a paragraph farther inside from the left margin.",
-      "Use it to create sub-levels or move content inward.",
-      "Select paragraph → Increase Indent.",
-      [
-        "Select or place the cursor in the paragraph.",
-        "Open the Home tab.",
-        "Click Increase Indent.",
-        "The paragraph moves inward."
-      ]
-    ],
-
-    [
-      "←",
-      "Decrease Indent",
-      "Moves a paragraph back toward the left margin.",
-      "Use it when you want to reduce indentation.",
-      "Select paragraph → Decrease Indent.",
-      [
-        "Select or place the cursor in the paragraph.",
-        "Open the Home tab.",
-        "Click Decrease Indent.",
-        "The paragraph moves toward the left margin."
-      ]
-    ],
-
-    [
-      "↕",
-      "Line & Paragraph Spacing",
-      "Changes the amount of space between lines and paragraphs.",
-      "Use it to improve readability or match document formatting requirements.",
-      "Home → Line and Paragraph Spacing → choose a spacing value.",
-      [
-        "Select the paragraph or paragraphs.",
-        "Open the Home tab.",
-        "Click Line and Paragraph Spacing.",
-        "Choose 1.0, 1.15, 1.5, 2.0 or another value.",
-        "The spacing changes."
-      ]
-    ],
-
-    [
-      "A-Z",
-      "Sort",
-      "Arranges selected text or list items in a chosen order.",
-      "Use it to arrange information alphabetically or numerically.",
-      "Select the list → Sort → choose the order.",
-      [
-        "Select the list or text.",
-        "Open the Home tab.",
-        "Click Sort.",
-        "Choose the sorting options.",
-        "Choose ascending or descending order.",
-        "Click OK."
-      ]
-    ],
-
-    [
-      "¶",
-      "Show/Hide",
-      "Shows or hides paragraph marks, spaces and other formatting marks.",
-      "Use it when you need to understand spacing and paragraph formatting.",
-      "Home → Show/Hide ¶.",
-      [
-        "Open the Home tab.",
-        "Find the Paragraph group.",
-        "Click Show/Hide ¶.",
-        "Formatting marks will appear.",
-        "Click it again to hide them."
-      ]
-    ],
-
-    [
-      "⬅",
-      "Align Left",
-      "Aligns text with the left margin.",
-      "Use it for normal paragraphs and left-aligned content.",
-      "Select paragraph → Align Left.",
-      [
-        "Select the paragraph.",
-        "Open the Home tab.",
-        "Click Align Left.",
-        "The text aligns with the left margin.",
-        "Shortcut: Ctrl + L."
-      ]
-    ],
-
-    [
-      "↔",
-      "Center",
-      "Places text in the center between the margins.",
-      "Use it for titles, headings and centered information.",
-      "Select paragraph → Center.",
-      [
-        "Select the paragraph.",
-        "Open the Home tab.",
-        "Click Center.",
-        "The text moves to the center.",
-        "Shortcut: Ctrl + E."
-      ]
-    ],
-
-    [
-      "➡",
-      "Align Right",
-      "Aligns text with the right margin.",
-      "Use it when information needs to appear on the right side.",
-      "Select paragraph → Align Right.",
-      [
-        "Select the paragraph.",
-        "Open the Home tab.",
-        "Click Align Right.",
-        "The text aligns with the right margin.",
-        "Shortcut: Ctrl + R."
-      ]
-    ],
-
-    [
-      "☰",
-      "Justify",
-      "Aligns text evenly with both the left and right margins.",
-      "Use it for professional paragraphs and documents.",
-      "Select paragraph → Justify.",
-      [
-        "Select the paragraph.",
-        "Open the Home tab.",
-        "Click Justify.",
-        "The paragraph aligns with both margins.",
-        "Shortcut: Ctrl + J."
-      ]
-    ]
-
-  ],
-
-  Insert: [
-
-    [
-      "📋",
-      "Table",
-      "Creates a table using rows and columns.",
-      "Use it when information needs to be arranged in rows and columns, such as student marks, attendance, price lists or schedules.",
-      "Insert → Table → select the required rows and columns.",
-      [
-        "Place the cursor where you want the table.",
-        "Open the Insert tab.",
-        "Click Table.",
-        "Move over the grid to select the required number of rows and columns.",
-        "Click to insert the table.",
-        "Enter your information into the cells."
-      ]
-    ],
-
-    [
-      "🖼️",
-      "Pictures",
-      "Inserts a picture from your computer or available location.",
-      "Use it when you want to add photos, screenshots, logos or other images.",
-      "Insert → Pictures → choose the picture.",
-      [
-        "Place the cursor where you want the picture.",
-        "Open the Insert tab.",
-        "Click Pictures.",
-        "Choose the required source.",
-        "Select the image.",
-        "Click Insert."
-      ]
-    ],
-
-    [
-      "🔷",
-      "Shapes",
-      "Adds shapes such as rectangles, circles, arrows and callouts.",
-      "Use shapes for diagrams, flowcharts, labels and visual explanations.",
-      "Insert → Shapes → choose a shape → draw it.",
-      [
-        "Open the Insert tab.",
-        "Click Shapes.",
-        "Choose the required shape.",
-        "Move the pointer to the document.",
-        "Click and drag to draw the shape.",
-        "Use Shape Format to change its appearance."
-      ]
-    ],
-
-    [
-      "📊",
-      "Chart",
-      "Inserts a chart to visually represent data.",
-      "Use it when numerical information is easier to understand as a graph or chart.",
-      "Insert → Chart → choose chart type → enter data.",
-      [
-        "Open the Insert tab.",
-        "Click Chart.",
-        "Choose a chart type.",
-        "Click OK.",
-        "Enter or replace the sample data.",
-        "Close the data window when finished."
-      ]
-    ],
-
-    [
-      "🔗",
-      "Link",
-      "Adds a clickable hyperlink to a webpage, file or location.",
-      "Use it when readers need quick access to another resource.",
-      "Select text → Insert → Link → enter the address.",
-      [
-        "Select the text you want to make clickable.",
-        "Open the Insert tab.",
-        "Click Link.",
-        "Enter or paste the web address.",
-        "Click OK.",
-        "The selected text becomes a hyperlink."
-      ]
-    ],
-
-    [
-      "🔢",
-      "Page Number",
-      "Adds page numbers to a document.",
-      "Use it in reports, assignments, books and long documents.",
-      "Insert → Page Number → choose a position and style.",
-      [
-        "Open the Insert tab.",
-        "Click Page Number.",
-        "Choose the location.",
-        "Choose a page number style.",
-        "Word inserts page numbers into the document."
-      ]
-    ],
-
-    [
-      "🔤",
-      "Text Box",
-      "Creates a movable box containing text.",
-      "Use it for side notes, labels, quotations or special information.",
-      "Insert → Text Box → choose a style or draw a box.",
-      [
-        "Open the Insert tab.",
-        "Click Text Box.",
-        "Choose a built-in text box or draw one.",
-        "Click inside the box.",
-        "Type your text.",
-        "Move or resize the box as required."
-      ]
-    ],
-
-    [
-      "➕",
-      "Header",
-      "Adds content to the top area of pages.",
-      "Use it for document titles, company names or repeated information.",
-      "Insert → Header → choose a style.",
-      [
-        "Open the Insert tab.",
-        "Click Header.",
-        "Choose a header style.",
-        "Type your content.",
-        "Click Close Header and Footer."
-      ]
-    ],
-
-    [
-      "➖",
-      "Footer",
-      "Adds content to the bottom area of pages.",
-      "Use it for page information, document names or other repeated content.",
-      "Insert → Footer → choose a style.",
-      [
-        "Open the Insert tab.",
-        "Click Footer.",
-        "Choose a footer style.",
-        "Enter your content.",
-        "Click Close Header and Footer."
-      ]
-    ]
-
-  ],
-
-  Design: [
-
-    [
-      "🎨",
-      "Themes",
-      "Applies a coordinated design theme to the document.",
-      "Use it when you want the document to have a consistent professional appearance.",
-      "Design → Themes → choose a theme.",
-      [
-        "Open the Design tab.",
-        "Click Themes.",
-        "Move over the available themes to preview them.",
-        "Click the theme you want.",
-        "The document design changes."
-      ]
-    ],
-
-    [
-      "🌈",
-      "Colors",
-      "Changes the document theme color combination.",
-      "Use it when you want to change the overall color scheme.",
-      "Design → Colors → choose a color set.",
-      [
-        "Open the Design tab.",
-        "Click Colors.",
-        "Preview the available color sets.",
-        "Choose the required colors."
-      ]
-    ],
-
-    [
-      "🔤",
-      "Fonts",
-      "Changes the font combination used by the document theme.",
-      "Use it to create consistent heading and body text formatting.",
-      "Design → Fonts → choose a font combination.",
-      [
-        "Open the Design tab.",
-        "Click Fonts.",
-        "Choose a font combination.",
-        "The document's theme fonts will update."
-      ]
-    ],
-
-    [
-      "💧",
-      "Watermark",
-      "Adds faint text or an image behind the document content.",
-      "Use it for Draft, Confidential, company names or other background identification.",
-      "Design → Watermark → choose a watermark or Custom Watermark.",
-      [
-        "Open the Design tab.",
-        "Click Watermark.",
-        "Choose a ready-made watermark such as Draft or Confidential.",
-        "For your own watermark, choose Custom Watermark.",
-        "Choose Text watermark or Picture watermark.",
-        "Enter the text or select the picture.",
-        "Click Apply or OK."
-      ]
-    ],
-
-    [
-      "🎨",
-      "Page Color",
-      "Changes the background color of the document page.",
-      "Use it when you need a colored document background.",
-      "Design → Page Color → choose a color.",
-      [
-        "Open the Design tab.",
-        "Click Page Color.",
-        "Choose the required color.",
-        "The page background changes."
-      ]
-    ],
-
-    [
-      "▣",
-      "Page Borders",
-      "Adds a border around the page.",
-      "Use it for certificates, decorative documents, assignments or formal pages.",
-      "Design → Page Borders → choose border settings.",
-      [
-        "Open the Design tab.",
-        "Click Page Borders.",
-        "Choose the border style.",
-        "Choose color and width if required.",
-        "Choose where the border should apply.",
-        "Click OK."
-      ]
-    ]
-
-  ],
-
-  Layout: [
-
-    [
-      "📐",
-      "Margins",
-      "Controls the blank space around the edges of the page.",
-      "Use it when you need standard, narrow or custom page margins.",
-      "Layout → Margins → choose a margin setting.",
-      [
-        "Open the Layout tab.",
-        "Click Margins.",
-        "Choose Normal, Narrow, Moderate or another setting.",
-        "For custom margins, choose Custom Margins.",
-        "Enter the required measurements.",
-        "Click OK."
-      ]
-    ],
-
-    [
-      "↕️",
-      "Orientation",
-      "Changes the page between Portrait and Landscape.",
-      "Use Landscape for wide tables or content and Portrait for normal documents.",
-      "Layout → Orientation → Portrait or Landscape.",
-      [
-        "Open the Layout tab.",
-        "Click Orientation.",
-        "Choose Portrait or Landscape.",
-        "The page orientation changes."
-      ]
-    ],
-
-    [
-      "📄",
-      "Size",
-      "Changes the paper size used by the document.",
-      "Use it when printing on a specific paper size such as A4 or Letter.",
-      "Layout → Size → choose the paper size.",
-      [
-        "Open the Layout tab.",
-        "Click Size.",
-        "Choose A4, Letter or another size.",
-        "The page size changes."
-      ]
-    ],
-
-    [
-      "📰",
-      "Columns",
-      "Divides text into multiple vertical columns.",
-      "Use it for newsletters, brochures and newspaper-style documents.",
-      "Layout → Columns → choose the number of columns.",
-      [
-        "Select the text if you only want part of the document in columns.",
-        "Open the Layout tab.",
-        "Click Columns.",
-        "Choose Two, Three or another option.",
-        "The text is arranged into columns."
-      ]
-    ],
-
-    [
-      "↔️",
-      "Indent",
-      "Controls how far a paragraph is positioned from the margins.",
-      "Use it to organize paragraphs and create structured layouts.",
-      "Layout → Indent → adjust Left or Right.",
-      [
-        "Select the paragraph.",
-        "Open the Layout tab.",
-        "Find the Indent settings.",
-        "Enter the required Left or Right indent.",
-        "The paragraph position changes."
-      ]
-    ],
-
-    [
-      "↕️",
-      "Spacing",
-      "Controls the space before and after paragraphs.",
-      "Use it to make documents easier to read and properly formatted.",
-      "Layout → Spacing → adjust Before or After.",
-      [
-        "Select the paragraph or paragraphs.",
-        "Open the Layout tab.",
-        "Find Spacing.",
-        "Change Before or After.",
-        "The paragraph spacing changes."
-      ]
-    ]
-
-  ],
-
-  References: [
-
-    [
-      "📚",
-      "Table of Contents",
-      "Creates a list of headings with page numbers.",
-      "Use it in long reports, projects, books and assignments.",
-      "References → Table of Contents → choose a style.",
-      [
-        "Apply Heading styles to your headings.",
-        "Place the cursor where you want the table.",
-        "Open References.",
-        "Click Table of Contents.",
-        "Choose an automatic style.",
-        "Word creates the table."
-      ]
-    ],
-
-    [
-      "📌",
-      "Footnote",
-      "Adds explanatory or reference information at the bottom of a page.",
-      "Use it when additional information needs to be provided without interrupting the main text.",
-      "References → Insert Footnote.",
-      [
-        "Place the cursor after the relevant text.",
-        "Open References.",
-        "Click Insert Footnote.",
-        "Word moves the cursor to the bottom of the page.",
-        "Type the footnote information."
-      ]
-    ],
-
-    [
-      "📝",
-      "Citation",
-      "Adds a source reference to a document.",
-      "Use it when writing research papers, reports or academic assignments.",
-      "References → Insert Citation → Add New Source.",
-      [
-        "Place the cursor where the citation should appear.",
-        "Open References.",
-        "Click Insert Citation.",
-        "Choose Add New Source.",
-        "Enter the source information.",
-        "Click OK."
-      ]
-    ],
-
-    [
-      "🏷️",
-      "Caption",
-      "Adds a descriptive label to a picture, table or figure.",
-      "Use it when figures and tables need proper numbering and descriptions.",
-      "Select the object → References → Insert Caption.",
-      [
-        "Select the picture, table or figure.",
-        "Open References.",
-        "Click Insert Caption.",
-        "Choose the label.",
-        "Enter the caption.",
-        "Click OK."
-      ]
-    ]
-
-  ],
-
-  Mailings: [
-
-    [
-      "✉️",
-      "Mail Merge",
-      "Creates personalized copies of a document for multiple recipients.",
-      "Use it for letters, certificates, invitations and other documents containing different recipient information.",
-      "Mailings → Start Mail Merge → choose document type.",
-      [
-        "Open the Mailings tab.",
-        "Click Start Mail Merge.",
-        "Choose Letters, E-mail Messages, Labels or another option.",
-        "Select or create the recipient list.",
-        "Insert the required merge fields.",
-        "Preview the results.",
-        "Finish and merge."
-      ]
-    ],
-
-    [
-      "👥",
-      "Select Recipients",
-      "Chooses the list of people or records used in a mail merge.",
-      "Use it after starting a mail merge when personalized information comes from a list.",
-      "Mailings → Select Recipients.",
-      [
-        "Open Mailings.",
-        "Start Mail Merge.",
-        "Click Select Recipients.",
-        "Choose an existing list or create a new list.",
-        "Confirm the recipients."
-      ]
-    ],
-
-    [
-      "🏷️",
-      "Labels",
-      "Creates printable labels.",
-      "Use it for addresses, product labels, folders and similar tasks.",
-      "Mailings → Labels.",
-      [
-        "Open Mailings.",
-        "Click Labels.",
-        "Enter the label address or text.",
-        "Choose the label options.",
-        "Click New Document or Print."
-      ]
-    ],
-
-    [
-      "✉️",
-      "Envelopes",
-      "Creates and prints envelopes with address information.",
-      "Use it when preparing physical letters for mailing.",
-      "Mailings → Envelopes.",
-      [
-        "Open Mailings.",
-        "Click Envelopes.",
-        "Enter the delivery address.",
-        "Enter the return address if required.",
-        "Choose the envelope options.",
-        "Click Print or Add to Document."
-      ]
-    ]
-
-  ],
-
-  Review: [
-
-    [
-      "✓",
-      "Spelling & Grammar",
-      "Checks the document for spelling and grammar issues.",
-      "Use it before submitting or sharing a document.",
-      "Review → Spelling & Grammar.",
-      [
-        "Open the Review tab.",
-        "Click Spelling & Grammar.",
-        "Review each suggested correction.",
-        "Choose Ignore, Change or another option.",
-        "Continue until the review is complete."
-      ]
-    ],
-
-    [
-      "💬",
-      "New Comment",
-      "Adds a comment to selected content.",
-      "Use it when giving feedback or making notes without changing the original text.",
-      "Select text → Review → New Comment.",
-      [
-        "Select the relevant text.",
-        "Open Review.",
-        "Click New Comment.",
-        "Type your comment.",
-        "Click outside the comment when finished."
-      ]
-    ],
-
-    [
-      "🔄",
-      "Track Changes",
-      "Records changes made to a document.",
-      "Use it when multiple people are editing or reviewing a document.",
-      "Review → Track Changes.",
-      [
-        "Open the Review tab.",
-        "Click Track Changes.",
-        "Edit the document.",
-        "Word records additions, deletions and formatting changes.",
-        "Turn Track Changes off when finished."
-      ]
-    ],
-
-    [
-      "🔒",
-      "Protect Document",
-      "Restricts editing or access to parts of a document.",
-      "Use it when you need to prevent unwanted changes.",
-      "Review → Protect → choose a protection option.",
-      [
-        "Open Review.",
-        "Choose the appropriate protection option.",
-        "Set the required restrictions.",
-        "Add a password if required.",
-        "Confirm the protection."
-      ]
-    ]
-
-  ],
-
-  View: [
-
-    [
-      "🔍",
-      "Zoom",
-      "Changes the magnification level used to view the document.",
-      "Use it when text or pages are too small or too large on screen.",
-      "View → Zoom → choose a zoom percentage.",
-      [
-        "Open the View tab.",
-        "Click Zoom.",
-        "Choose the required percentage.",
-        "Click OK."
-      ]
-    ],
-
-    [
-      "📄",
-      "Print Layout",
-      "Shows the document approximately as it will appear when printed.",
-      "Use it for normal document editing and print preparation.",
-      "View → Print Layout.",
-      [
-        "Open the View tab.",
-        "Click Print Layout.",
-        "The document will display in print-style view."
-      ]
-    ],
-
-    [
-      "🧭",
-      "Navigation Pane",
-      "Shows a navigation panel for finding headings, pages and search results.",
-      "Use it to move quickly through long documents.",
-      "View → Navigation Pane.",
-      [
-        "Open the View tab.",
-        "Select Navigation Pane.",
-        "The navigation panel appears on the side.",
-        "Use headings or search to move through the document."
-      ]
-    ]
-
-  ]
-
-};
-
-
-/* =========================================================
-   PRACTICAL PROJECTS
-   ========================================================= */
-
-const projects = [
-
-  {
-    id: 1,
-    title: "Professional Resume",
-    description: "Create a professional resume using MS Word.",
-    image: "Project 1.png"
-  },
-
-  {
-    id: 2,
-    title: "Formal Letter",
-    description: "Create and format a formal letter.",
-    image: "Project 2.png"
-  },
-
-  {
-    id: 3,
-    title: "Student Marksheet",
-    description: "Create a marksheet using tables and formatting.",
-    image: "Project 3.png"
-  },
-
-  {
-    id: 4,
-    title: "Invitation Card",
-    description: "Design an attractive invitation card.",
-    image: "Project 4.png"
-  },
-
-  {
-    id: 5,
-    title: "Certificate",
-    description: "Create a professional certificate.",
-    image: "Project 5.png"
-  },
-
-  {
-    id: 6,
-    title: "School Time Table",
-    description: "Create a structured school timetable.",
-    image: "Project 6.png"
-  },
-
-  {
-    id: 7,
-    title: "Business Letter",
-    description: "Prepare a professional business letter.",
-    image: "Project 7.png"
-  },
-
-  {
-    id: 8,
-    title: "Newsletter",
-    description: "Create a multi-column newsletter.",
-    image: "Project 8.png"
-  },
-
-  {
-    id: 9,
-    title: "Project Report",
-    description: "Create a properly formatted project report.",
-    image: "Project 9.png"
-  },
-
-  {
-    id: 10,
-    title: "Brochure",
-    description: "Design a simple professional brochure.",
-    image: "Project 10.png"
-  },
-
-  {
-    id: 11,
-    title: "Advertisement",
-    description: "Create an advertisement using Word tools.",
-    image: "Project 11.png"
-  },
-
-  {
-    id: 12,
-    title: "Meeting Notice",
-    description: "Create a formal meeting notice.",
-    image: "Project 12.png"
-  },
-
-  {
-    id: 13,
-    title: "Mail Merge",
-    description: "Create personalized documents using Mail Merge.",
-    image: "Project 13.png"
-  },
-
-  {
-    id: 14,
-    title: "Final Word Project",
-    description: "Complete a full professional MS Word project.",
-    image: "Project 14.png"
-  }
-
-];  /*
-   * =========================================================
-   * CONTINUE WORD DATA / VIEW TOOLS
-   * =========================================================
-   */
-
-  View: [
-
-    [
-      "🔍",
-      "Zoom",
-      "Changes the magnification level used to view the document.",
-      "Use it when text or pages are too small or too large on screen.",
-      "View → Zoom → choose a zoom percentage.",
-      [
-        "Open the View tab.",
-        "Click Zoom.",
-        "Choose the required zoom percentage.",
-        "Click OK.",
-        "The document appears larger or smaller on screen."
-      ]
-    ],
-
-    [
-      "🔎",
-      "100% Zoom",
-      "Returns the document view to 100% magnification.",
-      "Use it when you want to return to the normal document viewing size.",
-      "View → Zoom → 100%.",
-      [
-        "Open the View tab.",
-        "Click Zoom.",
-        "Choose 100%.",
-        "The document returns to 100% magnification."
-      ]
-    ],
-
-    [
-      "📄",
-      "One Page",
-      "Displays one complete page on the screen.",
-      "Use it when you want to see the overall appearance of a page.",
-      "View → Zoom → One Page.",
-      [
-        "Open the View tab.",
-        "Open the Zoom options.",
-        "Choose One Page.",
-        "Word adjusts the view so one complete page is visible."
-      ]
-    ],
-
-    [
-      "📑",
-      "Multiple Pages",
-      "Displays more than one page at the same time.",
-      "Use it when you want to compare nearby pages or see the document layout.",
-      "View → Zoom → Multiple Pages.",
-      [
-        "Open the View tab.",
-        "Open the Zoom options.",
-        "Choose Multiple Pages.",
-        "Select the required page arrangement if available."
-      ]
-    ],
-
-    [
-      "🧭",
-      "Navigation Pane",
-      "Displays a navigation panel for searching and moving through the document.",
-      "Use it for long documents when you need to quickly find headings, pages or text.",
-      "View → Navigation Pane.",
-      [
-        "Open the View tab.",
-        "Click Navigation Pane.",
-        "A panel appears on the left side.",
-        "Use the Search box to find text.",
-        "Use Headings to jump between sections.",
-        "Use Pages to move between pages."
-      ]
-    ],
-
-    [
-      "📏",
-      "Ruler",
-      "Shows horizontal and vertical rulers around the document.",
-      "Use it to set margins, tabs and paragraph indentation accurately.",
-      "View → Ruler.",
-      [
-        "Open the View tab.",
-        "Find the Show group.",
-        "Select Ruler.",
-        "The ruler appears around the document.",
-        "Use the ruler to adjust indents and tab positions."
-      ]
-    ],
-
-    [
-      "▦",
-      "Gridlines",
-      "Displays a grid that helps position objects accurately.",
-      "Use it when arranging pictures, shapes or other objects.",
-      "View → Gridlines.",
-      [
-        "Open the View tab.",
-        "Find the Show group.",
-        "Turn on Gridlines.",
-        "A grid appears behind the document objects."
-      ]
-    ],
-
-    [
-      "📌",
-      "Sidebar / Navigation",
-      "Provides additional navigation and document controls.",
-      "Use it when working with a long or structured document.",
-      "View → Navigation Pane or related navigation option.",
-      [
-        "Open the View tab.",
-        "Choose the required navigation option.",
-        "Use the displayed panel to move through the document."
-      ]
-    ]
-
-  ]
-
-};
-
-
-/* =========================================================
-   APPLICATION STATE INITIALIZATION
-   ========================================================= */
-
-function resetWordState() {
-
-  state.course = "word";
-
-  state.wordView = null;
-
-  state.tab = null;
-
-  state.toolIndex = 0;
-
-  /*
-   * IMPORTANT:
-   * Instructions are collapsed when a tab is first opened.
-   */
-  state.expanded = false;
-
-  state.practicalOpen = false;
-
-  state.projectId = null;
-
-}
-
-
-/* =========================================================
-   LANGUAGE HELPERS
-   ========================================================= */
-
-function textForEnglish(text) {
-
-  return text || "";
-
-}
-
-
-function textForHindi(text, hindiText) {
-
-  if (isHindi() && hindiText) {
-
-    return hindiText;
-
-  }
-
-  return text || "";
-
-}
-
-
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
-
-function renderSidebar(active) {
-
-  return `
-    <aside class="jh-sidebar">
-
-      <div class="jh-brand">
-
-        <div class="jh-brand-symbol">
-
-          <img
-            src="/logo.jpeg"
-            alt="Joining Hands"
-            class="jh-logo-image"
-            style="
-              width:100%;
-              height:100%;
-              object-fit:contain;
-              display:block;
-            "
-          />
-
-        </div>
-
-        <div>
-
-          <h2>
-            JOINING<br>
-            HANDS
-          </h2>
-
-          <p>
-            AI Computer Learning
-            <br>
-            & Practical Lab
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <nav class="jh-main-nav">
-
-        <button
-          type="button"
-          class="jh-nav-item ${active === "home" ? "active" : ""}"
-          onclick="goHome()"
-        >
-          🏠
-          <span>Home</span>
-        </button>
-
-
-        <button
-          type="button"
-          class="jh-nav-item ${active === "word" ? "active" : ""}"
-          onclick="openWord()"
-        >
-          📝
-          <span>MS Word</span>
-        </button>
-
-
-        <button
-          type="button"
-          class="jh-nav-item ${active === "excel" ? "active" : ""}"
-          onclick="openExcel()"
-        >
-          📊
-          <span>MS Excel</span>
-        </button>
-
-
-        <button
-          type="button"
-          class="jh-nav-item ${active === "powerpoint" ? "active" : ""}"
-          onclick="openPowerPoint()"
-        >
-          🎞️
-          <span>MS PowerPoint</span>
-        </button>
-
-      </nav>
-
-
-      <div class="jh-sidebar-divider"></div>
-
-
-      <div class="jh-quick-title">
-        QUICK LINKS
-      </div>
-
-
-      <nav class="jh-quick-nav">
-
-        <button
-          type="button"
-          class="jh-quick-item"
-          onclick="openAITeacher()"
-        >
-          🤖
-          <span>AI Teacher</span>
-        </button>
-
-
-        <button
-          type="button"
-          class="jh-quick-item"
-          onclick="showComingSoon('My Progress')"
-        >
-          📈
-          <span>My Progress</span>
-        </button>
-
-
-        <button
-          type="button"
-          class="jh-quick-item"
-          onclick="showComingSoon('Practice Tests')"
-        >
-          📝
-          <span>Practice Tests</span>
-        </button>
-
-
-        <button
-          type="button"
-          class="jh-quick-item"
-          onclick="showComingSoon('Downloads')"
-        >
-          ⬇️
-          <span>Downloads</span>
-        </button>
-
-
-        <button
-          type="button"
-          class="jh-quick-item"
-          onclick="showComingSoon('Help & Support')"
-        >
-          🎧
-          <span>Help & Support</span>
-        </button>
-
-      </nav>
-
-
-      <div class="jh-sidebar-motivation">
-
-        <div class="jh-motivation-icon">
-          🏆
-        </div>
-
-        <h3>
-          Keep Learning,
-          <br>
-          Keep Growing!
-        </h3>
-
-        <p>
-          Practice daily and become an expert.
-        </p>
-
-        <div class="jh-stars">
-          ⭐⭐⭐⭐⭐
-        </div>
-
-      </div>
-
-    </aside>
-  `;
-
-}
-
-
-/* =========================================================
-   TOP HEADER
-   ========================================================= */
-
-function renderTopHeader(active) {
-
-  const hindi = isHindi();
-
-  return `
-    <header class="jh-top-header">
-
-      <div class="jh-welcome">
-
-        <div class="jh-welcome-small">
-          ${hindi ? "Joining Hands Learning Portal" : "Joining Hands Learning Portal"}
-        </div>
-
-        <h1>
-          ${
-            hindi
-              ? "सीखें • अभ्यास करें • आगे बढ़ें"
-              : "Learn • Practice • Grow"
-          }
-        </h1>
-
-        <p>
-          ${
-            hindi
-              ? "Computer skills सीखें और practical projects के साथ practice करें."
-              : "Learn computer skills and practice them with practical projects."
-          }
-        </p>
-
-      </div>
-
-
-      <div class="jh-header-controls">
-
-        <button
-          type="button"
-          class="jh-language-btn ${!hindi ? "active" : ""}"
-          onclick="changeLanguage('en')"
-        >
-          English
-        </button>
-
-
-        <button
-          type="button"
-          class="jh-language-btn hindi ${hindi ? "active" : ""}"
-          onclick="changeLanguage('hi')"
-        >
-          हिन्दी
-        </button>
-
-
-        <button
-          type="button"
-          class="jh-header-ai-btn"
-          onclick="openAITeacher()"
-        >
-          🤖 AI Teacher
-        </button>
-
-
-        <button
-          type="button"
-          class="jh-theme-btn"
-          onclick="toggleTheme()"
-          title="Change theme"
-        >
-          🌙
-        </button>
-
-      </div>
-
-    </header>
-  `;
-
-}
-
-
-/* =========================================================
-   HOME PAGE
-   ========================================================= */
-
-function renderHome() {
-
-  const hindi = isHindi();
-
-  return `
-
-    ${renderTopHeader("home")}
-
-
-    <section class="jh-home-hero">
-
-      <span class="jh-home-badge">
-        🎓 Joining Hands Computer Learning
-      </span>
-
-      <h1>
-        ${
-          hindi
-            ? "Computer Skills को आसान तरीके से सीखें"
-            : "Learn Computer Skills the Easy Way"
+    // ============================================================
+    // JOINING HANDS - AI COMPUTER LEARNING & PRACTICAL LAB
+    // MS WORD LEARNING MODULE
+    // ============================================================
+
+
+    // ============================================================
+    // CURRICULUM
+    // ============================================================
+
+    const curriculum = {
+      "MS Word": [
+        {
+          id: 1,
+          title: "Project 1",
+          topic: "MS Word Practical Project",
+          description: "Complete the project by following the example.",
+          image: "Project 1.png"
+        },
+        {
+          id: 2,
+          title: "Project 2",
+          topic: "MS Word Practical Project",
+          description: "Complete the project by following the example.",
+          image: "Project 2.png"
+        },
+        {
+          id: 3,
+          title: "Project 3",
+          topic: "MS Word Practical Project",
+          description: "Complete the project by following the example.",
+          image: "Project 3.png"
+        },
+        {
+          id: 4,
+          title: "Project 4",
+          topic: "MS Word Practical Project",
+          description: "Complete the project by following the example.",
+          image: "Project 4.png"
+        },
+        {
+          id: 5,
+          title: "Project 5",
+          topic: "MS Word Practical Project",
+          description: "Complete the project by following the example.",
+          image: "Project 5.png"
+        },
+        {
+          id: 6,
+          title: "Project 6",
+          topic: "MS Word Practical Project",
+          description: "Complete the project by following the example.",
+          image: "Project 6.png"
+        },
+        {
+          id: 7,
+          title: "Project 7",
+          topic: "Visitor's Information Sheet",
+          description: "Prepare a visitor's information sheet in MS Word.",
+          image: "Project 7.png"
+        },
+        {
+          id: 8,
+          title: "Project 8",
+          topic: "Sales Chart",
+          description: "Create a sales chart using tables and charts.",
+          image: "Project 8.png"
+        },
+        {
+          id: 9,
+          title: "Project 9",
+          topic: "MS Word Practical Project",
+          description: "Complete the project by following the example.",
+          image: "Project 9.png"
+        },
+        {
+          id: 10,
+          title: "Project 10",
+          topic: "MS Word Practical Project",
+          description: "Complete the project by following the example.",
+          image: "Project 10.png"
+        },
+        {
+          id: 11,
+          title: "Project 11",
+          topic: "MS Word Practical Project",
+          description: "Complete the project by following the example.",
+          image: "Project 11.png"
+        },
+        {
+          id: 12,
+          title: "Project 12",
+          topic: "MS Word Practical Project",
+          description: "Complete the project by following the example.",
+          image: "Project 12.png"
+        },
+        {
+          id: 13,
+          title: "Project 13",
+          topic: "Education",
+          description: "Create an educational information page using MS Word.",
+          image: "Project 13.png"
+        },
+        {
+          id: 14,
+          title: "Project 14",
+          topic: "Kid Helper",
+          description: "Create an attractive information page using text, shapes and images.",
+          image: "Project 14.png"
         }
-      </h1>
+      ],
 
-      <p>
-        ${
-          hindi
-            ? "Step-by-step learning, practical work और AI Teacher की मदद से अपने computer skills को मजबूत बनाएं."
-            : "Build your computer skills with step-by-step lessons, practical work and help from your AI Teacher."
+      "MS Excel": [
+        {
+          id: 1,
+          title: "Project 1",
+          topic: "Basic Excel",
+          description: "Learn rows, columns, cells and basic data entry."
+        },
+        {
+          id: 2,
+          title: "Project 2",
+          topic: "Basic Formulas",
+          description: "Practice SUM, AVERAGE, MIN and MAX."
+        },
+        {
+          id: 3,
+          title: "Project 3",
+          topic: "Formatting",
+          description: "Format an Excel worksheet professionally."
         }
-      </p>
+      ],
 
-    </section>
+      "MS PowerPoint": [
+        {
+          id: 1,
+          title: "Project 1",
+          topic: "Create a Presentation",
+          description: "Create your first PowerPoint presentation."
+        },
+        {
+          id: 2,
+          title: "Project 2",
+          topic: "Design and Formatting",
+          description: "Practice themes, pictures, shapes and text."
+        }
+      ],
+
+      "English": [
+        {
+          id: 1,
+          title: "Lesson 1",
+          topic: "Basic English",
+          description: "Practice basic English words and sentences."
+        },
+        {
+          id: 2,
+          title: "Lesson 2",
+          topic: "Daily Conversation",
+          description: "Practice common conversations used in daily life."
+        }
+      ]
+    };
 
 
-    <section class="jh-home-section">
+    // ============================================================
+    // MS WORD LEARNING DATA
+    // ============================================================
 
-      <div class="jh-section-heading">
+    const wordLearning = {
 
-        <div class="jh-section-icon">
-          🤝
-        </div>
+      Home: {
+        image: "Home.png",
 
-        <div>
+        tools: [
 
-          <h2>
-            ${
-              hindi
-                ? "Joining Hands के बारे में"
-                : "About Joining Hands"
+          {
+            name: "Paste",
+            icon: "📋",
+
+            en: {
+              what: "Inserts copied or cut content into the document.",
+              when: "Use Paste when you want to place copied or cut text, pictures or other content somewhere else in your document.",
+              steps: [
+                "Copy or cut the content you want to use.",
+                "Place the cursor where you want the content.",
+                "Go to the Home tab.",
+                "Click Paste.",
+                "The copied or cut content will appear at the cursor position."
+              ],
+              practice: "Copy a sentence and paste it into another paragraph."
+            },
+
+            hi: {
+              what: "Copied या cut किए गए content को document में insert करता है।",
+              when: "जब copied या cut किए गए text, picture या दूसरे content को दूसरी जगह लगाना हो तब Paste का use करें।",
+              steps: [
+                "जिस content को use करना है उसे Copy या Cut करें।",
+                "जहाँ content लगाना है वहाँ cursor रखें।",
+                "Home tab पर जाएँ।",
+                "Paste पर click करें।",
+                "Content cursor की position पर दिखाई देगा।"
+              ],
+              practice: "एक sentence को Copy करके दूसरे paragraph में Paste करें।"
             }
-          </h2>
+          },
 
-          <p>
-            ${
-              hindi
-                ? "हमारी learning initiative के बारे में जानकारी"
-                : "Information about our learning initiative"
+          {
+            name: "Cut",
+            icon: "✂️",
+
+            en: {
+              what: "Removes selected content and places it on the Clipboard.",
+              when: "Use Cut when you want to move text, pictures or other content from one location to another.",
+              steps: [
+                "Select the content you want to move.",
+                "Go to the Home tab.",
+                "Click Cut.",
+                "Place the cursor at the new location.",
+                "Click Paste."
+              ],
+              practice: "Move one sentence from one paragraph to another."
+            },
+
+            hi: {
+              what: "Selected content को हटाकर Clipboard में रखता है।",
+              when: "जब किसी text, picture या content को एक जगह से दूसरी जगह move करना हो तब Cut का use करें।",
+              steps: [
+                "जिस content को move करना है उसे select करें।",
+                "Home tab पर जाएँ।",
+                "Cut पर click करें।",
+                "नई location पर cursor रखें।",
+                "Paste पर click करें।"
+              ],
+              practice: "एक sentence को एक paragraph से दूसरे paragraph में move करें।"
             }
-          </p>
+          },
 
-        </div>
+          {
+            name: "Copy",
+            icon: "📄",
 
-      </div>
+            en: {
+              what: "Creates a copy of selected content without removing the original.",
+              when: "Use Copy when you want to use the same content in another location.",
+              steps: [
+                "Select the text or object.",
+                "Go to the Home tab.",
+                "Click Copy.",
+                "Place the cursor where you want the copy.",
+                "Click Paste."
+              ],
+              practice: "Copy a heading and paste it somewhere else."
+            },
 
+            hi: {
+              what: "Selected content की copy बनाता है और original content को वहीं रखता है।",
+              when: "जब same content को दूसरी location पर भी use करना हो तब Copy का use करें।",
+              steps: [
+                "Text या object को select करें।",
+                "Home tab पर जाएँ।",
+                "Copy पर click करें।",
+                "जहाँ copy चाहिए वहाँ cursor रखें।",
+                "Paste पर click करें।"
+              ],
+              practice: "एक heading को Copy करके दूसरी जगह Paste करें।"
+            }
+          },
 
-      <div class="jh-coming-soon-card">
+          {
+            name: "Format Painter",
+            icon: "🖌️",
 
-        <div class="jh-coming-icon">
-          🚀
-        </div>
+            en: {
+              what: "Copies formatting from one piece of content and applies it to another.",
+              when: "Use Format Painter when you want two pieces of text to have the same formatting.",
+              steps: [
+                "Select the text that already has the formatting you want.",
+                "Go to the Home tab.",
+                "Click Format Painter.",
+                "Select the text where you want to apply the formatting.",
+                "The formatting will be copied."
+              ],
+              practice: "Make one heading bold, blue and large, then use Format Painter on another heading."
+            },
 
-        <h3>
-          ${
-            hindi
-              ? "जल्द आ रहा है"
-              : "Coming Soon"
+            hi: {
+              what: "एक text की formatting को दूसरे text पर apply करता है।",
+              when: "जब दो अलग-अलग text की formatting same करनी हो तब Format Painter का use करें।",
+              steps: [
+                "जिस text की formatting copy करनी है उसे select करें।",
+                "Home tab पर जाएँ।",
+                "Format Painter पर click करें।",
+                "जिस text पर formatting लगानी है उसे select करें।",
+                "Formatting automatically apply हो जाएगी।"
+              ],
+              practice: "एक heading को bold, blue और बड़ा बनाकर दूसरी heading पर Format Painter लगाएँ।"
+            }
+          },
+
+          {
+            name: "Bold",
+            icon: "B",
+
+            en: {
+              what: "Makes text darker and thicker.",
+              when: "Use Bold to highlight important words, headings or information.",
+              steps: [
+                "Select the text.",
+                "Go to the Home tab.",
+                "Click Bold.",
+                "The selected text becomes bold."
+              ],
+              practice: "Make the main heading bold."
+            },
+
+            hi: {
+              what: "Text को मोटा और dark करता है।",
+              when: "Important words, headings या information को highlight करने के लिए Bold का use करें।",
+              steps: [
+                "Text select करें।",
+                "Home tab पर जाएँ।",
+                "Bold पर click करें।",
+                "Selected text bold हो जाएगा।"
+              ],
+              practice: "Main heading को Bold करें।"
+            }
+          },
+
+          {
+            name: "Italic",
+            icon: "I",
+
+            en: {
+              what: "Makes text slanted.",
+              when: "Use Italic to emphasize words or create a different text style.",
+              steps: [
+                "Select the text.",
+                "Go to the Home tab.",
+                "Click Italic.",
+                "The selected text becomes italic."
+              ],
+              practice: "Make one important word italic."
+            },
+
+            hi: {
+              what: "Text को तिरछा करता है।",
+              when: "किसी word को emphasize करने या अलग style देने के लिए Italic का use करें।",
+              steps: [
+                "Text select करें।",
+                "Home tab पर जाएँ।",
+                "Italic पर click करें।",
+                "Selected text italic हो जाएगा।"
+              ],
+              practice: "एक important word को Italic करें।"
+            }
+          },
+
+          {
+            name: "Underline",
+            icon: "U",
+
+            en: {
+              what: "Adds a line underneath the selected text.",
+              when: "Use Underline when you want to emphasize important text.",
+              steps: [
+                "Select the text.",
+                "Go to the Home tab.",
+                "Click Underline.",
+                "The selected text will have a line underneath it."
+              ],
+              practice: "Underline the title of your document."
+            },
+
+            hi: {
+              what: "Selected text के नीचे line लगाता है।",
+              when: "Important text को highlight करने के लिए Underline का use करें।",
+              steps: [
+                "Text select करें।",
+                "Home tab पर जाएँ।",
+                "Underline पर click करें।",
+                "Text के नीचे line लग जाएगी।"
+              ],
+              practice: "Document के title को Underline करें।"
+            }
           }
-        </h3>
 
-        <p>
-          ${
-            hindi
-              ? "Joining Hands के बारे में detailed information जल्द यहां उपलब्ध होगी."
-              : "Detailed information about Joining Hands will be available here soon."
+        ]
+      },
+
+
+      // ==========================================================
+      // INSERT TAB
+      // ==========================================================
+
+      Insert: {
+
+        image: "Insert.png",
+
+        tools: [
+
+          {
+            name: "Table",
+            icon: "📊",
+
+            en: {
+              what: "Creates a table using rows and columns.",
+              when: "Use a table when information needs to be arranged in rows and columns, such as student marks, attendance, price lists or schedules.",
+              steps: [
+                "Open your Word document.",
+                "Place the cursor where you want the table.",
+                "Go to the Insert tab.",
+                "Click Table.",
+                "Move your mouse over the table grid.",
+                "Select the required number of rows and columns.",
+                "Click to insert the table.",
+                "Enter your information into the cells.",
+                "Use the Table Design and Layout options to format the table."
+              ],
+              practice: "Create a 5-column × 6-row student marks table."
+            },
+
+            hi: {
+              what: "Rows और columns की मदद से table create करता है।",
+              when: "जब information को rows और columns में arrange करना हो, जैसे student marks, attendance, price list या schedule।",
+              steps: [
+                "MS Word document open करें।",
+                "जहाँ table चाहिए वहाँ cursor रखें।",
+                "Insert tab पर जाएँ।",
+                "Table पर click करें।",
+                "Table grid पर mouse ले जाएँ।",
+                "Required rows और columns select करें।",
+                "Click करके table insert करें।",
+                "Cells में अपनी information enter करें।",
+                "Table Design और Layout options से table को format करें।"
+              ],
+              practice: "5 columns और 6 rows का student marks table बनाएँ।"
+            }
+          },
+
+
+          {
+            name: "Pictures",
+            icon: "🖼️",
+
+            en: {
+              what: "Inserts an image into the document.",
+              when: "Use Pictures when you want to add photos, illustrations, screenshots or other images.",
+              steps: [
+                "Place the cursor where you want the picture.",
+                "Go to the Insert tab.",
+                "Click Pictures.",
+                "Choose This Device or the available picture source.",
+                "Select the image.",
+                "Click Insert.",
+                "Resize the picture using its corner handles.",
+                "Use Picture Format options to change its appearance."
+              ],
+              practice: "Insert a picture of your choice and resize it."
+            },
+
+            hi: {
+              what: "Document में image या picture insert करता है।",
+              when: "जब document में photo, illustration, screenshot या दूसरी image add करनी हो।",
+              steps: [
+                "जहाँ picture चाहिए वहाँ cursor रखें।",
+                "Insert tab पर जाएँ।",
+                "Pictures पर click करें।",
+                "This Device या available picture source select करें।",
+                "Image select करें।",
+                "Insert पर click करें।",
+                "Corner handles से picture का size बदलें।",
+                "Picture Format options से picture को format करें।"
+              ],
+              practice: "अपनी पसंद की एक picture insert करके उसका size बदलें।"
+            }
+          },
+
+
+          {
+            name: "Shapes",
+            icon: "🔷",
+
+            en: {
+              what: "Inserts shapes such as rectangles, circles, arrows and lines.",
+              when: "Use Shapes to create diagrams, flowcharts, labels, arrows or visual designs.",
+              steps: [
+                "Go to the Insert tab.",
+                "Click Shapes.",
+                "Choose a shape.",
+                "Click and drag on the document to draw it.",
+                "Use Shape Format to change its fill, outline and effects.",
+                "Move or resize the shape as required."
+              ],
+              practice: "Create a simple flowchart using three shapes and arrows."
+            },
+
+            hi: {
+              what: "Rectangle, circle, arrow और line जैसे shapes insert करता है।",
+              when: "Diagram, flowchart, labels, arrows या visual design बनाने के लिए Shapes का use करें।",
+              steps: [
+                "Insert tab पर जाएँ।",
+                "Shapes पर click करें।",
+                "कोई shape select करें।",
+                "Document में click करके drag करें।",
+                "Shape Format से fill, outline और effects बदलें।",
+                "Shape को move या resize करें।"
+              ],
+              practice: "तीन shapes और arrows का use करके एक simple flowchart बनाएँ।"
+            }
+          },
+
+
+          {
+            name: "SmartArt",
+            icon: "⭐",
+
+            en: {
+              what: "Creates diagrams for visually presenting information.",
+              when: "Use SmartArt for processes, lists, hierarchies, cycles and organizational structures.",
+              steps: [
+                "Go to the Insert tab.",
+                "Click SmartArt.",
+                "Choose a category such as Process, List or Hierarchy.",
+                "Select a SmartArt design.",
+                "Click OK.",
+                "Enter your information in the text pane.",
+                "Use SmartArt Design options to change the layout and colors."
+              ],
+              practice: "Create a three-step process using SmartArt."
+            },
+
+            hi: {
+              what: "Information को diagram के रूप में visually दिखाता है।",
+              when: "Process, list, hierarchy, cycle या organization structure दिखाने के लिए SmartArt का use करें।",
+              steps: [
+                "Insert tab पर जाएँ।",
+                "SmartArt पर click करें।",
+                "Process, List या Hierarchy जैसी category select करें।",
+                "SmartArt design select करें।",
+                "OK पर click करें।",
+                "Text pane में अपनी information लिखें।",
+                "SmartArt Design से layout और colors बदलें।"
+              ],
+              practice: "SmartArt का use करके three-step process बनाएँ।"
+            }
+          },
+
+
+          {
+            name: "Chart",
+            icon: "📈",
+
+            en: {
+              what: "Represents data using graphs and charts.",
+              when: "Use a chart when numerical information needs to be shown visually.",
+              steps: [
+                "Go to the Insert tab.",
+                "Click Chart.",
+                "Choose a chart type such as Column, Line or Pie.",
+                "Click OK.",
+                "An Excel data sheet will appear.",
+                "Replace the sample data with your own data.",
+                "Close the data sheet.",
+                "The chart will update automatically."
+              ],
+              practice: "Create a column chart showing the marks of five students."
+            },
+
+            hi: {
+              what: "Data को graph या chart के रूप में दिखाता है।",
+              when: "जब numerical information को visually दिखाना हो तब Chart का use करें।",
+              steps: [
+                "Insert tab पर जाएँ।",
+                "Chart पर click करें।",
+                "Column, Line या Pie जैसा chart type select करें।",
+                "OK पर click करें।",
+                "Excel data sheet दिखाई देगी।",
+                "Sample data को अपनी data से replace करें।",
+                "Data sheet close करें।",
+                "Chart automatically update हो जाएगा।"
+              ],
+              practice: "Five students के marks दिखाने वाला column chart बनाएँ।"
+            }
+          },
+
+
+          {
+            name: "Link",
+            icon: "🔗",
+
+            en: {
+              what: "Creates a hyperlink to a webpage, file or another location.",
+              when: "Use a link when you want users to quickly open a website, file or another location.",
+              steps: [
+                "Select the text you want to turn into a link.",
+                "Go to the Insert tab.",
+                "Click Link.",
+                "Enter or paste the web address.",
+                "Click OK."
+              ],
+              practice: "Create a hyperlink from the word 'Google' to the Google website."
+            },
+
+            hi: {
+              what: "Webpage, file या दूसरी location का hyperlink बनाता है।",
+              when: "जब user को किसी website, file या location को quickly open करवाना हो।",
+              steps: [
+                "जिस text को link बनाना है उसे select करें।",
+                "Insert tab पर जाएँ।",
+                "Link पर click करें।",
+                "Web address enter या paste करें।",
+                "OK पर click करें।"
+              ],
+              practice: "'Google' word को Google website से hyperlink करें।"
+            }
+          },
+
+
+          {
+            name: "Comment",
+            icon: "💬",
+
+            en: {
+              what: "Adds a note or comment to selected content.",
+              when: "Use comments when reviewing a document or giving feedback to another person.",
+              steps: [
+                "Select the text you want to comment on.",
+                "Go to the Insert tab.",
+                "Click Comment.",
+                "Type your comment.",
+                "Submit or save the comment."
+              ],
+              practice: "Select a sentence and add a comment asking for correction."
+            },
+
+            hi: {
+              what: "Selected content पर note या comment add करता है।",
+              when: "Document review करने या किसी दूसरे person को feedback देने के लिए comments का use करें।",
+              steps: [
+                "जिस text पर comment करना है उसे select करें।",
+                "Insert tab पर जाएँ।",
+                "Comment पर click करें।",
+                "अपना comment लिखें।",
+                "Comment submit या save करें।"
+              ],
+              practice: "एक sentence select करके correction के लिए comment add करें।"
+            }
+          },
+
+
+          {
+            name: "Header",
+            icon: "⬆️",
+
+            en: {
+              what: "Adds information at the top of pages.",
+              when: "Use a header for document titles, company names, course names or other information that should appear at the top of pages.",
+              steps: [
+                "Go to the Insert tab.",
+                "Click Header.",
+                "Choose a built-in header design or choose Edit Header.",
+                "Type your required information.",
+                "Click Close Header and Footer."
+              ],
+              practice: "Add 'Joining Hands Computer Lab' as a header."
+            },
+
+            hi: {
+              what: "Page के ऊपर information add करता है।",
+              when: "Document title, company name, course name या दूसरी information को page के top पर दिखाने के लिए Header का use करें।",
+              steps: [
+                "Insert tab पर जाएँ।",
+                "Header पर click करें।",
+                "Ready-made header select करें या Edit Header चुनें।",
+                "अपनी information type करें।",
+                "Close Header and Footer पर click करें।"
+              ],
+              practice: "'Joining Hands Computer Lab' को header में add करें।"
+            }
+          },
+
+
+          {
+            name: "Footer",
+            icon: "⬇️",
+
+            en: {
+              what: "Adds information at the bottom of pages.",
+              when: "Use a footer for page information, document names, dates or other repeating information.",
+              steps: [
+                "Go to the Insert tab.",
+                "Click Footer.",
+                "Choose a footer design.",
+                "Enter your required information.",
+                "Click Close Header and Footer."
+              ],
+              practice: "Add your name to the footer."
+            },
+
+            hi: {
+              what: "Page के नीचे information add करता है।",
+              when: "Page information, document name, date या repeating information के लिए Footer का use करें।",
+              steps: [
+                "Insert tab पर जाएँ।",
+                "Footer पर click करें।",
+                "Footer design select करें।",
+                "अपनी information enter करें।",
+                "Close Header and Footer पर click करें।"
+              ],
+              practice: "Footer में अपना नाम add करें।"
+            }
+          },
+
+
+          {
+            name: "Page Number",
+            icon: "🔢",
+
+            en: {
+              what: "Adds page numbers to the document.",
+              when: "Use page numbers when your document has multiple pages and you want readers to navigate easily.",
+              steps: [
+                "Go to the Insert tab.",
+                "Click Page Number.",
+                "Choose Top of Page, Bottom of Page or another location.",
+                "Select a page number style.",
+                "Word will add page numbers automatically."
+              ],
+              practice: "Add page numbers at the bottom of every page."
+            },
+
+            hi: {
+              what: "Document में page numbers add करता है।",
+              when: "जब document में कई pages हों और readers को pages आसानी से identify करने हों।",
+              steps: [
+                "Insert tab पर जाएँ।",
+                "Page Number पर click करें।",
+                "Top of Page, Bottom of Page या दूसरी location select करें।",
+                "Page number style select करें।",
+                "Word automatically page numbers add कर देगा।"
+              ],
+              practice: "हर page के bottom में page number add करें।"
+            }
+          },
+
+
+          {
+            name: "Text Box",
+            icon: "▣",
+
+            en: {
+              what: "Creates a separate box for entering and positioning text.",
+              when: "Use a text box when you want text to appear separately from the normal document flow.",
+              steps: [
+                "Go to the Insert tab.",
+                "Click Text Box.",
+                "Choose a built-in text box or draw one.",
+                "Type your text.",
+                "Move and resize the text box as needed.",
+                "Use Shape Format to change its appearance."
+              ],
+              practice: "Create a text box containing your contact information."
+            },
+
+            hi: {
+              what: "Text लिखने के लिए एक अलग box बनाता है।",
+              when: "जब text को normal document flow से अलग position में दिखाना हो।",
+              steps: [
+                "Insert tab पर जाएँ।",
+                "Text Box पर click करें।",
+                "Ready-made text box चुनें या खुद draw करें।",
+                "अपना text लिखें।",
+                "Text box को move और resize करें।",
+                "Shape Format से उसका appearance बदलें।"
+              ],
+              practice: "अपने contact information का text box बनाएँ।"
+            }
+          },
+
+
+          {
+            name: "WordArt",
+            icon: "🔤",
+
+            en: {
+              what: "Creates decorative and artistic text.",
+              when: "Use WordArt for attractive titles, posters, banners or headings.",
+              steps: [
+                "Go to the Insert tab.",
+                "Click WordArt.",
+                "Choose a WordArt style.",
+                "Type your text.",
+                "Use Shape Format to customize it."
+              ],
+              practice: "Create an attractive 'WELCOME' heading using WordArt."
+            },
+
+            hi: {
+              what: "Decorative और artistic text बनाता है।",
+              when: "Attractive title, poster, banner या heading बनाने के लिए WordArt का use करें।",
+              steps: [
+                "Insert tab पर जाएँ।",
+                "WordArt पर click करें।",
+                "WordArt style select करें।",
+                "अपना text लिखें।",
+                "Shape Format से उसे customize करें।"
+              ],
+              practice: "WordArt का use करके attractive 'WELCOME' heading बनाएँ।"
+            }
+          },
+
+
+          {
+            name: "Drop Cap",
+            icon: "🔠",
+
+            en: {
+              what: "Makes the first letter of a paragraph larger.",
+              when: "Use Drop Cap for magazines, newsletters and decorative paragraphs.",
+              steps: [
+                "Place the cursor inside the paragraph.",
+                "Go to the Insert tab.",
+                "Click Drop Cap.",
+                "Choose Dropped or In Margin.",
+                "The first letter becomes larger."
+              ],
+              practice: "Create a paragraph and apply a Drop Cap to its first letter."
+            },
+
+            hi: {
+              what: "Paragraph के first letter को बड़ा करता है।",
+              when: "Magazine, newsletter और decorative paragraph में Drop Cap का use किया जाता है।",
+              steps: [
+                "Paragraph के अंदर cursor रखें।",
+                "Insert tab पर जाएँ।",
+                "Drop Cap पर click करें।",
+                "Dropped या In Margin select करें।",
+                "First letter बड़ा हो जाएगा।"
+              ],
+              practice: "एक paragraph बनाकर उसके first letter पर Drop Cap लगाएँ।"
+            }
+          },
+
+
+          {
+            name: "Date & Time",
+            icon: "📅",
+
+            en: {
+              what: "Inserts the current date and time.",
+              when: "Use it when a document needs the current date or time.",
+              steps: [
+                "Place the cursor where you want the date or time.",
+                "Go to the Insert tab.",
+                "Click Date & Time.",
+                "Choose a date or time format.",
+                "Click OK."
+              ],
+              practice: "Insert today's date into a document."
+            },
+
+            hi: {
+              what: "Current date और time insert करता है।",
+              when: "जब document में current date या time add करना हो।",
+              steps: [
+                "जहाँ date या time चाहिए वहाँ cursor रखें।",
+                "Insert tab पर जाएँ।",
+                "Date & Time पर click करें।",
+                "Date या time format select करें।",
+                "OK पर click करें।"
+              ],
+              practice: "Document में आज की date insert करें।"
+            }
+          },
+
+
+          {
+            name: "Symbol",
+            icon: "Ω",
+
+            en: {
+              what: "Inserts special characters and symbols.",
+              when: "Use Symbols when you need characters that are not easily available on the keyboard.",
+              steps: [
+                "Place the cursor where you want the symbol.",
+                "Go to the Insert tab.",
+                "Click Symbol.",
+                "Choose a symbol from the list.",
+                "Click Insert."
+              ],
+              practice: "Insert ©, ® and ₹ symbols into a document."
+            },
+
+            hi: {
+              what: "Special characters और symbols insert करता है।",
+              when: "जब keyboard से easily available न होने वाले special characters चाहिए हों।",
+              steps: [
+                "जहाँ symbol चाहिए वहाँ cursor रखें।",
+                "Insert tab पर जाएँ।",
+                "Symbol पर click करें।",
+                "List से symbol select करें।",
+                "Insert पर click करें।"
+              ],
+              practice: "Document में ©, ® और ₹ symbols insert करें।"
+            }
+          },
+
+
+          {
+            name: "Equation",
+            icon: "∑",
+
+            en: {
+              what: "Inserts mathematical equations and formulas.",
+              when: "Use Equation when creating mathematical, scientific or technical documents.",
+              steps: [
+                "Place the cursor where the equation should appear.",
+                "Go to the Insert tab.",
+                "Click Equation.",
+                "Choose a built-in equation or create your own.",
+                "Enter the required mathematical symbols and values."
+              ],
+              practice: "Insert the equation x² + y² = z²."
+            },
+
+            hi: {
+              what: "Mathematical equations और formulas insert करता है।",
+              when: "Mathematical, scientific या technical document बनाते समय Equation का use करें।",
+              steps: [
+                "जहाँ equation चाहिए वहाँ cursor रखें।",
+                "Insert tab पर जाएँ।",
+                "Equation पर click करें।",
+                "Built-in equation select करें या अपनी equation बनाएँ।",
+                "Required mathematical symbols और values enter करें।"
+              ],
+              practice: "x² + y² = z² equation insert करें।"
+            }
           }
-        </p>
 
-        <span class="jh-coming-badge">
-          Coming Soon
-        </span>
-
-      </div>
-
-    </section>
+        ]
+      },
 
 
-    <section class="jh-home-section">
+      // ==========================================================
+      // PAGE LAYOUT TAB
+      // ==========================================================
 
-      <div class="jh-section-heading">
+      "Page Layout": {
 
-        <div class="jh-section-icon">
-          💻
-        </div>
+        image: "Page Layout(1).png",
 
-        <div>
+        tools: [
 
-          <h2>
-            ${
-              hindi
-                ? "हमारे Courses"
-                : "Courses We Offer"
+          {
+            name: "Margins",
+            icon: "📐",
+
+            en: {
+              what: "Controls the space between the document content and the edges of the page.",
+              when: "Use Margins when you need to change the amount of white space around the page.",
+              steps: [
+                "Go to the Page Layout tab.",
+                "Click Margins.",
+                "Choose a preset such as Normal, Narrow or Wide.",
+                "For custom margins, click Custom Margins.",
+                "Enter the Top, Bottom, Left and Right values.",
+                "Click OK."
+              ],
+              practice: "Set the document margins to 1 inch on all sides."
+            },
+
+            hi: {
+              what: "Page के edges और document content के बीच का space control करता है।",
+              when: "जब page के चारों तरफ का white space बदलना हो तब Margins का use करें।",
+              steps: [
+                "Page Layout tab पर जाएँ।",
+                "Margins पर click करें।",
+                "Normal, Narrow या Wide जैसे preset select करें।",
+                "Custom setting के लिए Custom Margins चुनें।",
+                "Top, Bottom, Left और Right values enter करें।",
+                "OK पर click करें।"
+              ],
+              practice: "Document के चारों तरफ 1 inch margin set करें।"
             }
-          </h2>
+          },
 
-          <p>
-            ${
-              hindi
-                ? "अपना course चुनें और learning शुरू करें"
-                : "Choose a course and start learning"
+
+          {
+            name: "Orientation",
+            icon: "↔️",
+
+            en: {
+              what: "Changes the page orientation between Portrait and Landscape.",
+              when: "Use Landscape for wide content such as large tables or charts. Use Portrait for normal documents.",
+              steps: [
+                "Go to the Page Layout tab.",
+                "Click Orientation.",
+                "Choose Portrait or Landscape.",
+                "The page orientation changes immediately."
+              ],
+              practice: "Change the document to Landscape and create a wide table."
+            },
+
+            hi: {
+              what: "Page को Portrait या Landscape orientation में बदलता है।",
+              when: "Wide table या chart के लिए Landscape और normal document के लिए Portrait use करें।",
+              steps: [
+                "Page Layout tab पर जाएँ।",
+                "Orientation पर click करें।",
+                "Portrait या Landscape select करें।",
+                "Page orientation तुरंत change हो जाएगी।"
+              ],
+              practice: "Document को Landscape करके एक wide table बनाएँ।"
             }
-          </p>
-
-        </div>
-
-      </div>
+          },
 
 
-      <div class="jh-course-grid">
+          {
+            name: "Size",
+            icon: "📄",
 
+            en: {
+              what: "Changes the paper size of the document.",
+              when: "Use Size when you need a specific paper size such as A4, Letter or Legal.",
+              steps: [
+                "Go to the Page Layout tab.",
+                "Click Size.",
+                "Select the required paper size.",
+                "The document page size changes."
+              ],
+              practice: "Set the document size to A4."
+            },
 
-        <button
-          type="button"
-          class="jh-course-card"
-          onclick="openWord()"
-        >
-
-          <div class="jh-course-card-icon">
-            📝
-          </div>
-
-          <div class="jh-course-card-body">
-
-            <h3>
-              MS Word
-            </h3>
-
-            <span class="jh-course-subtitle">
-              Learning + Practical Work
-            </span>
-
-            <p>
-              ${
-                hindi
-                  ? "Word के सभी important tabs सीखें और practical projects करें."
-                  : "Learn important Word tabs and complete practical projects."
-              }
-            </p>
-
-          </div>
-
-          <div class="jh-course-arrow">
-            →
-          </div>
-
-        </button>
-
-
-        <button
-          type="button"
-          class="jh-course-card"
-          onclick="openExcel()"
-        >
-
-          <div class="jh-course-card-icon">
-            📊
-          </div>
-
-          <div class="jh-course-card-body">
-
-            <h3>
-              MS Excel
-            </h3>
-
-            <span class="jh-course-subtitle">
-              Formulas + Practice
-            </span>
-
-            <p>
-              ${
-                hindi
-                  ? "Excel formulas सीखें और practice sheets के साथ अभ्यास करें."
-                  : "Learn Excel formulas and practice them with practical sheets."
-              }
-            </p>
-
-          </div>
-
-          <div class="jh-course-arrow">
-            →
-          </div>
-
-        </button>
-
-
-        <button
-          type="button"
-          class="jh-course-card"
-          onclick="openPowerPoint()"
-        >
-
-          <div class="jh-course-card-icon">
-            🎞️
-          </div>
-
-          <div class="jh-course-card-body">
-
-            <h3>
-              MS PowerPoint
-            </h3>
-
-            <span class="jh-course-subtitle">
-              Coming Soon
-            </span>
-
-            <p>
-              ${
-                hindi
-                  ? "PowerPoint learning content जल्द उपलब्ध होगा."
-                  : "PowerPoint learning content will be available soon."
-              }
-            </p>
-
-          </div>
-
-          <div class="jh-course-arrow">
-            →
-          </div>
-
-        </button>
-
-
-      </div>
-
-    </section>
-
-
-    <section class="jh-home-section">
-
-      <div class="jh-section-heading">
-
-        <div class="jh-section-icon">
-          🤖
-        </div>
-
-        <div>
-
-          <h2>
-            AI Teacher
-          </h2>
-
-          <p>
-            ${
-              hindi
-                ? "जब भी doubt हो, AI Teacher से पूछें"
-                : "Ask the AI Teacher whenever you have a doubt"
+            hi: {
+              what: "Document का paper size change करता है।",
+              when: "जब A4, Letter या Legal जैसे specific paper size की जरूरत हो।",
+              steps: [
+                "Page Layout tab पर जाएँ।",
+                "Size पर click करें।",
+                "Required paper size select करें।",
+                "Document का page size change हो जाएगा।"
+              ],
+              practice: "Document का size A4 set करें।"
             }
-          </p>
-
-        </div>
-
-      </div>
+          },
 
 
-      <div class="jh-ai-home-card">
+          {
+            name: "Columns",
+            icon: "📰",
 
-        <div class="jh-ai-home-icon">
-          🤖
-        </div>
+            en: {
+              what: "Divides text into two or more columns.",
+              when: "Use Columns for newspapers, newsletters, brochures and magazine-style layouts.",
+              steps: [
+                "Select the text you want to place into columns, or leave the cursor in the document.",
+                "Go to the Page Layout tab.",
+                "Click Columns.",
+                "Choose Two, Three or another option.",
+                "The text will be arranged into columns."
+              ],
+              practice: "Create a two-column newsletter."
+            },
 
-        <div class="jh-ai-home-content">
-
-          <h3>
-            ${
-              hindi
-                ? "आपका Personal AI Computer Teacher"
-                : "Your Personal AI Computer Teacher"
+            hi: {
+              what: "Text को two or more columns में divide करता है।",
+              when: "Newspaper, newsletter, brochure या magazine-style document बनाने के लिए Columns का use करें।",
+              steps: [
+                "जिस text को columns में रखना है उसे select करें, या document में cursor रखें।",
+                "Page Layout tab पर जाएँ।",
+                "Columns पर click करें।",
+                "Two, Three या कोई दूसरी option select करें।",
+                "Text columns में arrange हो जाएगा।"
+              ],
+              practice: "Two-column newsletter बनाएँ।"
             }
-          </h3>
+          },
 
-          <p>
-            ${
-              hindi
-                ? "MS Word, Excel और computer learning से जुड़े questions पूछें और step-by-step answers पाएं."
-                : "Ask questions about MS Word, Excel and computer learning and get step-by-step answers."
+
+          {
+            name: "Breaks",
+            icon: "↪️",
+
+            en: {
+              what: "Adds page, section or column breaks.",
+              when: "Use Breaks when you need to start content on a new page or create different sections with different formatting.",
+              steps: [
+                "Place the cursor where you want the break.",
+                "Go to the Page Layout tab.",
+                "Click Breaks.",
+                "Choose Page Break, Column Break or a Section Break.",
+                "Word will create the selected break."
+              ],
+              practice: "Create a new section for the second part of a document."
+            },
+
+            hi: {
+              what: "Page, section या column break add करता है।",
+              when: "जब content को new page से start करना हो या अलग formatting वाला section बनाना हो।",
+              steps: [
+                "जहाँ break चाहिए वहाँ cursor रखें।",
+                "Page Layout tab पर जाएँ।",
+                "Breaks पर click करें।",
+                "Page Break, Column Break या Section Break select करें।",
+                "Word selected break create कर देगा।"
+              ],
+              practice: "Document के second part के लिए नया section बनाएँ।"
             }
-          </p>
-
-        </div>
+          },
 
 
-        <button
-          type="button"
-          class="jh-primary-btn"
-          onclick="openAITeacher()"
-        >
-          ${
-            hindi
-              ? "AI Teacher खोलें"
-              : "Open AI Teacher"
+          {
+            name: "Watermark",
+            icon: "💧",
+
+            en: {
+              what: "Adds faded text or an image behind the document content.",
+              when: "Use a watermark for labels such as CONFIDENTIAL, DRAFT or SAMPLE.",
+              steps: [
+                "Open your Word document.",
+                "Go to the Page Layout tab.",
+                "Click Watermark.",
+                "Choose a ready-made watermark, or click Custom Watermark.",
+                "Choose Text watermark if you want your own text.",
+                "Enter your text, such as CONFIDENTIAL.",
+                "Choose the font, size and color.",
+                "Choose Diagonal or Horizontal.",
+                "Click Apply or OK.",
+                "Check the pages to see the watermark."
+              ],
+              practice: "Add a diagonal 'DRAFT' watermark to your document."
+            },
+
+            hi: {
+              what: "Document के पीछे हल्का text या image दिखाता है।",
+              when: "CONFIDENTIAL, DRAFT या SAMPLE जैसे labels दिखाने के लिए Watermark का use करें।",
+              steps: [
+                "MS Word document open करें।",
+                "Page Layout tab पर जाएँ।",
+                "Watermark पर click करें।",
+                "Ready-made watermark select करें या Custom Watermark चुनें।",
+                "अपना text लगाने के लिए Text watermark select करें।",
+                "जैसे CONFIDENTIAL text enter करें।",
+                "Font, size और color select करें।",
+                "Diagonal या Horizontal select करें।",
+                "Apply या OK पर click करें।",
+                "Pages पर watermark check करें।"
+              ],
+              practice: "Document में diagonal 'DRAFT' watermark लगाएँ।"
+            }
+          },
+
+
+          {
+            name: "Page Color",
+            icon: "🎨",
+
+            en: {
+              what: "Changes the background color of the page.",
+              when: "Use Page Color when you want to create a colored document background.",
+              steps: [
+                "Go to the Page Layout tab.",
+                "Click Page Color.",
+                "Choose a color.",
+                "The page background changes."
+              ],
+              practice: "Apply a light background color to a document."
+            },
+
+            hi: {
+              what: "Page का background color बदलता है।",
+              when: "जब document के page का background colored बनाना हो।",
+              steps: [
+                "Page Layout tab पर जाएँ।",
+                "Page Color पर click करें।",
+                "कोई color select करें।",
+                "Page का background बदल जाएगा।"
+              ],
+              practice: "Document पर एक light background color apply करें।"
+            }
+          },
+
+
+          {
+            name: "Page Borders",
+            icon: "▣",
+
+            en: {
+              what: "Adds a border around the page.",
+              when: "Use Page Borders for certificates, invitations, projects and decorative documents.",
+              steps: [
+                "Go to the Page Layout tab.",
+                "Click Page Borders.",
+                "Choose a border setting such as Box or Shadow.",
+                "Choose the border style, color and width.",
+                "Choose which pages should have the border.",
+                "Click OK."
+              ],
+              practice: "Create a decorative border for a certificate."
+            },
+
+            hi: {
+              what: "Page के चारों तरफ border लगाता है।",
+              when: "Certificate, invitation, project या decorative document के लिए Page Borders का use करें।",
+              steps: [
+                "Page Layout tab पर जाएँ।",
+                "Page Borders पर click करें।",
+                "Box या Shadow जैसी border setting select करें।",
+                "Border style, color और width select करें।",
+                "Choose करें कि किन pages पर border चाहिए।",
+                "OK पर click करें।"
+              ],
+              practice: "Certificate के लिए एक decorative page border बनाएँ।"
+            }
+          },
+
+
+          {
+            name: "Paragraph Indent",
+            icon: "↔️",
+
+            en: {
+              what: "Moves a paragraph inward from the left or right side.",
+              when: "Use Indent when you want to control the position of a paragraph.",
+              steps: [
+                "Select the paragraph.",
+                "Go to the Page Layout tab.",
+                "Find the Indent options.",
+                "Increase Left or Right indent.",
+                "The paragraph moves inward."
+              ],
+              practice: "Indent a paragraph by 1 inch from the left."
+            },
+
+            hi: {
+              what: "Paragraph को left या right side से अंदर shift करता है।",
+              when: "Paragraph की position control करने के लिए Indent का use करें।",
+              steps: [
+                "Paragraph select करें।",
+                "Page Layout tab पर जाएँ।",
+                "Indent options देखें।",
+                "Left या Right indent बढ़ाएँ।",
+                "Paragraph अंदर shift हो जाएगा।"
+              ],
+              practice: "Paragraph को left side से 1 inch indent करें।"
+            }
+          },
+
+
+          {
+            name: "Paragraph Spacing",
+            icon: "↕️",
+
+            en: {
+              what: "Controls the amount of space before and after paragraphs.",
+              when: "Use paragraph spacing to make a document easier to read and properly organized.",
+              steps: [
+                "Select the paragraph or paragraphs.",
+                "Go to the Page Layout tab.",
+                "Find the Spacing options.",
+                "Change Before or After spacing.",
+                "The paragraph spacing will update."
+              ],
+              practice: "Add 10 pt spacing after each paragraph."
+            },
+
+            hi: {
+              what: "Paragraph के पहले और बाद का space control करता है।",
+              when: "Document को readable और properly organized बनाने के लिए paragraph spacing का use करें।",
+              steps: [
+                "Paragraph या paragraphs select करें।",
+                "Page Layout tab पर जाएँ।",
+                "Spacing options देखें।",
+                "Before या After spacing change करें।",
+                "Paragraph spacing update हो जाएगी।"
+              ],
+              practice: "हर paragraph के बाद 10 pt spacing लगाएँ।"
+            }
+          },
+
+
+          {
+            name: "Wrap Text",
+            icon: "📝",
+
+            en: {
+              what: "Controls how text flows around an image or object.",
+              when: "Use Wrap Text when you want text to appear beside, around or behind an image.",
+              steps: [
+                "Select the picture or object.",
+                "Go to the picture or shape formatting options.",
+                "Click Wrap Text.",
+                "Choose an option such as Square, Tight, Behind Text or In Front of Text.",
+                "Check how the text flows around the object."
+              ],
+              practice: "Insert a picture and set its wrapping to Square."
+            },
+
+            hi: {
+              what: "Image या object के आसपास text कैसे दिखाई देगा, यह control करता है।",
+              when: "जब image के side, around या behind text दिखाना हो।",
+              steps: [
+                "Picture या object select करें।",
+                "Picture या Shape formatting options पर जाएँ।",
+                "Wrap Text पर click करें।",
+                "Square, Tight, Behind Text या In Front of Text जैसी option select करें।",
+                "Check करें कि text object के आसपास कैसे दिखाई दे रहा है।"
+              ],
+              practice: "एक picture insert करके उसका Wrap Text 'Square' करें।"
+            }
+          },
+
+
+          {
+            name: "Align Objects",
+            icon: "📏",
+
+            en: {
+              what: "Aligns objects with each other or with the page.",
+              when: "Use Align when multiple objects need to be positioned neatly.",
+              steps: [
+                "Select the object or multiple objects.",
+                "Open the object formatting options.",
+                "Click Align.",
+                "Choose Left, Center, Right, Top, Middle or Bottom.",
+                "The objects will align accordingly."
+              ],
+              practice: "Create three shapes and align them to the center."
+            },
+
+            hi: {
+              what: "Objects को एक-दूसरे या page के साथ properly align करता है।",
+              when: "जब multiple objects को neat और organized position में रखना हो।",
+              steps: [
+                "Object या multiple objects select करें।",
+                "Object formatting options खोलें।",
+                "Align पर click करें।",
+                "Left, Center, Right, Top, Middle या Bottom select करें।",
+                "Objects selected alignment के अनुसार arrange हो जाएँगे।"
+              ],
+              practice: "Three shapes बनाकर उन्हें center में align करें।"
+            }
           }
-        </button>
 
-      </div>
-
-    </section>
-
-  `;
-
-}
-
-
-/* =========================================================
-   WORD COURSE SELECTION
-   ========================================================= */
-
-function openWord() {
-
-  state.section = "word";
-
-  state.course = "word";
-
-  state.wordView = null;
-
-  state.tab = null;
-
-  state.toolIndex = 0;
-
-  state.expanded = false;
-
-  state.practicalOpen = false;
-
-  state.projectId = null;
-
-  render();
-
-}
-
-
-/* =========================================================
-   WORD LEARNING
-   ========================================================= */
-
-function openWordLearning() {
-
-  state.section = "word";
-
-  state.course = "word";
-
-  state.wordView = "learning";
-
-  state.tab = null;
-
-  state.toolIndex = 0;
-
-  state.expanded = false;
-
-  state.practicalOpen = false;
-
-  state.projectId = null;
-
-  render();
-
-}
-
-
-/* =========================================================
-   WORD PRACTICAL WORK
-   ========================================================= */
-
-function openWordPractical() {
-
-  state.section = "word";
-
-  state.course = "word";
-
-  state.wordView = "practical";
-
-  state.tab = null;
-
-  state.toolIndex = 0;
-
-  state.expanded = false;
-
-  state.practicalOpen = true;
-
-  state.projectId = null;
-
-  render();
-
-}
-
-
-/* =========================================================
-   TAB SELECTION
-   ========================================================= */
-
-function selectTab(tabName) {
-
-  if (!tabData[tabName]) {
-
-    return;
-
-  }
-
-  state.tab = tabName;
-
-  state.toolIndex = 0;
-
-  /*
-   * Every newly selected tab starts with
-   * the detailed instructions collapsed.
-   */
-  state.expanded = false;
-
-  render();
-
-}
-
-
-/* =========================================================
-   TOOL SELECTION
-   ========================================================= */
-
-function selectTool(index) {
-
-  const tools = tabData[state.tab] || [];
-
-  if (!tools[index]) {
-
-    return;
-
-  }
-
-  state.toolIndex = index;
-
-  /*
-   * Opened tool starts with instructions collapsed.
-   */
-  state.expanded = false;
-
-  render();
-
-}
-
-
-/* =========================================================
-   HOW TO USE TOGGLE
-   ========================================================= */
-
-function toggleInstructions() {
-
-  state.expanded = !state.expanded;
-
-  render();
-
-}
-
-
-/* =========================================================
-   PROJECT OPEN
-   ========================================================= */
-
-function openProject(projectId) {
-
-  const project = projects.find(
-    item => Number(item.id) === Number(projectId)
-  );
-
-  if (!project) {
-
-    return;
-
-  }
-
-  state.projectId = project.id;
-
-  renderProjectFullscreen(project);
-
-}
-
-
-/* =========================================================
-   PROJECT CLOSE
-   ========================================================= */
-
-function closeProject() {
-
-  state.projectId = null;
-
-  const overlay =
-    document.getElementById("projectFullscreen");
-
-  if (overlay) {
-
-    overlay.remove();
-
-  }
-
-}
-
-
-/* =========================================================
-   PROJECT FULL SCREEN
-   ========================================================= */
-
-function renderProjectFullscreen(project) {
-
-  const existing =
-    document.getElementById("projectFullscreen");
-
-  if (existing) {
-
-    existing.remove();
-
-  }
-
-  const index =
-    projects.findIndex(
-      item => Number(item.id) === Number(project.id)
-    );
-
-  const previous =
-    projects[
-      index > 0 ? index - 1 : projects.length - 1
-    ];
-
-  const next =
-    projects[
-      index < projects.length - 1 ? index + 1 : 0
-    ];
-
-
-  const overlay =
-    document.createElement("div");
-
-  overlay.id = "projectFullscreen";
-
-  overlay.innerHTML = `
-
-    <div class="jh-project-fullscreen">
-
-      <header class="jh-project-full-header">
-
-        <div>
-
-          <span>
-            PRACTICAL PROJECT ${project.id}
-          </span>
-
-          <h2>
-            ${escapeHTML(project.title)}
-          </h2>
-
-        </div>
-
-
-        <div class="jh-project-full-actions">
-
-          <button
-            type="button"
-            onclick="openImageZoom('${escapeHTML(imagePath(project.image))}')"
-          >
-            🔍 Zoom
-          </button>
-
-          <button
-            type="button"
-            onclick="closeProject()"
-          >
-            ✕ Close
-          </button>
-
-        </div>
-
-      </header>
-
-
-      <div class="jh-project-full-body">
-
-        <img
-          src="${escapeHTML(imagePath(project.image))}"
-          alt="${escapeHTML(project.title)}"
-          class="jh-project-full-image"
-          onclick="openImageZoom('${escapeHTML(imagePath(project.image))}')"
-        />
-
-      </div>
-
-
-      <footer class="jh-project-navigation">
-
-        <button
-          type="button"
-          onclick="openProject(${previous.id})"
-        >
-          ← Previous
-        </button>
-
-
-        <span>
-          ${index + 1} / ${projects.length}
-        </span>
-
-
-        <button
-          type="button"
-          onclick="openProject(${next.id})"
-        >
-          Next →
-        </button>
-
-      </footer>
-
-    </div>
-
-  `;
-
-
-  document.body.appendChild(overlay);
-
-}
-
-
-/* =========================================================
-   IMAGE ZOOM
-   ========================================================= */
-
-function openImageZoom(src) {
-
-  if (!src) {
-
-    return;
-
-  }
-
-  const existing =
-    document.getElementById("jhImageModal");
-
-  if (existing) {
-
-    existing.remove();
-
-  }
-
-
-  const modal =
-    document.createElement("div");
-
-  modal.id = "jhImageModal";
-
-  modal.className = "jh-image-modal open";
-
-  modal.innerHTML = `
-
-    <button
-      type="button"
-      class="jh-modal-close"
-      aria-label="Close"
-      onclick="closeImageZoom()"
-    >
-      ✕
-    </button>
-
-    <img
-      src="${escapeHTML(src)}"
-      alt="Zoomed image"
-    />
-
-  `;
-
-
-  modal.addEventListener(
-    "click",
-    event => {
-
-      if (event.target === modal) {
-
-        closeImageZoom();
-
+        ]
       }
-
-    }
-  );
-
-
-  document.body.appendChild(modal);
-
-}
-
-
-function closeImageZoom() {
-
-  const modal =
-    document.getElementById("jhImageModal");
-
-  if (modal) {
-
-    modal.remove();
-
-  }
-
-}
-
-
-/* =========================================================
-   COMING SOON
-   ========================================================= */
-
-function showComingSoon(name) {
-
-  const existing =
-    document.getElementById("jhComingToast");
-
-  if (existing) {
-
-    existing.remove();
-
-  }
-
-
-  const toast =
-    document.createElement("div");
-
-  toast.id = "jhComingToast";
-
-  toast.innerHTML = `
-
-    <div class="jh-coming-toast">
-
-      <strong>
-        ${escapeHTML(name)}
-      </strong>
-
-      <span>
-        This section is coming soon.
-      </span>
-
-    </div>
-
-  `;
-
-
-  document.body.appendChild(toast);
-
-
-  setTimeout(() => {
-
-    toast.remove();
-
-  }, 3000);
-
-}
-
-
-/* =========================================================
-   HOME NAVIGATION
-   ========================================================= */
-
-function goHome() {
-
-  state.section = "home";
-
-  state.course = null;
-
-  state.wordView = null;
-
-  state.tab = null;
-
-  state.toolIndex = 0;
-
-  state.expanded = false;
-
-  state.practicalOpen = false;
-
-  state.projectId = null;
-
-  render();
-
-}
-
-
-/* =========================================================
-   LANGUAGE CHANGE
-   ========================================================= */
-
-function changeLanguage(language) {
-
-  if (
-    language !== "en" &&
-    language !== "hi"
-  ) {
-
-    return;
-
-  }
-
-  state.lang = language;
-
-  render();
-
-}
-
-
-/* =========================================================
-   THEME
-   ========================================================= */
-
-function toggleTheme() {
-
-  document.body.classList.toggle(
-    "jh-dark-mode"
-  );
-
-}
-
-
-/* =========================================================
-   RENDER MAIN APPLICATION
-   ========================================================= */
-
-function render() {
-
-  const root = getAppRoot();
-
-  if (!root) {
-
-    console.error(
-      "Joining Hands: #app root was not found."
-    );
-
-    return;
-
-  }
-
-
-  let content = "";
-
-
-  if (state.section === "home") {
-
-    content = renderHome();
-
-  }
-
-  else if (
-    state.section === "word"
-  ) {
-
-    content =
-      renderWordPage();
-
-  }
-
-  else if (
-    state.section === "excel"
-  ) {
-
-    content =
-      renderExcelPage();
-
-  }
-
-  else if (
-    state.section === "powerpoint"
-  ) {
-
-    content =
-      renderPowerPointPage();
-
-  }
-
-  else {
-
-    content = renderHome();
-
-  }
-
-
-  root.innerHTML = `
-
-    <div class="jh-layout">
-
-      ${renderSidebar(state.section)}
-
-      <main class="jh-main">
-
-        ${content}
-
-      </main>
-
-    </div>
-
-  `;
-
-
-  /*
-   * Re-attach any state-dependent UI
-   * after the DOM has been recreated.
-   */
-
-  if (state.projectId) {
-
-    const project =
-      projects.find(
-        item =>
-          Number(item.id) ===
-          Number(state.projectId)
-      );
-
-    if (project) {
-
-      renderProjectFullscreen(project);
-
-    }
-
-  }
-
-}  /*
-   * =========================================================
-   * WORD COURSE PAGE
-   * =========================================================
-   */
-
-  function renderWordPage() {
-
-    const hindi = isHindi();
-
-    /*
-     * First screen after clicking MS Word.
-     * Only two options are shown:
-     * 1. Learning
-     * 2. Practical Works
-     */
-
-    if (!state.wordView) {
-
-      return `
-
-        ${renderTopHeader("word")}
-
-        <section class="jh-course-hero word-hero">
-
-          <div class="jh-course-hero-icon">
-            📝
-          </div>
-
-          <div>
-
-            <span class="jh-small-badge">
-              MS WORD
-            </span>
-
-            <h1>
-              ${
-                hindi
-                  ? "MS Word सीखें"
-                  : "Learn MS Word"
-              }
-            </h1>
-
-            <p>
-              ${
-                hindi
-                  ? "Learning और Practical Work में से चुनें."
-                  : "Choose Learning or Practical Work to continue."
-              }
-            </p>
-
-          </div>
-
-        </section>
-
-
-        <section class="jh-word-choice-grid">
-
-
-          <button
-            type="button"
-            class="jh-word-choice learning-choice"
-            onclick="openWordLearning()"
-          >
-
-            <div class="jh-choice-icon">
-              📚
-            </div>
-
-            <div class="jh-choice-content">
-
-              <span class="jh-choice-number">
-                01
-              </span>
-
-              <h2>
-                ${
-                  hindi
-                    ? "Learning"
-                    : "Learning"
-                }
-              </h2>
-
-              <p>
-                ${
-                  hindi
-                    ? "MS Word के Home, Insert, Design, Layout, References, Mailings, Review और View tabs को step-by-step सीखें."
-                    : "Learn Home, Insert, Design, Layout, References, Mailings, Review and View tabs step-by-step."
-                }
-              </p>
-
-              <span class="jh-choice-link">
-                Start Learning →
-              </span>
-
-            </div>
-
-          </button>
-
-
-          <button
-            type="button"
-            class="jh-word-choice practical-choice"
-            onclick="openWordPractical()"
-          >
-
-            <div class="jh-choice-icon">
-              🛠️
-            </div>
-
-            <div class="jh-choice-content">
-
-              <span class="jh-choice-number">
-                02
-              </span>
-
-              <h2>
-                Practical Works
-              </h2>
-
-              <p>
-                ${
-                  hindi
-                    ? "14 practical MS Word projects करें और अपने skills को practice करें."
-                    : "Complete 14 practical MS Word projects and practice your skills."
-                }
-              </p>
-
-              <span class="jh-choice-link">
-                View Projects →
-              </span>
-
-            </div>
-
-          </button>
-
-
-        </section>
-
-      `;
-
-    }
-
-
-    /*
-     * Practical Work screen.
-     */
-
-    if (
-      state.wordView === "practical"
-    ) {
-
-      return renderWordPractical();
-
-    }
-
-
-    /*
-     * Learning screen.
-     */
-
-    return renderWordLearning();
-
-  }
-
-
-  /* =========================================================
-     WORD LEARNING PAGE
-     ========================================================= */
-
-  function renderWordLearning() {
-
-    const hindi = isHindi();
-
-    const tabs = Object.keys(tabData);
-
-
-    /*
-     * No tab selected:
-     * show all tabs, but do not show detailed
-     * explanation until the student clicks a tab.
-     */
-
-    if (!state.tab) {
-
-      return `
-
-        ${renderTopHeader("word")}
-
-
-        <section class="jh-learning-header">
-
-          <button
-            type="button"
-            class="jh-back-btn"
-            onclick="openWord()"
-          >
-            ← Back to MS Word
-          </button>
-
-
-          <div class="jh-learning-title">
-
-            <span>
-              MS WORD • LEARNING
-            </span>
-
-            <h1>
-              ${
-                hindi
-                  ? "MS Word के सभी Tabs"
-                  : "MS Word Tabs"
-              }
-            </h1>
-
-            <p>
-              ${
-                hindi
-                  ? "किसी भी tab पर click करें और उसके tools को सीखें."
-                  : "Click any tab to learn its tools and functions."
-              }
-            </p>
-
-          </div>
-
-        </section>
-
-
-        <section class="jh-tab-selection-grid">
-
-          ${tabs.map((tabName, index) => {
-
-            const descriptions =
-              tabDescriptions[tabName] || {};
-
-            return `
-
-              <button
-                type="button"
-                class="jh-tab-selection-card"
-                onclick="selectTab('${escapeHTML(tabName)}')"
-              >
-
-                <div class="jh-tab-card-number">
-                  ${String(index + 1).padStart(2, "0")}
-                </div>
-
-                <div class="jh-tab-card-icon">
-                  ${getTabIcon(tabName)}
-                </div>
-
-                <div class="jh-tab-card-content">
-
-                  <h3>
-                    ${escapeHTML(
-                      descriptions.title || tabName
-                    )}
-                  </h3>
-
-                  <p>
-                    ${escapeHTML(
-                      isHindi()
-                        ? (
-                            descriptions.hindi ||
-                            descriptions.description ||
-                            ""
-                          )
-                        : (
-                            descriptions.description ||
-                            ""
-                          )
-                    )}
-                  </p>
-
-                </div>
-
-                <span class="jh-tab-card-arrow">
-                  →
-                </span>
-
-              </button>
-
-            `;
-
-          }).join("")}
-
-        </section>
-
-      `;
-
-    }
-
-
-    return renderSelectedWordTab();
-
-  }
-
-
-  /* =========================================================
-     TAB ICON
-     ========================================================= */
-
-  function getTabIcon(tabName) {
-
-    const icons = {
-
-      Home: "🏠",
-
-      Insert: "➕",
-
-      Design: "🎨",
-
-      Layout: "📐",
-
-      References: "📚",
-
-      Mailings: "✉️",
-
-      Review: "✓",
-
-      View: "👁️"
 
     };
 
-    return icons[tabName] || "📄";
 
-  }
+    // ============================================================
+
+    // ============================================================
+    // EXPANDED WORD LEARNING CONTENT
+    // ============================================================
+
+    function addExpandedWordTools(tabName, image, items) {
+      if (!wordLearning[tabName]) {
+        wordLearning[tabName] = { image, tools: [] };
+      }
+
+      const existing = new Set(
+        wordLearning[tabName].tools.map(tool => tool.name)
+      );
+
+      items.forEach(item => {
+        if (existing.has(item.name)) return;
+
+        const stepsEn = [
+          `Open the ${tabName} tab.`,
+          `Find and click ${item.name}.`,
+          item.action || `Choose the required setting or option for ${item.name}.`,
+          `Apply/confirm the setting and check the result in the document.`,
+          `Make any final adjustment needed and continue working.`
+        ];
+
+        const stepsHi = [
+          `${tabName} tab खोलें।`,
+          `${item.name} option पर click करें।`,
+          item.actionHi || `${item.name} की required setting या option चुनें।`,
+          `Setting apply/confirm करके document में result check करें।`,
+          `जरूरत हो तो final adjustment करें और आगे काम करें।`
+        ];
+
+        wordLearning[tabName].tools.push({
+          name: item.name,
+          icon: item.icon,
+          en: {
+            what: item.what,
+            when: item.when || `Use ${item.name} when you need to ${item.what.charAt(0).toLowerCase() + item.what.slice(1)}`,
+            steps: stepsEn,
+            practice: item.practice || `Open ${item.name} and practice it on a sample document.`
+          },
+          hi: {
+            what: item.hiWhat || `${item.name} option ${item.what.toLowerCase()}`,
+            when: item.hiWhen || `${item.name} का use तब करें जब आपको यह काम करना हो।`,
+            steps: stepsHi,
+            practice: item.hiPractice || `एक sample document में ${item.name} option का अभ्यास करें।`
+          }
+        });
+      });
+    }
+
+    // HOME — remaining options visible in the learning image.
+    addExpandedWordTools("Home", "Home.png", [
+      ["Font Name","🔤","Changes the typeface of selected text.","Arial font में paragraph बदलें."],
+      ["Font Size","🔠","Changes the size of selected text.","Heading को 20 pt करें."],
+      ["Increase Font Size","A+","Makes selected text larger.","Heading का size दो बार बढ़ाएँ."],
+      ["Decrease Font Size","A−","Makes selected text smaller.","एक बड़े title का size दो steps कम करें."],
+      ["Change Case","Aa","Changes text between upper, lower, sentence and title case.","एक lowercase heading को UPPERCASE में बदलें."],
+      ["Strikethrough","abc̶","Draws a line through selected text.","पुरानी price पर Strikethrough लगाएँ."],
+      ["Subscript","x₂","Places characters below the normal text line.","H₂O में 2 को Subscript करें."],
+      ["Superscript","x²","Places characters above the normal text line.","x² में 2 को Superscript करें."],
+      ["Text Effects","A✨","Adds effects such as outline, shadow or glow to text.","Heading पर हल्का Shadow effect लगाएँ."],
+      ["Text Highlight Color","🖍️","Highlights selected text with a background color.","तीन important words को yellow highlight करें."],
+      ["Font Color","A̲","Changes the color of selected text.","Heading को dark blue करें."],
+      ["Clear All Formatting","🧹","Removes direct formatting from selected text.","Formatted text paste करके उसकी formatting clear करें."],
+      ["Bullets","•","Creates a bulleted list.","Computer accessories की 5-item bulleted list बनाएँ."],
+      ["Numbering","1.","Creates a numbered list.","Document save करने के 5 numbered steps बनाएँ."],
+      ["Multilevel List","☷","Creates a list with multiple levels.","Chapter, Topic और Subtopic की list बनाएँ."],
+      ["Increase Indent","➡️","Moves a paragraph or list item farther inward.","Main bullet के नीचे sub-point बनाएँ."],
+      ["Decrease Indent","⬅️","Moves a paragraph or list item back toward the left.","Sub-bullet को main bullet level पर वापस लाएँ."],
+      ["Sort","A↕Z","Sorts selected text or data alphabetically or numerically.","5 names को A से Z sort करें."],
+      ["Show/Hide ¶","¶","Shows or hides non-printing paragraph marks and formatting symbols.","¶ on करके paragraph breaks पहचानें."],
+      ["Align Left","⬅️","Aligns text to the left margin.","एक paragraph को left align करें."],
+      ["Center","↔️","Centers text between the margins.","Document title को center करें."],
+      ["Align Right","➡️","Aligns text to the right margin.","एक date को right align करें."],
+      ["Justify","☰","Aligns text evenly along both left and right margins.","एक full paragraph को Justify करें."],
+      ["Line & Paragraph Spacing","↕️","Controls spacing between lines and paragraphs.","Paragraph को 1.5 line spacing दें."],
+      ["Shading","🪣","Adds a background fill behind selected text or paragraphs.","Heading पर light shading लगाएँ."],
+      ["Borders","▦","Adds borders around selected paragraphs or areas.","Heading के नीचे bottom border लगाएँ."],
+      ["Normal","📄","Applies the Normal paragraph style.","Body paragraph पर Normal style लगाएँ."],
+      ["No Spacing","↕️","Applies a compact style with reduced paragraph spacing.","Short list पर No Spacing लगाएँ."],
+      ["Heading 1","H1","Applies the Heading 1 style for major sections.","3 main sections को Heading 1 दें."],
+      ["Heading 2","H2","Applies the Heading 2 style for subsections.","Heading 1 के नीचे 2 Heading 2 sections बनाएँ."],
+      ["Title","T","Applies the Title style to the main document title.","Project title पर Title style लगाएँ."],
+      ["More Styles","⋯","Opens additional styles and style-management options.","Main gallery में न दिखने वाला style खोजें."]
+    ].map(x => ({
+      name:x[0], icon:x[1], what:x[2],
+      practice:x[3],
+      hiWhat:`${x[0]} selected text या paragraph पर ${x[2].toLowerCase()}`,
+      hiPractice:x[3]
+    })));
+
+    // INSERT — remaining options from the Insert image.
+    addExpandedWordTools("Insert", "Insert.png", [
+      ["Cover Page","▣","Inserts a ready-made cover page at the beginning.","Project report के लिए cover page बनाएँ."],
+      ["Blank Page","📄","Adds a completely blank page at the cursor position.","Appendix से पहले blank page insert करें."],
+      ["Page Break","↵","Starts the following content on a new page.","Chapter 2 को नए page से शुरू करें."],
+      ["Icons","♟️","Inserts ready-made vector-style icons.","Training heading के पास computer icon लगाएँ."],
+      ["3D Models","🧊","Inserts a three-dimensional model.","एक 3D object insert करके rotate करें."],
+      ["Screenshot","📷","Captures and inserts a screen image or clipping.","Word dialog का screenshot insert करें."],
+      ["Get Add-ins","🧩","Opens the add-ins store for additional Word tools.","एक educational add-in खोजें."],
+      ["My Add-ins","🧩","Shows installed or available add-ins.","एक installed add-in खोलें."],
+      ["Wikipedia","W","Provides a research/search tool for background information when available.","एक historical topic search करें."],
+      ["Online Videos","▶️","Inserts a supported online video into the document.","Project से related tutorial video insert करें."],
+      ["Bookmark","🔖","Marks a document location for quick navigation or linking.","Important chapter की शुरुआत bookmark करें."],
+      ["Cross-reference","🔀","Creates a reference to another heading, figure, table or numbered item.","Figure 1 का cross-reference insert करें."],
+      ["Quick Parts","🧱","Inserts reusable fields, properties or saved building blocks.","Quick Parts से document property insert करें."],
+      ["Signature Line","✍️","Adds a signature-line placeholder.","Project supervisor के लिए signature line add करें."],
+      ["Object","📦","Embeds or inserts another file or supported object.","Excel worksheet को object के रूप में insert करें."]
+    ].map(x => ({
+      name:x[0], icon:x[1], what:x[2],
+      practice:x[3],
+      hiWhat:`${x[0]} option document में ${x[2].toLowerCase()}`,
+      hiPractice:x[3]
+    })));
+
+    // PAGE LAYOUT — remaining commands from the Page Layout image.
+    addExpandedWordTools("Page Layout", "Page Layout(1).png", [
+      ["Themes","🎨","Applies a coordinated document design of fonts, colors and effects.","Project report पर professional theme लगाएँ."],
+      ["Colors","🎨","Changes the theme color set.","Report की theme colors बदलें."],
+      ["Fonts","Aa","Changes the theme's heading and body font combination.","Professional heading/body fonts चुनें."],
+      ["Effects","✨","Changes theme-based visual effects for objects.","Shapes पर subtle effect set लगाएँ."],
+      ["Line Numbers","123","Displays line numbers beside document text.","Document में continuous line numbers लगाएँ."],
+      ["Hyphenation","-","Controls automatic word breaks at line endings.","Two-column document पर automatic hyphenation लगाएँ."],
+      ["Indent Left","⬅️","Moves a paragraph inward from the left margin.","Paragraph को left से 1 inch indent करें."],
+      ["Indent Right","➡️","Moves a paragraph inward from the right margin.","Paragraph पर 1-inch right indent लगाएँ."],
+      ["Spacing Before","↕️","Adds space before a paragraph.","Heading से पहले 10 pt spacing दें."],
+      ["Spacing After","↕️","Adds space after a paragraph.","हर paragraph के बाद 10 pt spacing दें."],
+      ["Position","📍","Controls the position of a floating object.","Picture को page के top-right में रखें."],
+      ["Wrap Text","📝","Controls how text flows around an object.","Picture का Wrap Text Square करें."],
+      ["Bring Forward","⬆️","Moves an object above overlapping objects.","Logo को shape के सामने लाएँ."],
+      ["Send Backward","⬇️","Moves an object behind overlapping objects.","Decorative shape को text के पीछे भेजें."],
+      ["Selection Pane","👁️","Lists objects so they can be selected, hidden or managed.","3 shapes बनाकर Selection Pane से एक hide करें."],
+      ["Align","📏","Aligns one or more objects with each other or the page.","Three shapes को center align करें."],
+      ["Group","🧩","Combines multiple objects into one movable group.","Label, shape और arrow को group करें."],
+      ["Rotate","🔄","Rotates or flips a selected object.","एक shape को 90° rotate करें."]
+    ].map(x => ({
+      name:x[0], icon:x[1], what:x[2],
+      practice:x[3],
+      hiWhat:`${x[0]} option object या paragraph को ${x[2].toLowerCase()}`,
+      hiPractice:x[3]
+    })));
+
+    // MAILINGS
+    addExpandedWordTools("Mailings", "Mailing.png", [
+      ["Envelopes","✉️","Creates and prints envelopes using address information.","Formal letter के लिए envelope बनाएँ."],
+      ["Labels","🏷️","Creates printable labels for addresses or other items.","Address labels की एक sheet बनाएँ."],
+      ["Start Mail Merge","📨","Starts the mail-merge process for personalized documents.","Personalized letters के लिए Mail Merge शुरू करें."],
+      ["Select Recipients","👥","Selects the recipient data source for a mail merge.","Excel recipient list connect करें."],
+      ["Edit Recipient List","✏️","Edits, filters or selects mail-merge recipients.","एक recipient को mail merge से exclude करें."],
+      ["Highlight Merge Fields","🔦","Highlights merge fields in the main document.","Letter के merge fields highlight करें."],
+      ["Address Block","📮","Inserts a formatted recipient address block.","Letter में Address Block insert करें."],
+      ["Greeting Line","👋","Inserts a personalized greeting line.","Recipient name के साथ greeting line बनाएँ."],
+      ["Insert Merge Field","🔗","Inserts an individual recipient field such as First Name or City.","First Name और City merge fields insert करें."],
+      ["Rules","⚙️","Adds conditional logic such as If...Then...Else.","Title के आधार पर अलग greeting दिखाएँ."],
+      ["Match Fields","🔄","Matches data-source columns to Word merge fields.","Mobile column को सही merge field से match करें."],
+      ["Update Labels","🔄","Copies the first label's merge layout to other labels.","Address labels में Update Labels करें."],
+      ["Preview Results","👁️","Shows the merged document using actual recipient data.","5 recipients का merge preview करें."],
+      ["Find Recipient","🔎","Finds a specific recipient while previewing a merge.","Name से एक recipient खोजें."],
+      ["Check for Errors","⚠️","Checks a mail merge for potential problems.","Finish से पहले error check करें."],
+      ["Finish & Merge","📬","Completes the merge by printing, creating documents or sending output.","सभी recipients के individual documents बनाएँ."]
+    ].map(x => ({
+      name:x[0], icon:x[1], what:x[2],
+      practice:x[3],
+      hiWhat:`${x[0]} option mail merge में ${x[2].toLowerCase()}`,
+      hiPractice:x[3]
+    })));
+
+    // REFERENCES
+    addExpandedWordTools("References", "References.png", [
+      ["Table of Contents","📑","Creates a table of contents from heading styles.","3-section report का Table of Contents बनाएँ."],
+      ["Add Text","➕","Adds a selected paragraph to the table of contents at a chosen level.","Custom section title को TOC में add करें."],
+      ["Update Table","🔄","Updates a generated table after content or page numbers change.","Heading बदलकर TOC update करें."],
+      ["Insert Footnote","¹","Adds a note at the bottom of the current page.","एक paragraph में source footnote add करें."],
+      ["Insert Endnote","🔢","Adds a note at the end of a document or section.","Technical term के लिए endnote add करें."],
+      ["Next Footnote","➡️","Moves to the next footnote or note.","3 footnotes को Next Footnote से review करें."],
+      ["Show Notes","📝","Shows the footnote/endnote editing area.","Notes area खोलकर footnote edit करें."],
+      ["Insert Citation","📚","Inserts a citation linked to a source.","एक book का citation insert करें."],
+      ["Manage Sources","📚","Adds, edits and organizes saved sources.","एक book source add और edit करें."],
+      ["Style","🎓","Chooses a citation style such as APA or MLA.","Citation style APA set करें."],
+      ["Bibliography","📚","Inserts a formatted bibliography from saved sources.","3 sources की bibliography बनाएँ."],
+      ["Change Provider","🔄","Changes the citation/source provider when supported.","Available citation providers review करें."],
+      ["Insert Caption","🏷️","Adds a numbered caption to a figure, table or object.","Figure 1 caption लगाएँ."],
+      ["Insert Table of Figures","📊","Creates a list of figure/table captions.","3 images की Table of Figures बनाएँ."],
+      ["Cross-reference","🔀","Inserts a reference to another heading, figure, table or numbered item.","Paragraph से Figure 1 का reference दें."],
+      ["Mark Entry","🔖","Marks a word or phrase for an index.","3 important terms mark करें."],
+      ["Insert Index","📇","Generates an alphabetical index from marked entries.","Marked terms से index बनाएँ."],
+      ["Update Index","🔄","Refreshes an existing index after edits.","Marked term बदलकर index update करें."],
+      ["Mark Citation","⚖️","Marks a legal citation for a Table of Authorities.","2 legal citations mark करें."],
+      ["Insert Table of Authorities","⚖️","Creates a table of marked legal authorities.","Marked citations से Table of Authorities बनाएँ."]
+    ].map(x => ({
+      name:x[0], icon:x[1], what:x[2],
+      practice:x[3],
+      hiWhat:`${x[0]} option References tab में ${x[2].toLowerCase()}`,
+      hiPractice:x[3]
+    })));
+
+    // REVIEW
+    addExpandedWordTools("Review", "Review.png", [
+      ["Spelling & Grammar","ABC✓","Checks spelling and grammar problems.","One-page letter की spelling/grammar check करें."],
+      ["Thesaurus","📖","Shows synonyms and related words.","“important” के 2 synonyms खोजें."],
+      ["Word Count","🔢","Shows words, characters, paragraphs and page statistics.","300-word paragraph की word count check करें."],
+      ["Read Aloud","🔊","Reads document text aloud.","एक page सुनकर correction identify करें."],
+      ["Check Accessibility","♿","Checks accessibility issues in the document.","Image और headings वाले document की accessibility check करें."],
+      ["Translate","🌐","Translates selected text or document content.","एक short paragraph को Hindi में translate करें."],
+      ["Language","🌐","Sets the proofing language for text.","Paragraph की proofing language English (India) set करें."],
+      ["New Comment","💬","Adds a new review comment.","Citation मांगने वाला comment add करें."],
+      ["Delete","🗑️","Deletes a selected comment or review item.","एक old comment delete करें."],
+      ["Previous","⬅️","Moves to the previous comment or tracked change.","3 comments में backward navigate करें."],
+      ["Next","➡️","Moves to the next comment or tracked change.","3 comments में forward navigate करें."],
+      ["Show Comments","💬","Shows or hides comments.","Comments show करके reviewer note देखें."],
+      ["Track Changes","📝","Records edits made to a document.","Track Changes on करके paragraph edit करें."],
+      ["All Markup","🖍️","Displays all tracked changes and comments.","Document को All Markup view में देखें."],
+      ["Show Markup","📝","Controls which changes, comments or reviewers are displayed.","Only comments और formatting changes show करें."],
+      ["Reviewing Pane","📋","Shows a summary/list of changes and comments.","Reviewing Pane से changes review करें."],
+      ["Accept","✅","Accepts a selected tracked change.","Formatting change review करके Accept करें."],
+      ["Reject","❌","Rejects a selected tracked change.","Incorrect text change को Reject करें."],
+      ["Compare","⚖️","Compares two document versions and shows differences.","Report की दो versions compare करें."],
+      ["Protect","🔒","Restricts editing or protects document content.","Document को unrestricted editing से protect करें."],
+      ["Hide Ink","✍️","Shows or hides handwritten ink annotations.","Handwritten ink को hide करके फिर show करें."]
+    ].map(x => ({
+      name:x[0], icon:x[1], what:x[2],
+      practice:x[3],
+      hiWhat:`${x[0]} option document review में ${x[2].toLowerCase()}`,
+      hiPractice:x[3]
+    })));
+
+    // VIEW
+    addExpandedWordTools("View", "View.png", [
+      ["Read Mode","📖","Shows the document in a reading-focused view.","2-page document को Read Mode में पढ़ें."],
+      ["Print Layout","🖨️","Shows the document in print-style page layout.","Print Layout में page breaks check करें."],
+      ["Web Layout","🌐","Shows the document in a continuous web-style layout.","Report को Web Layout में देखें."],
+      ["Outline","🗂️","Shows document structure using heading levels.","3 sections को Outline view से reorder करें."],
+      ["Draft","📝","Shows a simplified text-editing view.","Draft view में long paragraph edit करें."],
+      ["Focus","🎯","Provides a distraction-reduced writing environment.","Focus mode में एक paragraph लिखें."],
+      ["Immersive Reader","📖","Provides reading and comprehension tools.","Line Focus के साथ paragraph पढ़ें."],
+      ["Vertical","↕️","Uses normal vertical page movement.","Page Movement को Vertical करें."],
+      ["Side to Side","↔️","Moves through pages horizontally.","Multi-page document को Side to Side देखें."],
+      ["Ruler","📏","Shows or hides the ruler.","Ruler show करके first-line indent set करें."],
+      ["Gridlines","▦","Shows alignment gridlines for objects.","Gridlines से 3 shapes align करें."],
+      ["Navigation Pane","🧭","Shows headings, pages and search results for navigation.","Navigation Pane से Heading 2 पर जाएँ."],
+      ["Zoom","🔍","Changes document magnification.","Zoom 125% set करें."],
+      ["100%","1:1","Returns the view to 100% zoom.","Zoomed document को 100% पर लौटाएँ."],
+      ["One Page","▣","Fits one complete page in the window.","एक पूरा page fit करके देखें."],
+      ["Multiple Pages","▦","Shows several pages at once.","4 pages एक साथ देखें."],
+      ["Page Width","↔️","Fits the page width to the window.","View को Page Width करें."],
+      ["New Window","🪟","Opens another window for the same document.","Same document की second window खोलें."],
+      ["Arrange All","▥","Arranges multiple open document windows.","3 open documents को Arrange All करें."],
+      ["Split","➗","Splits the document window into two panes.","Long document को split करके 2 sections साथ देखें."],
+      ["View Side by Side","↔️","Displays two documents side by side.","Report की 2 versions side-by-side compare करें."],
+      ["Synchronous Scrolling","🔄","Scrolls two side-by-side documents together.","2 documents को synchronized scrolling से compare करें."],
+      ["Reset Window Position","↔️","Restores side-by-side windows to their standard position.","2 comparison windows की position reset करें."],
+      ["Switch Windows","🔀","Switches between open Word document windows.","2 open Word documents के बीच switch करें."],
+      ["Macros","⚙️","Provides access to macros for automating repeated tasks.","Macro dialog खोलकर available macros देखें."]
+    ].map(x => ({
+      name:x[0], icon:x[1], what:x[2],
+      practice:x[3],
+      hiWhat:`${x[0]} option View tab में ${x[2].toLowerCase()}`,
+      hiPractice:x[3]
+    })));
+
+    // The generated content above is appended after the original learning object.
+    // It deliberately does not replace the existing renderer, language switch,
+    // expandable steps, projects, AI Teacher, or image viewer.
 
 
-  /* =========================================================
-     SELECTED WORD TAB
-     ========================================================= */
+    // LANGUAGE
+    // ============================================================
 
-  function renderSelectedWordTab() {
-
-    const hindi = isHindi();
-
-    const tools =
-      tabData[state.tab] || [];
-
-    const current =
-      tools[state.toolIndex] ||
-      tools[0];
+    let learningLanguage = "en";
 
 
-    if (!current) {
+    // ============================================================
+    // HOME PAGE
+    // ============================================================
 
-      return `
+    function showHome() {
 
-        ${renderTopHeader("word")}
+      const app = document.getElementById("app");
 
-        <div class="jh-empty-state">
+      app.innerHTML = `
+        <div class="hero">
 
-          <h2>
-            No learning content available.
-          </h2>
+          <h1>Learn & Practice</h1>
+
+          <p>
+            Welcome to Joining Hands AI Computer Learning & Practical Lab.
+            Choose a course and start learning through practical projects.
+          </p>
 
         </div>
 
-      `;
+        <h2>Courses</h2>
 
+        <div class="grid">
+
+          ${Object.keys(curriculum).map(course => `
+
+            <div class="course-card">
+
+              <h3>${course}</h3>
+
+              <p>
+                ${curriculum[course].length}
+                practical lessons/projects
+              </p>
+
+              <button onclick="showCourse('${course}')">
+                Start Learning
+              </button>
+
+            </div>
+
+          `).join("")}
+
+        </div>
+      `;
     }
 
 
-    const [
-      icon,
-      name,
-      what,
-      use,
-      path,
-      steps
-    ] = current;
+    // ============================================================
+    // COURSE PAGE
+    // ============================================================
+
+    function showCourse(course) {
+
+      const app = document.getElementById("app");
+
+      app.innerHTML = `
+
+        <button class="back" onclick="showHome()">
+          ← Back to Courses
+        </button>
+
+        <div class="hero course-hero">
+
+          <h1>${course}</h1>
+
+          <p>
+            Select a lesson/project to start learning.
+          </p>
+
+        </div>
 
 
-    const tabImage =
-      tabImages[state.tab];
+        ${
+          course === "MS Word"
+            ? `
+              <div class="learning-choice">
+
+                <h2>MS Word Learning</h2>
+
+                <p>
+                  Learn MS Word step-by-step before starting your practical projects.
+                </p>
+
+                <button onclick="showWordLearning()">
+                  📚 Learning
+                </button>
+
+                <button onclick="showWordProjects()">
+                  💻 Practical Projects
+                </button>
+
+              </div>
+            `
+            : ""
+        }
 
 
-    return `
+        <div class="lesson-grid compact-grid">
 
-      ${renderTopHeader("word")}
+          ${curriculum[course].map(item => `
 
+            <div class="lesson-card compact-card">
 
-      <section class="jh-selected-tab-header">
+              ${
+                item.image
+                  ? `
+                    <div class="project-image">
 
-        <div>
+                      <img
+                        src="${item.image}"
+                        alt="${item.title}"
+                        onerror="this.style.display='none'"
+                      >
 
-          <button
-            type="button"
-            class="jh-back-btn"
-            onclick="openWordLearning()"
-          >
-            ← All Tabs
-          </button>
+                    </div>
+                  `
+                  : ""
+              }
 
-          <div class="jh-selected-tab-title">
+              <h3>${item.title}</h3>
 
-            <span class="jh-selected-tab-icon">
-              ${getTabIcon(state.tab)}
-            </span>
+              <p class="project-topic">
+                ${item.topic}
+              </p>
 
-            <div>
+              <p class="project-description">
+                ${item.description}
+              </p>
 
-              <span class="jh-small-badge">
-                MS WORD • LEARNING
-              </span>
-
-              <h1>
-                ${escapeHTML(
-                  tabDescriptions[state.tab]?.title ||
-                  state.tab
-                )}
-              </h1>
+              <button onclick="showLesson('${course}', ${item.id})">
+                Open Project
+              </button>
 
             </div>
+
+          `).join("")}
+
+        </div>
+      `;
+    }
+
+
+    // ============================================================
+    // WORD LEARNING HOME
+    // ============================================================
+
+    function showWordLearning() {
+
+      const app = document.getElementById("app");
+
+      app.innerHTML = `
+
+        <button
+          class="back"
+          onclick="showCourse('MS Word')"
+        >
+          ← Back to MS Word
+        </button>
+
+
+        <div class="learning-header">
+
+          <h1>📚 MS Word Learning</h1>
+
+          <p>
+            Learn each MS Word tab and understand how to use its tools.
+          </p>
+
+
+          <div class="language-switch">
+
+            <button
+              class="${learningLanguage === "en" ? "active-language" : ""}"
+              onclick="changeLearningLanguage('en')"
+            >
+              English
+            </button>
+
+            <button
+              class="${learningLanguage === "hi" ? "active-language" : ""}"
+              onclick="changeLearningLanguage('hi')"
+            >
+              हिन्दी + English
+            </button>
 
           </div>
 
         </div>
 
 
-        <div class="jh-tab-switcher">
+        <div class="word-tab-buttons">
 
-          ${Object.keys(tabData).map(tabName => `
+          ${Object.keys(wordLearning).map(tab => `
 
             <button
-              type="button"
-              class="${
-                state.tab === tabName
-                  ? "active"
-                  : ""
-              }"
-              onclick="selectTab('${escapeHTML(tabName)}')"
+              onclick="showWordTab('${tab}')"
             >
-              ${getTabIcon(tabName)}
-              <span>
-                ${escapeHTML(tabName)}
-              </span>
+              ${tab}
             </button>
 
           `).join("")}
 
         </div>
 
-      </section>
 
+        <div id="wordTabContent"></div>
 
-      <!-- =====================================================
-           TAB IMAGE
-           ===================================================== -->
+      `;
 
-      <section class="jh-tab-image-section">
 
-        <div class="jh-tab-image-heading">
+      showWordTab("Home");
+    }
 
-          <div>
 
-            <span>
-              TAB OVERVIEW
-            </span>
+    // ============================================================
+    // CHANGE LANGUAGE
+    // ============================================================
 
-            <h2>
-              ${
-                hindi
-                  ? "यह Tab कैसा दिखाई देता है?"
-                  : "What does this tab look like?"
-              }
-            </h2>
+    function changeLearningLanguage(language) {
 
-          </div>
+      learningLanguage = language;
 
+      showWordLearning();
 
-          <button
-            type="button"
-            class="jh-image-zoom-button"
-            onclick="openImageZoom('${escapeHTML(
-              imagePath(tabImage)
-            )}')"
-          >
-            🔍 Zoom Image
-          </button>
+    }
 
-        </div>
 
+    // ============================================================
+    // SHOW WORD TAB
+    // ============================================================
 
-        ${
-          tabImage
-            ? `
-              <div class="jh-tab-image-container">
+    function showWordTab(tabName) {
 
-                <img
-                  src="${escapeHTML(
-                    imagePath(tabImage)
-                  )}"
-                  alt="${escapeHTML(
-                    state.tab
-                  )} tab"
-                  class="jh-tab-image"
-                  onclick="openImageZoom('${escapeHTML(
-                    imagePath(tabImage)
-                  )}')"
-                />
+      const tab = wordLearning[tabName];
 
-              </div>
-            `
-            : `
-              <div class="jh-no-image">
-                Tab image will be added soon.
-              </div>
-            `
-        }
+      if (!tab) return;
 
-        <p class="jh-image-hint">
-          💡 Click the image to zoom.
-        </p>
+      const content = document.getElementById("wordTabContent");
 
-      </section>
+      if (!content) return;
 
 
-      <!-- =====================================================
-           TOOL LIST + EXPLANATION
-           ===================================================== -->
+      const language = learningLanguage;
 
-      <section class="jh-learning-workspace">
 
+      content.innerHTML = `
 
-        <aside class="jh-tool-sidebar">
+        <div class="word-learning-section">
 
-          <div class="jh-tool-sidebar-title">
+          <h2>${tabName} Tab</h2>
 
-            <span>
-              ${getTabIcon(state.tab)}
-            </span>
 
-            <div>
+          ${
+            tab.image
+              ? `
+                <div class="word-tab-image">
 
-              <strong>
-                ${escapeHTML(state.tab)}
-              </strong>
+                  <img
+                    src="${tab.image}"
+                    alt="${tabName} Tab"
+                    onclick="openImage('${tab.image}')"
+                  >
 
-              <small>
-                ${tools.length} learning tools
-              </small>
+                  <p>
+                    Click the image to view it larger.
+                  </p>
 
-            </div>
+                </div>
+              `
+              : ""
+          }
 
-          </div>
 
+          <div class="tool-learning-grid">
 
-          <div class="jh-tool-list">
+            ${tab.tools.map((tool, index) => {
 
-            ${tools.map((tool, index) => `
+              const data =
+                language === "en"
+                  ? tool.en
+                  : tool.hi;
 
-              <button
-                type="button"
-                class="jh-tool-item ${
-                  index === state.toolIndex
-                    ? "active"
-                    : ""
-                }"
-                onclick="selectTool(${index})"
-              >
+              return `
 
-                <span class="jh-tool-number">
-                  ${index + 1}
-                </span>
+                <div class="tool-learning-card">
 
-                <span class="jh-tool-icon">
-                  ${tool[0]}
-                </span>
+                  <div class="tool-title">
 
-                <span class="jh-tool-name">
-                  ${escapeHTML(tool[1])}
-                </span>
+                    <span class="tool-icon">
+                      ${tool.icon}
+                    </span>
 
-              </button>
+                    <h3>
+                      ${tool.name}
+                    </h3>
 
-            `).join("")}
+                  </div>
 
-          </div>
 
-        </aside>
+                  <div class="tool-explanation">
 
+                    <h4>
+                      What does it do?
+                    </h4>
 
-        <article class="jh-tool-detail">
+                    <p>
+                      ${data.what}
+                    </p>
 
 
-          <div class="jh-tool-detail-heading">
+                    <h4>
+                      When should you use it?
+                    </h4>
 
-            <div class="jh-tool-big-icon">
-              ${icon}
-            </div>
+                    <p>
+                      ${data.when}
+                    </p>
 
-            <div>
 
-              <span class="jh-detail-label">
-                ${escapeHTML(state.tab)} TOOL
-              </span>
+                    <button
+                      class="steps-toggle"
+                      onclick="toggleSteps(${index}, '${tabName}')"
+                    >
+                      ▶ How to use this option?
+                      <span>
+                        Click here to see step-by-step instructions
+                      </span>
+                    </button>
 
-              <h2>
-                ${escapeHTML(name)}
-              </h2>
 
-            </div>
+                    <div
+                      id="steps-${tabName}-${index}"
+                      class="tool-steps hidden"
+                    >
 
-          </div>
+                      <h4>
+                        How to use this option
+                      </h4>
 
+                      <ol>
 
-          <!-- WHAT IS THIS -->
+                        ${data.steps.map(step => `
+                          <li>${step}</li>
+                        `).join("")}
 
-          <div class="jh-explanation-card blue">
+                      </ol>
 
-            <div class="jh-explanation-icon">
-              💡
-            </div>
 
-            <div>
+                      <div class="practice-task">
 
-              <h3>
-                ${
-                  hindi
-                    ? "यह क्या है?"
-                    : "What is this?"
-                }
-              </h3>
+                        <strong>
+                          🧪 Practice this option
+                        </strong>
 
-              <p>
-                ${escapeHTML(
-                  what
-                )}
-              </p>
+                        <p>
+                          ${data.practice}
+                        </p>
 
-            </div>
-
-          </div>
-
-
-          <!-- USE -->
-
-          <div class="jh-explanation-card green">
-
-            <div class="jh-explanation-icon">
-              🎯
-            </div>
-
-            <div>
-
-              <h3>
-                ${
-                  hindi
-                    ? "इसका उपयोग"
-                    : "What is it used for?"
-                }
-              </h3>
-
-              <p>
-                ${escapeHTML(
-                  use
-                )}
-              </p>
-
-            </div>
-
-          </div>
-
-
-          <!-- HOW TO USE -->
-
-          <div class="jh-instruction-box">
-
-            <button
-              type="button"
-              class="jh-instruction-header"
-              onclick="toggleInstructions()"
-            >
-
-              <span>
-
-                <span class="jh-instruction-icon">
-                  📋
-                </span>
-
-                ${
-                  hindi
-                    ? "कैसे इस्तेमाल करें?"
-                    : "How to use"
-                }
-
-              </span>
-
-
-              <span class="jh-instruction-chevron">
-                ${
-                  state.expanded
-                    ? "▲"
-                    : "▼"
-                }
-              </span>
-
-            </button>
-
-
-            ${
-              state.expanded
-                ? `
-
-                  <div class="jh-instruction-body">
-
-                    <div class="jh-path-box">
-
-                      <strong>
-                        ${escapeHTML(
-                          path
-                        )}
-                      </strong>
-
-                    </div>
-
-
-                    <div class="jh-step-list">
-
-                      ${steps.map(
-                        (step, index) => `
-
-                          <div class="jh-step">
-
-                            <div class="jh-step-number">
-                              ${index + 1}
-                            </div>
-
-                            <div class="jh-step-content">
-
-                              <p>
-                                ${escapeHTML(
-                                  step
-                                )}
-                              </p>
-
-                            </div>
-
-                          </div>
-
-                        `
-                      ).join("")}
+                      </div>
 
                     </div>
 
                   </div>
 
-                `
-                : ""
-            }
+                </div>
+
+              `;
+
+            }).join("")}
 
           </div>
 
+        </div>
 
-          <div class="jh-practice-tip">
-
-            <div class="jh-practice-tip-icon">
-              🛠️
-            </div>
-
-            <div>
-
-              <strong>
-                ${
-                  hindi
-                    ? "Practice Tip"
-                    : "Practice Tip"
-                }
-              </strong>
-
-              <p>
-                ${
-                  hindi
-                    ? "इस tool को MS Word में खुद इस्तेमाल करके practice करें."
-                    : "Open MS Word and practice this tool yourself."
-                }
-              </p>
-
-            </div>
-
-          </div>
+      `;
+    }
 
 
-          <div class="jh-learning-bottom-nav">
+    // ============================================================
+    // EXPAND / COLLAPSE STEPS
+    // ============================================================
 
-            <button
-              type="button"
-              onclick="previousTool()"
+    function toggleSteps(index, tabName) {
+
+      const element =
+        document.getElementById(
+          `steps-${tabName}-${index}`
+        );
+
+      if (!element) return;
+
+
+      element.classList.toggle("hidden");
+
+
+      const button =
+        element.previousElementSibling;
+
+
+      if (element.classList.contains("hidden")) {
+
+        button.innerHTML =
+          `▶ How to use this option?
+           <span>Click here to see step-by-step instructions</span>`;
+
+      } else {
+
+        button.innerHTML =
+          `▼ How to use this option
+           <span>Click here to hide the steps</span>`;
+
+      }
+
+    }
+
+
+    // ============================================================
+    // WORD PROJECTS
+    // ============================================================
+
+    function showWordProjects() {
+
+      showCourseProjectsOnly("MS Word");
+
+    }
+
+
+    function showCourseProjectsOnly(course) {
+
+      const app = document.getElementById("app");
+
+      app.innerHTML = `
+
+        <button
+          class="back"
+          onclick="showCourse('${course}')"
+        >
+          ← Back to ${course}
+        </button>
+
+        <div class="hero course-hero">
+
+          <h1>${course} Practical Projects</h1>
+
+          <p>
+            Select a project to start practicing.
+          </p>
+
+        </div>
+
+
+        <div class="lesson-grid compact-grid">
+
+          ${curriculum[course].map(item => `
+
+            <div class="lesson-card compact-card">
+
               ${
-                state.toolIndex <= 0
-                  ? "disabled"
+                item.image
+                  ? `
+                    <div class="project-image">
+
+                      <img
+                        src="${item.image}"
+                        alt="${item.title}"
+                        onerror="this.style.display='none'"
+                      >
+
+                    </div>
+                  `
                   : ""
               }
+
+              <h3>${item.title}</h3>
+
+              <p class="project-topic">
+                ${item.topic}
+              </p>
+
+              <p class="project-description">
+                ${item.description}
+              </p>
+
+              <button onclick="showLesson('${course}', ${item.id})">
+                Open Project
+              </button>
+
+            </div>
+
+          `).join("")}
+
+        </div>
+      `;
+    }
+
+
+    // ============================================================
+    // PROJECT PAGE
+    // ============================================================
+
+    function showLesson(course, id) {
+
+      const lesson =
+        curriculum[course].find(
+          item => item.id === id
+        );
+
+
+      if (!lesson) {
+
+        alert("Project not found.");
+
+        return;
+
+      }
+
+
+      const app =
+        document.getElementById("app");
+
+
+      app.innerHTML = `
+
+        <button
+          class="back"
+          onclick="showCourse('${course}')"
+        >
+          ← Back to ${course}
+        </button>
+
+
+        <div class="lesson-content">
+
+
+          <div class="lesson-header">
+
+            <h1>
+              ${lesson.title}
+            </h1>
+
+            <h2>
+              ${lesson.topic}
+            </h2>
+
+            <p>
+              ${lesson.description}
+            </p>
+
+          </div>
+
+
+          ${
+            lesson.image
+              ? `
+
+                <div class="example-section">
+
+                  <h2>
+                    📘 Example Project
+                  </h2>
+
+                  <div class="example-image-container">
+
+                    <img
+                      src="${lesson.image}"
+                      alt="${lesson.title}"
+                      class="example-image"
+                      onclick="openImage('${lesson.image}')"
+                    >
+
+                  </div>
+
+                  <p class="image-note">
+                    Click the image to view it larger.
+                  </p>
+
+                </div>
+
+              `
+              : ""
+          }
+
+
+          <div class="practice-instructions">
+
+            <h2>
+              📝 How to Practice
+            </h2>
+
+            <div class="step">
+              <strong>Step 1:</strong>
+              Open Microsoft Word on your computer.
+            </div>
+
+            <div class="step">
+              <strong>Step 2:</strong>
+              Look carefully at the example shown above.
+            </div>
+
+            <div class="step">
+              <strong>Step 3:</strong>
+              Create your own copy of the project in MS Word.
+            </div>
+
+            <div class="step">
+              <strong>Step 4:</strong>
+              Try to make your project as similar to the example as possible.
+            </div>
+
+            <div class="step">
+              <strong>Step 5:</strong>
+              Save your completed project on your computer.
+            </div>
+
+          </div>
+
+
+          <div class="practice-box">
+
+            <h3>
+              🎯 Ready to Practice?
+            </h3>
+
+            <p>
+              Create your own copy of this project in Microsoft Word.
+            </p>
+
+            <button onclick="startPractice()">
+              💻 Start Practice
+            </button>
+
+            <button
+              class="help-button"
+              onclick="showHelp('${course}', '${lesson.id}')"
             >
-              ← Previous
+              🤖 Ask AI Teacher
+            </button>
+
+          </div>
+
+
+        </div>
+
+      `;
+    }
+
+
+    // ============================================================
+    // START PRACTICE
+    // ============================================================
+
+    function startPractice() {
+
+      const message =
+        "Practice Time!\n\n" +
+
+        "1. Open Microsoft Word on your computer.\n" +
+
+        "2. Create a new blank document.\n" +
+
+        "3. Look at the example project.\n" +
+
+        "4. Create your own copy of the project.\n" +
+
+        "5. Save your work when finished.";
+
+
+      alert(message);
+
+    }
+
+
+    // ============================================================
+    // OPEN WORD
+    // ============================================================
+
+    function openWord() {
+
+      window.location.href = "ms-word:";
+
+
+      setTimeout(function () {
+
+        alert(
+          "Microsoft Word could not be opened automatically.\n\n" +
+
+          "Please open Microsoft Word from your computer " +
+
+          "and create a new blank document."
+        );
+
+      }, 1500);
+
+    }
+
+
+    // ============================================================
+    // AI HELP MODAL
+    // ============================================================
+
+    function showHelp(course, project) {
+
+      const old =
+        document.getElementById("helpModal");
+
+
+      if (old) {
+        old.remove();
+      }
+
+
+      document.body.insertAdjacentHTML(
+
+        "beforeend",
+
+        `
+
+        <div
+          id="helpModal"
+          class="help-modal"
+        >
+
+          <div class="help-modal-content">
+
+            <button
+              class="close-help"
+              onclick="closeHelp()"
+            >
+              ×
             </button>
 
 
-            <span>
-              ${state.toolIndex + 1}
-              /
-              ${tools.length}
-            </span>
+            <h2>
+              🤖 Ask Your AI Teacher
+            </h2>
+
+            <p>
+              Type your question below.
+            </p>
+
+
+            <textarea
+              id="studentQuestion"
+              placeholder="Example: How do I insert a table in MS Word?"
+            ></textarea>
 
 
             <button
-              type="button"
-              onclick="nextTool()"
-              ${
-                state.toolIndex >= tools.length - 1
-                  ? "disabled"
-                  : ""
-              }
+              id="askButton"
+              class="ask-button"
+              onclick="askQuestion('${course}', '${project}')"
             >
-              Next →
+              Ask Question
             </button>
 
+
+            <div id="helpAnswer"></div>
+
           </div>
 
+        </div>
 
-        </article>
-
-      </section>
-
-    `;
-
-  }
-
-
-  /* =========================================================
-     PREVIOUS TOOL
-     ========================================================= */
-
-  function previousTool() {
-
-    const tools =
-      tabData[state.tab] || [];
-
-    if (
-      state.toolIndex <= 0
-    ) {
-
-      return;
+        `
+      );
 
     }
 
-    state.toolIndex--;
 
-    state.expanded = false;
+    // ============================================================
+    // CLOSE HELP
+    // ============================================================
 
-    render();
+    function closeHelp() {
 
-  }
+      const modal =
+        document.getElementById("helpModal");
 
 
-  /* =========================================================
-     NEXT TOOL
-     ========================================================= */
-
-  function nextTool() {
-
-    const tools =
-      tabData[state.tab] || [];
-
-    if (
-      state.toolIndex >=
-      tools.length - 1
-    ) {
-
-      return;
+      if (modal) {
+        modal.remove();
+      }
 
     }
 
-    state.toolIndex++;
 
-    state.expanded = false;
+    // ============================================================
+    // ASK AI TEACHER
+    // ============================================================
 
-    render();
+    async function askQuestion(course, project) {
 
-  }
-
-
-  /* =========================================================
-     PRACTICAL WORK PAGE
-     ========================================================= */
-
-  function renderWordPractical() {
-
-    const hindi = isHindi();
-
-    return `
-
-      ${renderTopHeader("word")}
+      const questionElement =
+        document.getElementById("studentQuestion");
 
 
-      <section class="jh-practical-header">
-
-        <div>
-
-          <button
-            type="button"
-            class="jh-back-btn"
-            onclick="openWord()"
-          >
-            ← Back to MS Word
-          </button>
+      const answer =
+        document.getElementById("helpAnswer");
 
 
-          <span class="jh-small-badge">
-            MS WORD • PRACTICAL WORK
-          </span>
+      const button =
+        document.getElementById("askButton");
 
 
-          <h1>
-            ${
-              hindi
-                ? "14 Practical Projects"
-                : "14 Practical Projects"
-            }
-          </h1>
+      if (
+        !questionElement ||
+        !answer ||
+        !button
+      ) {
 
+        return;
+
+      }
+
+
+      const question =
+        questionElement.value.trim();
+
+
+      if (!question) {
+
+        answer.innerHTML = `
+
+          <div class="help-answer">
+
+            <p>
+              Please type your question first.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      button.disabled = true;
+
+      button.innerText =
+        "⏳ AI Teacher is thinking...";
+
+
+      answer.innerHTML = `
+
+        <div class="help-answer">
+
+          <h3>
+            🤔 AI Teacher
+          </h3>
 
           <p>
-            ${
-              hindi
-                ? "किसी भी project पर click करके उसे full screen में खोलें."
-                : "Click any project to open it in full screen."
-            }
+            Please wait while I prepare the answer...
           </p>
 
         </div>
 
+      `;
 
-        <div class="jh-practical-count">
 
-          <strong>
-            ${projects.length}
-          </strong>
+      try {
 
-          <span>
-            Projects
-          </span>
+        const response =
+          await fetch("/api/ask", {
 
-        </div>
-
-      </section>
-
-
-      <section class="jh-project-grid">
-
-
-        ${projects.map((project, index) => `
-
-          <button
-            type="button"
-            class="jh-project-card"
-            onclick="openProject(${project.id})"
-          >
-
-            <div class="jh-project-image-wrap">
-
-              <img
-                src="${escapeHTML(
-                  imagePath(project.image)
-                )}"
-                alt="${escapeHTML(
-                  project.title
-                )}"
-                loading="lazy"
-              />
-
-              <span class="jh-project-number">
-                ${String(index + 1).padStart(2, "0")}
-              </span>
-
-
-              <span class="jh-project-open">
-                🔍 Open
-              </span>
-
-            </div>
-
-
-            <div class="jh-project-content">
-
-              <h3>
-                ${escapeHTML(
-                  project.title
-                )}
-              </h3>
-
-              <p>
-                ${escapeHTML(
-                  project.description
-                )}
-              </p>
-
-              <span class="jh-project-link">
-                Open Project →
-              </span>
-
-            </div>
-
-          </button>
-
-        `).join("")}
-
-      </section>
-
-    `;
-
-  }
-
-
-  /* =========================================================
-     EXCEL
-     ========================================================= */
-
-  function openExcel() {
-
-    state.section = "excel";
-
-    state.course = "excel";
-
-    state.wordView = null;
-
-    state.tab = null;
-
-    state.toolIndex = 0;
-
-    state.expanded = false;
-
-    state.practicalOpen = false;
-
-    state.projectId = null;
-
-    render();
-
-  }
-
-
-  function renderExcelPage() {
-
-    const hindi = isHindi();
-
-    return `
-
-      ${renderTopHeader("excel")}
-
-
-      <section class="jh-course-hero excel-hero">
-
-        <div class="jh-course-hero-icon">
-          📊
-        </div>
-
-        <div>
-
-          <span class="jh-small-badge">
-            MS EXCEL
-          </span>
-
-          <h1>
-            ${
-              hindi
-                ? "MS Excel"
-                : "MS Excel"
-            }
-          </h1>
-
-          <p>
-            ${
-              hindi
-                ? "Formulas, functions और practical worksheets सीखें."
-                : "Learn formulas, functions and practical worksheets."
-            }
-          </p>
-
-        </div>
-
-      </section>
-
-
-      <section class="jh-coming-soon-card large">
-
-        <div class="jh-coming-icon">
-          📊
-        </div>
-
-        <h2>
-          ${
-            hindi
-              ? "Excel Learning Coming Soon"
-              : "Excel Learning Coming Soon"
-          }
-        </h2>
-
-        <p>
-          ${
-            hindi
-              ? "Excel formulas और practice sheets जल्द यहां उपलब्ध होंगी."
-              : "Excel formulas and practice sheets will be available here soon."
-          }
-        </p>
-
-        <span class="jh-coming-badge">
-          Coming Soon
-        </span>
-
-      </section>
-
-    `;
-
-  }
-
-
-  /* =========================================================
-     POWERPOINT
-     ========================================================= */
-
-  function openPowerPoint() {
-
-    state.section = "powerpoint";
-
-    state.course = "powerpoint";
-
-    state.wordView = null;
-
-    state.tab = null;
-
-    state.toolIndex = 0;
-
-    state.expanded = false;
-
-    state.practicalOpen = false;
-
-    state.projectId = null;
-
-    render();
-
-  }
-
-
-  function renderPowerPointPage() {
-
-    const hindi = isHindi();
-
-    return `
-
-      ${renderTopHeader("powerpoint")}
-
-
-      <section class="jh-course-hero powerpoint-hero">
-
-        <div class="jh-course-hero-icon">
-          🎞️
-        </div>
-
-        <div>
-
-          <span class="jh-small-badge">
-            MS POWERPOINT
-          </span>
-
-          <h1>
-            MS PowerPoint
-          </h1>
-
-          <p>
-            ${
-              hindi
-                ? "PowerPoint learning content जल्द उपलब्ध होगा."
-                : "PowerPoint learning content will be available soon."
-            }
-          </p>
-
-        </div>
-
-      </section>
-
-
-      <section class="jh-coming-soon-card large">
-
-        <div class="jh-coming-icon">
-          🚀
-        </div>
-
-        <h2>
-          Coming Soon
-        </h2>
-
-        <p>
-          ${
-            hindi
-              ? "PowerPoint का complete learning section जल्द यहां उपलब्ध होगा."
-              : "The complete PowerPoint learning section will be available here soon."
-          }
-        </p>
-
-      </section>
-
-    `;
-
-  }
-
-
-  /* =========================================================
-     AI TEACHER
-     ========================================================= */
-
-  function openAITeacher() {
-
-    const existing =
-      document.getElementById(
-        "jhAITeacher"
-      );
-
-    if (existing) {
-
-      existing.classList.add("open");
-
-      return;
-
-    }
-
-    renderAITeacher();
-
-  }
-
-
-  function closeAITeacher() {
-
-    const panel =
-      document.getElementById(
-        "jhAITeacher"
-      );
-
-    if (panel) {
-
-      panel.classList.remove("open");
-
-    }
-
-  }
-
-
-  function renderAITeacher() {
-
-    const panel =
-      document.createElement("aside");
-
-    panel.id = "jhAITeacher";
-
-    panel.className =
-      "jh-ai-teacher-panel open";
-
-
-    panel.innerHTML = `
-
-      <div class="jh-ai-teacher-header">
-
-        <div class="jh-ai-teacher-title">
-
-          <div class="jh-ai-avatar">
-            🤖
-          </div>
-
-          <div>
-
-            <strong>
-              AI Teacher
-            </strong>
-
-            <small>
-              Joining Hands
-            </small>
-
-          </div>
-
-        </div>
-
-
-        <button
-          type="button"
-          onclick="closeAITeacher()"
-          class="jh-ai-close"
-        >
-          ✕
-        </button>
-
-      </div>
-
-
-      <div
-        id="jhAIContext"
-        class="jh-ai-context"
-      >
-        ${
-          state.course === "word"
-            ? "MS Word"
-            : state.course === "excel"
-              ? "MS Excel"
-              : "Computer Learning"
-        }
-      </div>
-
-
-      <div
-        id="jhAIMessages"
-        class="jh-ai-messages"
-      >
-
-        <div class="jh-ai-message bot">
-
-          <div class="jh-ai-message-avatar">
-            🤖
-          </div>
-
-          <div class="jh-ai-message-bubble">
-
-            ${
-              isHindi()
-                ? "नमस्ते! मैं आपका AI Computer Teacher हूँ। MS Word, Excel या computer learning से जुड़ा कोई भी सवाल पूछें."
-                : "Hello! I am your AI Computer Teacher. Ask me anything about MS Word, Excel or computer learning."
-            }
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <form
-        id="jhAIForm"
-        class="jh-ai-input-area"
-        onsubmit="askAITeacher(event)"
-      >
-
-        <textarea
-          id="jhAIQuestion"
-          rows="2"
-          placeholder="${
-            isHindi()
-              ? "अपना सवाल लिखें..."
-              : "Ask your question..."
-          }"
-        ></textarea>
-
-
-        <button
-          type="submit"
-          class="jh-ai-send"
-        >
-          ➤
-        </button>
-
-      </form>
-
-
-      <div class="jh-ai-footer">
-        AI Teacher uses the connected API to answer your questions.
-      </div>
-
-    `;
-
-
-    document.body.appendChild(panel);
-
-  }
-
-
-  /* =========================================================
-     AI TEACHER QUESTION
-     ========================================================= */
-
-  async function askAITeacher(event) {
-
-    event.preventDefault();
-
-
-    const input =
-      document.getElementById(
-        "jhAIQuestion"
-      );
-
-    const messages =
-      document.getElementById(
-        "jhAIMessages"
-      );
-
-
-    if (!input || !messages) {
-
-      return;
-
-    }
-
-
-    const question =
-      input.value.trim();
-
-
-    if (!question) {
-
-      return;
-
-    }
-
-
-    addAIMessage(
-      "user",
-      question
-    );
-
-
-    input.value = "";
-
-
-    addAITyping();
-
-
-    try {
-
-      const response =
-        await fetch(
-          "/api/ask",
-          {
             method: "POST",
 
             headers: {
@@ -4217,1514 +2498,187 @@ function render() {
 
             body: JSON.stringify({
 
-              question,
+              question: question,
 
-              course:
-                state.course === "word"
-                  ? "MS Word"
-                  : state.course === "excel"
-                    ? "MS Excel"
-                    : "General Computer Learning",
+              course: course,
 
-              project:
-                state.projectId
-                  ? String(state.projectId)
-                  : state.tab || ""
+              project: project
 
             })
 
-          }
-        );
+          });
 
 
-      const data =
-        await response.json();
+        const data =
+          await response.json();
 
 
-      removeAITyping();
+        if (!response.ok) {
 
-
-      if (!response.ok) {
-
-        throw new Error(
-          data.error ||
-          "AI Teacher could not answer."
-        );
-
-      }
-
-
-      addAIMessage(
-        "bot",
-        data.answer ||
-        "I could not generate an answer."
-      );
-
-
-    }
-
-    catch (error) {
-
-      removeAITyping();
-
-
-      addAIMessage(
-        "bot",
-        `Sorry, I could not connect to the AI Teacher.
-
-${error.message || "Please try again."}`
-      );
-
-    }
-
-  }
-
-
-  /* =========================================================
-     ADD AI MESSAGE
-     ========================================================= */
-
-  function addAIMessage(
-    type,
-    text
-  ) {
-
-    const messages =
-      document.getElementById(
-        "jhAIMessages"
-      );
-
-
-    if (!messages) {
-
-      return;
-
-    }
-
-
-    const wrapper =
-      document.createElement("div");
-
-
-    wrapper.className =
-      `jh-ai-message ${type}`;
-
-
-    wrapper.innerHTML = `
-
-      <div class="jh-ai-message-avatar">
-        ${
-          type === "bot"
-            ? "🤖"
-            : "👤"
-        }
-      </div>
-
-      <div class="jh-ai-message-bubble">
-        ${formatAIText(text)}
-      </div>
-
-    `;
-
-
-    messages.appendChild(
-      wrapper
-    );
-
-
-    messages.scrollTop =
-      messages.scrollHeight;
-
-  }
-
-
-  /* =========================================================
-     AI TEXT FORMATTER
-     ========================================================= */
-
-  function formatAIText(text) {
-
-    return escapeHTML(
-      String(text || "")
-    )
-      .replace(
-        /\*\*(.*?)\*\*/g,
-        "<strong>$1</strong>"
-      )
-      .replace(
-        /\n/g,
-        "<br>"
-      );
-
-  }
-
-
-  /* =========================================================
-     AI TYPING
-     ========================================================= */
-
-  function addAITyping() {
-
-    const messages =
-      document.getElementById(
-        "jhAIMessages"
-      );
-
-    if (!messages) {
-
-      return;
-
-    }
-
-
-    const typing =
-      document.createElement("div");
-
-    typing.id =
-      "jhAITyping";
-
-    typing.className =
-      "jh-ai-message bot";
-
-
-    typing.innerHTML = `
-
-      <div class="jh-ai-message-avatar">
-        🤖
-      </div>
-
-      <div class="jh-ai-message-bubble">
-
-        <span class="jh-typing-dot"></span>
-        <span class="jh-typing-dot"></span>
-        <span class="jh-typing-dot"></span>
-
-      </div>
-
-    `;
-
-
-    messages.appendChild(
-      typing
-    );
-
-
-    messages.scrollTop =
-      messages.scrollHeight;
-
-  }
-
-
-  function removeAITyping() {
-
-    const typing =
-      document.getElementById(
-        "jhAITyping"
-      );
-
-    if (typing) {
-
-      typing.remove();
-
-    }
-
-  }
-
-
-  /* =========================================================
-     INITIAL APPLICATION START
-     ========================================================= */
-
-  document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-      /*
-       * IMPORTANT:
-       * Initial state keeps the Word learning instructions
-       * collapsed.
-       */
-
-      state.section = "home";
-
-      state.course = null;
-
-      state.wordView = null;
-
-      state.tab = null;
-
-      state.toolIndex = 0;
-
-      state.expanded = false;
-
-      state.practicalOpen = false;
-
-      state.projectId = null;
-
-
-      render();
-
-    }
-  );/* =========================================================
-   GLOBAL CLICK HANDLERS
-   ========================================================= */
-
-document.addEventListener("click", function (event) {
-
-  /*
-   * Close image zoom when clicking outside the image.
-   */
-  const imageModal =
-    document.getElementById("jhImageModal");
-
-  if (
-    imageModal &&
-    imageModal.classList.contains("open") &&
-    event.target === imageModal
-  ) {
-
-    closeImageZoom();
-
-  }
-
-
-  /*
-   * Close AI Teacher when clicking outside
-   * only if the panel is not being interacted with.
-   */
-  const aiPanel =
-    document.getElementById("jhAITeacher");
-
-  if (
-    aiPanel &&
-    aiPanel.classList.contains("open")
-  ) {
-
-    const aiButton =
-      event.target.closest(
-        ".jh-header-ai-btn"
-      );
-
-    if (
-      !aiButton &&
-      !aiPanel.contains(event.target)
-    ) {
-
-      /*
-       * Do not automatically close the AI Teacher.
-       * Students may want it open while navigating.
-       */
-
-    }
-
-  }
-
-});
-
-
-/* =========================================================
-   KEYBOARD HANDLERS
-   ========================================================= */
-
-document.addEventListener(
-  "keydown",
-  function (event) {
-
-    /*
-     * ESC closes image zoom.
-     */
-    if (
-      event.key === "Escape"
-    ) {
-
-      closeImageZoom();
-
-    }
-
-    /*
-     * ESC closes the practical project
-     * fullscreen viewer.
-     */
-    if (
-      event.key === "Escape"
-    ) {
-
-      const project =
-        document.getElementById(
-          "projectFullscreen"
-        );
-
-      if (project) {
-
-        closeProject();
-
-      }
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   EXCEL PLACEHOLDER FUNCTIONS
-   ========================================================= */
-
-function openExcelLearning() {
-
-  showComingSoon(
-    isHindi()
-      ? "Excel Learning"
-      : "Excel Learning"
-  );
-
-}
-
-
-function openExcelPractical() {
-
-  showComingSoon(
-    isHindi()
-      ? "Excel Practical Work"
-      : "Excel Practical Work"
-  );
-
-}
-
-
-/* =========================================================
-   POWERPOINT PLACEHOLDER FUNCTIONS
-   ========================================================= */
-
-function openPowerPointLearning() {
-
-  showComingSoon(
-    "PowerPoint Learning"
-  );
-
-}
-
-
-function openPowerPointPractical() {
-
-  showComingSoon(
-    "PowerPoint Practical Work"
-  );
-
-}
-
-
-/* =========================================================
-   AI TEACHER CONTEXT UPDATE
-   ========================================================= */
-
-function updateAIContext() {
-
-  const context =
-    document.getElementById(
-      "jhAIContext"
-    );
-
-  if (!context) {
-
-    return;
-
-  }
-
-
-  let courseText =
-    "Computer Learning";
-
-
-  if (
-    state.course === "word"
-  ) {
-
-    courseText =
-      "MS Word";
-
-  }
-
-  else if (
-    state.course === "excel"
-  ) {
-
-    courseText =
-      "MS Excel";
-
-  }
-
-  else if (
-    state.course === "powerpoint"
-  ) {
-
-    courseText =
-      "MS PowerPoint";
-
-  }
-
-
-  if (state.tab) {
-
-    courseText +=
-      " • " + state.tab;
-
-  }
-
-
-  context.textContent =
-    courseText;
-
-}
-
-
-/* =========================================================
-   OPEN AI TEACHER WITH CURRENT CONTEXT
-   ========================================================= */
-
-function openAITeacherWithContext() {
-
-  openAITeacher();
-
-  setTimeout(
-    updateAIContext,
-    50
-  );
-
-}
-
-
-/* =========================================================
-   REFRESH AI TEACHER CONTEXT
-   ========================================================= */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  function () {
-
-    updateAIContext();
-
-  }
-);
-
-
-/* =========================================================
-   WINDOW RESIZE
-   ========================================================= */
-
-window.addEventListener(
-  "resize",
-  function () {
-
-    /*
-     * Keep the fullscreen project image
-     * inside the available screen.
-     */
-    const projectImage =
-      document.querySelector(
-        ".jh-project-full-image"
-      );
-
-    if (projectImage) {
-
-      projectImage.style.maxHeight =
-        "calc(100vh - 190px)";
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   IMAGE ERROR HANDLING
-   ========================================================= */
-
-document.addEventListener(
-  "error",
-  function (event) {
-
-    const element =
-      event.target;
-
-
-    if (
-      element &&
-      element.tagName === "IMG"
-    ) {
-
-      /*
-       * Prevent broken images from making
-       * the interface look unfinished.
-       */
-      if (
-        !element.dataset.imageFallback
-      ) {
-
-        element.dataset.imageFallback =
-          "true";
-
-        element.style.display =
-          "none";
-
-        const fallback =
-          document.createElement(
-            "div"
+          throw new Error(
+            data.error ||
+            "AI Teacher could not answer."
           );
 
-        fallback.className =
-          "jh-image-placeholder";
+        }
 
-        fallback.textContent =
-          "Image will be available soon.";
 
-        element.parentNode
-          ?.appendChild(fallback);
+        answer.innerHTML = `
+
+          <div class="help-answer">
+
+            <h3>
+              💡 AI Teacher
+            </h3>
+
+            <div class="ai-response"></div>
+
+          </div>
+
+        `;
+
+
+        const responseBox =
+          answer.querySelector(
+            ".ai-response"
+          );
+
+
+        responseBox.textContent =
+          data.answer ||
+          "No answer received.";
+
 
       }
 
-    }
+      catch (error) {
 
-  },
-  true
-);
-
-
-/* =========================================================
-   LOCAL STORAGE
-   ========================================================= */
-
-function saveLanguage() {
-
-  try {
-
-    localStorage.setItem(
-      "jh-language",
-      state.lang
-    );
-
-  }
-
-  catch (error) {
-
-    console.warn(
-      "Could not save language preference.",
-      error
-    );
-
-  }
-
-}
-
-
-function loadLanguage() {
-
-  try {
-
-    const saved =
-      localStorage.getItem(
-        "jh-language"
-      );
-
-
-    if (
-      saved === "en" ||
-      saved === "hi"
-    ) {
-
-      state.lang =
-        saved;
-
-    }
-
-  }
-
-  catch (error) {
-
-    console.warn(
-      "Could not load language preference.",
-      error
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   WRAPPED LANGUAGE FUNCTION
-   ========================================================= */
-
-const originalChangeLanguage =
-  changeLanguage;
-
-
-changeLanguage =
-  function (language) {
-
-    originalChangeLanguage(
-      language
-    );
-
-    saveLanguage();
-
-  };
-
-
-/* =========================================================
-   LOAD USER PREFERENCE
-   ========================================================= */
-
-loadLanguage();
-
-
-/* =========================================================
-   ACCESSIBILITY
-   ========================================================= */
-
-document.addEventListener(
-  "keydown",
-  function (event) {
-
-    /*
-     * Allow Enter on custom buttons
-     * that are represented by divs.
-     */
-    const target =
-      event.target;
-
-
-    if (
-      event.key === "Enter" &&
-      target &&
-      target.classList &&
-      target.classList.contains(
-        "jh-clickable"
-      )
-    ) {
-
-      target.click();
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   AI TEACHER ENTER KEY
-   ========================================================= */
-
-document.addEventListener(
-  "keydown",
-  function (event) {
-
-    const target =
-      event.target;
-
-
-    if (
-      target &&
-      target.id === "jhAIQuestion" &&
-      event.key === "Enter" &&
-      !event.shiftKey
-    ) {
-
-      event.preventDefault();
-
-
-      const form =
-        document.getElementById(
-          "jhAIForm"
+        console.error(
+          "AI Teacher Error:",
+          error
         );
 
 
-      if (form) {
+        answer.innerHTML = `
 
-        form.requestSubmit();
+          <div class="help-answer">
 
+            <h3>
+              ❌ AI Teacher Error
+            </h3>
+
+            <p>
+              ${escapeHTML(error.message)}
+            </p>
+
+            <p>
+              Please try again.
+            </p>
+
+          </div>
+
+        `;
+
+      }
+
+
+      button.disabled = false;
+
+      button.innerText =
+        "Ask Question";
+
+    }
+
+
+    // ============================================================
+    // IMAGE VIEWER
+    // ============================================================
+
+    function openImage(imageSrc) {
+
+      const old =
+        document.getElementById("imageModal");
+
+
+      if (old) {
+        old.remove();
+      }
+
+
+      document.body.insertAdjacentHTML(
+
+        "beforeend",
+
+        `
+
+        <div
+          id="imageModal"
+          class="image-modal"
+          onclick="closeImage()"
+        >
+
+          <div class="image-modal-content">
+
+            <img
+              src="${imageSrc}"
+              alt="Image"
+            >
+
+            <p>
+              Click anywhere to close
+            </p>
+
+          </div>
+
+        </div>
+
+        `
+      );
+
+    }
+
+
+    // ============================================================
+    // CLOSE IMAGE
+    // ============================================================
+
+    function closeImage() {
+
+      const modal =
+        document.getElementById("imageModal");
+
+
+      if (modal) {
+        modal.remove();
       }
 
     }
 
-  }
-);
+
+    // ============================================================
+    // SECURITY
+    // ============================================================
+
+    function escapeHTML(text) {
+
+      const div =
+        document.createElement("div");
 
 
-/* =========================================================
-   SAFE API HEALTH CHECK
-   ========================================================= */
-
-async function checkAIHealth() {
-
-  try {
-
-    const response =
-      await fetch(
-        "/api/health"
-      );
+      div.textContent =
+        text;
 
 
-    if (!response.ok) {
-
-      return {
-        ok: false,
-        aiConfigured: false
-      };
+      return div.innerHTML;
 
     }
 
 
-    return await response.json();
-
-  }
-
-  catch (error) {
-
-    return {
-      ok: false,
-      aiConfigured: false
-    };
-
-  }
-
-}
-
-
-/* =========================================================
-   AI STATUS INDICATOR
-   ========================================================= */
-
-async function updateAIStatus() {
-
-  const health =
-    await checkAIHealth();
-
-
-  const indicator =
-    document.querySelector(
-      ".jh-ai-status"
-    );
-
-
-  if (!indicator) {
-
-    return;
-
-  }
-
-
-  if (
-    health.ok &&
-    health.aiConfigured
-  ) {
-
-    indicator.textContent =
-      "AI Online";
-
-    indicator.classList.add(
-      "online"
-    );
-
-    indicator.classList.remove(
-      "offline"
-    );
-
-  }
-
-  else {
-
-    indicator.textContent =
-      "AI Offline";
-
-    indicator.classList.add(
-      "offline"
-    );
-
-    indicator.classList.remove(
-      "online"
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   INITIAL AI STATUS CHECK
-   ========================================================= */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  function () {
-
-    setTimeout(
-      updateAIStatus,
-      500
-    );
-
-  }
-);
-
-
-/* =========================================================
-   PRINT SUPPORT
-   ========================================================= */
-
-function printCurrentProject() {
-
-  const project =
-    document.querySelector(
-      ".jh-project-fullscreen"
-    );
-
-
-  if (!project) {
-
-    return;
-
-  }
-
-
-  window.print();
-
-}
-
-
-/* =========================================================
-   PROJECT IMAGE DOWNLOAD
-   ========================================================= */
-
-function openProjectImageInNewTab(
-  projectId
-) {
-
-  const project =
-    projects.find(
-      item =>
-        Number(item.id) ===
-        Number(projectId)
-    );
-
-
-  if (!project) {
-
-    return;
-
-  }
-
-
-  const url =
-    imagePath(
-      project.image
-    );
-
-
-  window.open(
-    url,
-    "_blank",
-    "noopener,noreferrer"
-  );
-
-}
-
-
-/* =========================================================
-   NAVIGATION HELPERS
-   ========================================================= */
-
-function goToNextTab() {
-
-  const tabs =
-    Object.keys(tabData);
-
-
-  const currentIndex =
-    tabs.indexOf(
-      state.tab
-    );
-
-
-  if (
-    currentIndex === -1
-  ) {
-
-    selectTab(
-      tabs[0]
-    );
-
-    return;
-
-  }
-
-
-  const nextIndex =
-    currentIndex + 1;
-
-
-  if (
-    nextIndex >=
-    tabs.length
-  ) {
-
-    openWordPractical();
-
-    return;
-
-  }
-
-
-  selectTab(
-    tabs[nextIndex]
-  );
-
-}
-
-
-function goToPreviousTab() {
-
-  const tabs =
-    Object.keys(tabData);
-
-
-  const currentIndex =
-    tabs.indexOf(
-      state.tab
-    );
-
-
-  if (
-    currentIndex <= 0
-  ) {
-
-    openWordLearning();
-
-    return;
-
-  }
-
-
-  selectTab(
-    tabs[currentIndex - 1]
-  );
-
-}
-
-
-/* =========================================================
-   PROJECT NAVIGATION
-   ========================================================= */
-
-function nextProject() {
-
-  if (
-    !state.projectId
-  ) {
-
-    return;
-
-  }
-
-
-  const index =
-    projects.findIndex(
-      item =>
-        Number(item.id) ===
-        Number(state.projectId)
-    );
-
-
-  if (
-    index === -1
-  ) {
-
-    return;
-
-  }
-
-
-  const next =
-    projects[
-      (index + 1) %
-      projects.length
-    ];
-
-
-  openProject(
-    next.id
-  );
-
-}
-
-
-function previousProject() {
-
-  if (
-    !state.projectId
-  ) {
-
-    return;
-
-  }
-
-
-  const index =
-    projects.findIndex(
-      item =>
-        Number(item.id) ===
-        Number(state.projectId)
-    );
-
-
-  if (
-    index === -1
-  ) {
-
-    return;
-
-  }
-
-
-  const previous =
-    projects[
-      (index - 1 +
-        projects.length) %
-      projects.length
-    ];
-
-
-  openProject(
-    previous.id
-  );
-
-}
-
-
-/* =========================================================
-   MOBILE SIDEBAR
-   ========================================================= */
-
-function toggleMobileSidebar() {
-
-  const sidebar =
-    document.querySelector(
-      ".jh-sidebar"
-    );
-
-
-  if (!sidebar) {
-
-    return;
-
-  }
-
-
-  sidebar.classList.toggle(
-    "mobile-open"
-  );
-
-}
-
-
-/* =========================================================
-   CLOSE MOBILE SIDEBAR AFTER NAVIGATION
-   ========================================================= */
-
-document.addEventListener(
-  "click",
-  function (event) {
-
-    const button =
-      event.target.closest(
-        ".jh-nav-item"
-      );
-
-
-    if (!button) {
-
-      return;
-
-    }
-
-
-    const sidebar =
-      document.querySelector(
-        ".jh-sidebar"
-      );
-
-
-    if (
-      sidebar &&
-      window.innerWidth <= 760
-    ) {
-
-      sidebar.classList.remove(
-        "mobile-open"
-      );
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   PREVENT ACCIDENTAL FORM SUBMISSION
-   ========================================================= */
-
-document.addEventListener(
-  "submit",
-  function (event) {
-
-    const form =
-      event.target;
-
-
-    if (
-      form &&
-      form.classList &&
-      form.classList.contains(
-        "jh-no-submit"
-      )
-    ) {
-
-      event.preventDefault();
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   FINAL SAFETY CHECK
-   ========================================================= */
-
-if (
-  typeof window !== "undefined"
-) {
-
-  window.JoiningHands =
-    {
-
-      state,
-
-      projects,
-
-      tabData,
-
-      tabImages,
-
-      openWord,
-
-      openWordLearning,
-
-      openWordPractical,
-
-      openExcel,
-
-      openPowerPoint,
-
-      selectTab,
-
-      selectTool,
-
-      openProject,
-
-      closeProject,
-
-      openImageZoom,
-
-      closeImageZoom,
-
-      openAITeacher,
-
-      closeAITeacher,
-
-      askAITeacher,
-
-      goHome,
-
-      changeLanguage
-
-    };
-
-}
-
-
-/* =========================================================
-   END OF APP.JS
-   ========================================================= *//* =========================================================
-   FINAL APP BOOTSTRAP
-   ========================================================= */
-
-/*
- * Make sure the application renders once the page is ready.
- * If Part 3 already registered DOMContentLoaded, this check
- * prevents duplicate rendering.
- */
-
-(function bootstrapJoiningHands() {
-
-  function start() {
-
-    loadLanguage();
-
-    state.section =
-      state.section || "home";
-
-    state.toolIndex =
-      Number.isInteger(state.toolIndex)
-        ? state.toolIndex
-        : 0;
-
-    state.expanded = false;
-
-    render();
-
-    setTimeout(
-      updateAIStatus,
-      500
-    );
-
-  }
-
-
-  if (
-    document.readyState === "loading"
-  ) {
+    // ============================================================
+    // START WEBSITE
+    // ============================================================
 
     document.addEventListener(
       "DOMContentLoaded",
-      start,
-      {
-        once: true
-      }
+      showHome
     );
-
-  }
-
-  else {
-
-    start();
-
-  }
-
-})();
-
-
-/* =========================================================
-   GLOBAL ERROR HANDLING
-   ========================================================= */
-
-window.addEventListener(
-  "error",
-  function (event) {
-
-    console.error(
-      "Joining Hands application error:",
-      event.error || event.message
-    );
-
-  }
-);
-
-
-window.addEventListener(
-  "unhandledrejection",
-  function (event) {
-
-    console.error(
-      "Joining Hands promise error:",
-      event.reason
-    );
-
-  }
-);
-
-
-/* =========================================================
-   END
-   ========================================================= *//* =========================================================
-   FINAL APP BOOTSTRAP
-   ========================================================= */
-
-/*
- * Make sure the application renders once the page is ready.
- * If Part 3 already registered DOMContentLoaded, this check
- * prevents duplicate rendering.
- */
-
-(function bootstrapJoiningHands() {
-
-  function start() {
-
-    loadLanguage();
-
-    state.section =
-      state.section || "home";
-
-    state.toolIndex =
-      Number.isInteger(state.toolIndex)
-        ? state.toolIndex
-        : 0;
-
-    state.expanded = false;
-
-    render();
-
-    setTimeout(
-      updateAIStatus,
-      500
-    );
-
-  }
-
-
-  if (
-    document.readyState === "loading"
-  ) {
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      start,
-      {
-        once: true
-      }
-    );
-
-  }
-
-  else {
-
-    start();
-
-  }
-
-})();
-
-
-/* =========================================================
-   GLOBAL ERROR HANDLING
-   ========================================================= */
-
-window.addEventListener(
-  "error",
-  function (event) {
-
-    console.error(
-      "Joining Hands application error:",
-      event.error || event.message
-    );
-
-  }
-);
-
-
-window.addEventListener(
-  "unhandledrejection",
-  function (event) {
-
-    console.error(
-      "Joining Hands promise error:",
-      event.reason
-    );
-
-  }
-);
-
-
-/* =========================================================
-   END
-   ========================================================= *//* =========================================================
-   FINAL APP BOOTSTRAP
-   ========================================================= */
-
-/*
- * Make sure the application renders once the page is ready.
- * If Part 3 already registered DOMContentLoaded, this check
- * prevents duplicate rendering.
- */
-
-(function bootstrapJoiningHands() {
-
-  function start() {
-
-    loadLanguage();
-
-    state.section =
-      state.section || "home";
-
-    state.toolIndex =
-      Number.isInteger(state.toolIndex)
-        ? state.toolIndex
-        : 0;
-
-    state.expanded = false;
-
-    render();
-
-    setTimeout(
-      updateAIStatus,
-      500
-    );
-
-  }
-
-
-  if (
-    document.readyState === "loading"
-  ) {
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      start,
-      {
-        once: true
-      }
-    );
-
-  }
-
-  else {
-
-    start();
-
-  }
-
-})();
-
-
-/* =========================================================
-   GLOBAL ERROR HANDLING
-   ========================================================= */
-
-window.addEventListener(
-  "error",
-  function (event) {
-
-    console.error(
-      "Joining Hands application error:",
-      event.error || event.message
-    );
-
-  }
-);
-
-
-window.addEventListener(
-  "unhandledrejection",
-  function (event) {
-
-    console.error(
-      "Joining Hands promise error:",
-      event.reason
-    );
-
-  }
-);
-
-
-/* =========================================================
-   END
-   ========================================================= */
