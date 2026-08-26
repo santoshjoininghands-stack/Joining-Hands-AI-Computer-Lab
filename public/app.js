@@ -7425,14 +7425,7 @@ const wordLearning = {
 
     ]
   },
-// ============================================================
-// END OF MS WORD LEARNING DATA + WEBSITE FUNCTIONS
-// ============================================================
-
-// Close the Layout section and the complete wordLearning object
-  }
 };
-
 
 // ============================================================
 // WEBSITE STATE
