@@ -1,186 +1,96 @@
 import express from "express";
+import OpenAI from "openai";
+import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
+dotenv.config();
+const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const publicDir = path.join(__dirname, "public");
 
-const app = express();
-const PORT = process.env.PORT || 10000;
+app.use(express.json({ limit: "1mb" }));
+app.use(express.static(publicDir));
 
-app.use(express.json());
+const client = process.env.OPENAI_API_KEY
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  : null;
 
-app.use(express.static(path.join(__dirname, "public")));
+function clean(value, max = 2000) {
+  return String(value ?? "").trim().slice(0, max);
+}
 
+async function answerWithAI({ question, course, project }) {
+  if (!client) {
+    throw new Error("AI Teacher is not configured. Add OPENAI_API_KEY to the .env file.");
+  }
 
-// ==========================================
-// AI TEACHER - GOOGLE GEMINI
-// ==========================================
+  const response = await client.responses.create({
+    model: process.env.OPENAI_MODEL || "gpt-5",
+    instructions: [
+      "You are the Joining Hands AI Teacher for a beginner-friendly computer learning portal.",
+      "Teach clearly and safely. Prefer simple English or Hindi/Hinglish depending on the student's question.",
+      "Give practical, step-by-step instructions. Do not pretend to have performed actions on the student's computer.",
+      "The current course and project context are provided below. Keep the answer relevant to that context.",
+      `Course: ${course || "General"}`,
+      `Project: ${project || "General"}`
+    ].join("\n"),
+    input: question
+  });
 
+  return response.output_text || "I could not generate an answer right now.";
+}
+
+// Main endpoint used by the website.
 app.post("/api/ask", async (req, res) => {
+  const question = clean(req.body?.question);
+  const course = clean(req.body?.course, 200);
+  const project = clean(req.body?.project, 200);
+
+  if (!question) {
+    return res.status(400).json({ error: "Please type a question first." });
+  }
 
   try {
-
-    const { question, course, project } = req.body;
-
-    if (!question || !question.trim()) {
-      return res.status(400).json({
-        error: "Please enter a question."
-      });
-    }
-
-    const apiKey = process.env.GEMINI_API_KEY;
-
-    if (!apiKey) {
-
-      console.error("GEMINI_API_KEY is missing.");
-
-      return res.status(500).json({
-        error: "Gemini API key is not configured on the server."
-      });
-    }
-
-
-    const prompt = `
-You are the AI Teacher for Joining Hands AI Computer Learning & Practical Lab.
-
-The student is currently learning:
-
-Course: ${course || "Computer"}
-Project: ${project || "Practical Project"}
-
-Student's question:
-${question}
-
-Your job is to help the student understand the task.
-
-IMPORTANT RULES:
-
-1. Give simple answers suitable for beginners.
-2. If the question is about MS Word, give exact step-by-step instructions.
-3. Mention the correct MS Word tab/menu/button names.
-4. Explain one step at a time.
-5. Give a small example when useful.
-6. Do not use complicated technical language.
-7. Do not do the student's project for them.
-8. Help them understand how to complete it themselves.
-9. Keep the answer reasonably short.
-10. If the question is unrelated to computer learning, politely say that you are the Joining Hands AI Teacher and ask them to ask a computer-learning question.
-
-Example style:
-
-Question:
-How do I add a shape?
-
-Answer:
-To add a shape in MS Word:
-
-1. Open the Insert tab.
-2. Click Shapes.
-3. Choose the shape you want.
-4. Click and drag on the page to draw the shape.
-5. Use Shape Format to change its colour, outline or size.
-
-Now answer the student's question.
-`;
-
-
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": apiKey
-        },
-
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt
-                }
-              ]
-            }
-          ]
-        })
-      }
-    );
-
-
-    const data = await response.json();
-
-
-    if (!response.ok) {
-
-      console.error("Gemini API Error:", data);
-
-      return res.status(response.status).json({
-        error:
-          data?.error?.message ||
-          "Gemini AI request failed."
-      });
-
-    }
-
-
-    const answer =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-
-    if (!answer) {
-
-      return res.status(500).json({
-        error: "Gemini did not return an answer."
-      });
-
-    }
-
-
-    res.json({
-      answer: answer
-    });
-
-
+    const answer = await answerWithAI({ question, course, project });
+    res.json({ answer });
   } catch (error) {
-
-    console.error("AI Teacher Error:", error);
-
+    console.error("AI Teacher error:", error);
     res.status(500).json({
-      error:
-        "AI Teacher could not answer right now. Please try again."
+      error: error?.message || "AI Teacher could not answer right now."
     });
-
   }
-
 });
 
+// Compatibility endpoint for the earlier AI/API version.
+app.post("/api/ai", async (req, res) => {
+  const question = clean(req.body?.question);
+  const course = clean(req.body?.course, 200);
+  const project = clean(req.body?.project || req.body?.lessonId, 200);
+  if (!question) return res.status(400).json({ error: "Please type a question first." });
 
-// ==========================================
-// WEBSITE
-// ==========================================
-
-app.get("*", (req, res) => {
-
-  res.sendFile(
-    path.join(__dirname, "public", "index.html")
-  );
-
+  try {
+    const answer = await answerWithAI({ question, course, project });
+    res.json({ answer });
+  } catch (error) {
+    console.error("AI Teacher error:", error);
+    res.status(500).json({ error: error?.message || "AI Teacher could not answer right now." });
+  }
 });
 
+app.get("/api/health", (_req, res) => {
+  res.json({ ok: true, aiConfigured: Boolean(process.env.OPENAI_API_KEY) });
+});
 
-// ==========================================
-// START SERVER
-// ==========================================
-
-app.listen(
-  PORT,
-  "0.0.0.0",
-  () => {
-    console.log(
-      `Joining Hands learning site running on port ${PORT}`
-    );
+app.use((req, res, next) => {
+  if (req.method === "GET" && !req.path.startsWith("/api/")) {
+    return res.sendFile(path.join(publicDir, "index.html"));
   }
-);
+  next();
+});
+
+const port = Number(process.env.PORT || 3000);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Joining Hands AI Computer Learning Lab running on port ${port}`);
+});
