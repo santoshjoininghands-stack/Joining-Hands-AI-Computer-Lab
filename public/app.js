@@ -4935,3 +4935,96 @@ document.addEventListener(
 
   }
 );
+/* =========================================================
+   FINAL APP BOOTSTRAP
+   ========================================================= */
+
+/*
+ * Start the Joining Hands application once the page is ready.
+ * This code must appear ONLY ONCE in app.js.
+ */
+
+(function bootstrapJoiningHands() {
+
+  function start() {
+
+    // Load saved language
+    if (typeof loadLanguage === "function") {
+      loadLanguage();
+    }
+
+    // Make sure basic state values are valid
+    state.section = state.section || "home";
+
+    state.toolIndex =
+      Number.isInteger(state.toolIndex)
+        ? state.toolIndex
+        : 0;
+
+    state.expanded = false;
+
+    // Render the application
+    if (typeof render === "function") {
+      render();
+    }
+
+    // Check AI status after the page is rendered
+    if (typeof updateAIStatus === "function") {
+      setTimeout(updateAIStatus, 500);
+    }
+  }
+
+
+  // Start after HTML is ready
+  if (document.readyState === "loading") {
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      start,
+      {
+        once: true
+      }
+    );
+
+  } else {
+
+    start();
+
+  }
+
+})();
+
+
+/* =========================================================
+   GLOBAL ERROR HANDLING
+   ========================================================= */
+
+window.addEventListener(
+  "error",
+  function (event) {
+
+    console.error(
+      "Joining Hands application error:",
+      event.error || event.message
+    );
+
+  }
+);
+
+
+window.addEventListener(
+  "unhandledrejection",
+  function (event) {
+
+    console.error(
+      "Joining Hands promise error:",
+      event.reason
+    );
+
+  }
+);
+
+
+/* =========================================================
+   END OF APP.JS
+   ========================================================= */
