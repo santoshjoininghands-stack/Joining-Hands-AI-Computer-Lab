@@ -8,30 +8,23 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// IMPORTANT:
+// index.html, app.js and styles.css are inside /public
 const publicDir = path.join(__dirname, "public");
+
+console.log("Server directory:", __dirname);
+console.log("Public directory:", publicDir);
 
 app.use(express.json({ limit: "1mb" }));
 
-/* =========================================================
-   FRONTEND FILES
-   ========================================================= */
-
-app.use(express.static(__dirname));
-
-/* Images inside public folder */
-app.use("/public", express.static(publicDir));
-
-
-/* =========================================================
-   OPENAI
-   ========================================================= */
+// Serve everything from public folder
+app.use(express.static(publicDir));
 
 const client = process.env.OPENAI_API_KEY
   ? new OpenAI({
       apiKey: process.env.OPENAI_API_KEY
     })
   : null;
-
 
 function clean(value, max = 2000) {
   return String(value ?? "")
@@ -41,7 +34,7 @@ function clean(value, max = 2000) {
 
 
 /* =========================================================
-   AI TEACHER FUNCTION
+   AI TEACHER
    ========================================================= */
 
 async function answerWithAI({
@@ -49,7 +42,6 @@ async function answerWithAI({
   course,
   project
 }) {
-
   if (!client) {
     throw new Error(
       "AI Teacher is not configured. Please add OPENAI_API_KEY in the Render Environment Variables."
@@ -58,19 +50,17 @@ async function answerWithAI({
 
   const response = await client.responses.create({
     model: process.env.OPENAI_MODEL || "gpt-5",
-
     instructions: [
       "You are the Joining Hands AI Teacher.",
-      "Teach beginners about computers.",
-      "Explain clearly and step-by-step.",
-      "Use simple English, Hindi or Hinglish according to the student's question.",
-      "Give practical examples.",
-      "Do not pretend to control the student's computer.",
-      "Keep answers relevant to the course and lesson.",
+      "You teach beginners computer skills.",
+      "Give simple, clear and practical explanations.",
+      "Use simple English or Hindi/Hinglish depending on the student's question.",
+      "Give step-by-step instructions when appropriate.",
+      "Do not pretend to perform actions on the student's computer.",
+      "Stay relevant to the course and project.",
       `Course: ${course || "General"}`,
       `Project: ${project || "General"}`
     ].join("\n"),
-
     input: question
   });
 
@@ -82,11 +72,10 @@ async function answerWithAI({
 
 
 /* =========================================================
-   AI API
+   MAIN AI ENDPOINT
    ========================================================= */
 
 app.post("/api/ask", async (req, res) => {
-
   const question = clean(req.body?.question);
   const course = clean(req.body?.course, 200);
   const project = clean(req.body?.project, 200);
@@ -98,7 +87,6 @@ app.post("/api/ask", async (req, res) => {
   }
 
   try {
-
     const answer = await answerWithAI({
       question,
       course,
@@ -110,7 +98,6 @@ app.post("/api/ask", async (req, res) => {
     });
 
   } catch (error) {
-
     console.error("AI Teacher error:", error);
 
     return res.status(500).json({
@@ -123,17 +110,15 @@ app.post("/api/ask", async (req, res) => {
 
 
 /* =========================================================
-   OLD / COMPATIBILITY AI API
+   COMPATIBILITY AI ENDPOINT
    ========================================================= */
 
 app.post("/api/ai", async (req, res) => {
-
   const question = clean(req.body?.question);
   const course = clean(req.body?.course, 200);
 
   const project = clean(
-    req.body?.project ||
-    req.body?.lessonId,
+    req.body?.project || req.body?.lessonId,
     200
   );
 
@@ -144,7 +129,6 @@ app.post("/api/ai", async (req, res) => {
   }
 
   try {
-
     const answer = await answerWithAI({
       question,
       course,
@@ -156,7 +140,6 @@ app.post("/api/ai", async (req, res) => {
     });
 
   } catch (error) {
-
     console.error("AI Teacher error:", error);
 
     return res.status(500).json({
@@ -173,27 +156,29 @@ app.post("/api/ai", async (req, res) => {
    ========================================================= */
 
 app.get("/api/health", (_req, res) => {
-
   res.json({
     ok: true,
     aiConfigured: Boolean(
       process.env.OPENAI_API_KEY
     )
   });
-
 });
 
 
 /* =========================================================
-   HOMEPAGE
+   FRONTEND FALLBACK
    ========================================================= */
 
-app.get("/", (_req, res) => {
+// IMPORTANT:
+// Always use /public/index.html
+app.get("*", (req, res, next) => {
+  if (req.path.startsWith("/api/")) {
+    return next();
+  }
 
-  res.sendFile(
-    path.join(__dirname, "index.html")
+  return res.sendFile(
+    path.join(publicDir, "index.html")
   );
-
 });
 
 
@@ -209,10 +194,12 @@ app.listen(
   port,
   "0.0.0.0",
   () => {
-
     console.log(
       `Joining Hands AI Computer Learning Lab running on port ${port}`
     );
 
+    console.log(
+      `Serving frontend from: ${publicDir}`
+    );
   }
 );
