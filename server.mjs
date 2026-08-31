@@ -12,29 +12,19 @@ const publicDir = path.join(__dirname, "public");
 
 app.use(express.json({ limit: "1mb" }));
 
-/*
-=========================================================
-STATIC FILES
-=========================================================
-
-Your main frontend files are in the ROOT folder:
-  index.html
-  app.js
-  styles.css
-
-Your images are inside:
-  public/
-*/
+/* =========================================================
+   FRONTEND FILES
+   ========================================================= */
 
 app.use(express.static(__dirname));
+
+/* Images inside public folder */
 app.use("/public", express.static(publicDir));
 
 
-/*
-=========================================================
-OPENAI
-=========================================================
-*/
+/* =========================================================
+   OPENAI
+   ========================================================= */
 
 const client = process.env.OPENAI_API_KEY
   ? new OpenAI({
@@ -50,17 +40,16 @@ function clean(value, max = 2000) {
 }
 
 
-/*
-=========================================================
-AI TEACHER
-=========================================================
-*/
+/* =========================================================
+   AI TEACHER FUNCTION
+   ========================================================= */
 
 async function answerWithAI({
   question,
   course,
   project
 }) {
+
   if (!client) {
     throw new Error(
       "AI Teacher is not configured. Please add OPENAI_API_KEY in the Render Environment Variables."
@@ -72,15 +61,14 @@ async function answerWithAI({
 
     instructions: [
       "You are the Joining Hands AI Teacher.",
-      "You teach students computer skills in a beginner-friendly way.",
-      "Explain things clearly and step-by-step.",
-      "Use simple English, Hindi, or Hinglish according to the student's question.",
-      "Focus on practical computer learning.",
-      "If the student asks about MS Word, Excel, PowerPoint, Windows, typing, internet, or basic computer skills, explain with simple examples.",
-      "Do not claim that you performed an action on the student's computer.",
-      "Keep answers useful and easy for beginners.",
-      `Current course: ${course || "General"}`,
-      `Current project/lesson: ${project || "General"}`
+      "Teach beginners about computers.",
+      "Explain clearly and step-by-step.",
+      "Use simple English, Hindi or Hinglish according to the student's question.",
+      "Give practical examples.",
+      "Do not pretend to control the student's computer.",
+      "Keep answers relevant to the course and lesson.",
+      `Course: ${course || "General"}`,
+      `Project: ${project || "General"}`
     ].join("\n"),
 
     input: question
@@ -93,13 +81,12 @@ async function answerWithAI({
 }
 
 
-/*
-=========================================================
-MAIN AI ENDPOINT
-=========================================================
-*/
+/* =========================================================
+   AI API
+   ========================================================= */
 
 app.post("/api/ask", async (req, res) => {
+
   const question = clean(req.body?.question);
   const course = clean(req.body?.course, 200);
   const project = clean(req.body?.project, 200);
@@ -111,6 +98,7 @@ app.post("/api/ask", async (req, res) => {
   }
 
   try {
+
     const answer = await answerWithAI({
       question,
       course,
@@ -122,6 +110,7 @@ app.post("/api/ask", async (req, res) => {
     });
 
   } catch (error) {
+
     console.error("AI Teacher error:", error);
 
     return res.status(500).json({
@@ -133,13 +122,12 @@ app.post("/api/ask", async (req, res) => {
 });
 
 
-/*
-=========================================================
-COMPATIBILITY AI ENDPOINT
-=========================================================
-*/
+/* =========================================================
+   OLD / COMPATIBILITY AI API
+   ========================================================= */
 
 app.post("/api/ai", async (req, res) => {
+
   const question = clean(req.body?.question);
   const course = clean(req.body?.course, 200);
 
@@ -156,6 +144,7 @@ app.post("/api/ai", async (req, res) => {
   }
 
   try {
+
     const answer = await answerWithAI({
       question,
       course,
@@ -167,6 +156,7 @@ app.post("/api/ai", async (req, res) => {
     });
 
   } catch (error) {
+
     console.error("AI Teacher error:", error);
 
     return res.status(500).json({
@@ -178,47 +168,38 @@ app.post("/api/ai", async (req, res) => {
 });
 
 
-/*
-=========================================================
-HEALTH CHECK
-=========================================================
-*/
+/* =========================================================
+   HEALTH CHECK
+   ========================================================= */
 
 app.get("/api/health", (_req, res) => {
+
   res.json({
     ok: true,
     aiConfigured: Boolean(
       process.env.OPENAI_API_KEY
     )
   });
+
 });
 
 
-/*
-=========================================================
-FRONTEND
-=========================================================
-*/
+/* =========================================================
+   HOMEPAGE
+   ========================================================= */
 
-app.get("*", (req, res, next) => {
+app.get("/", (_req, res) => {
 
-  if (
-    req.path.startsWith("/api/")
-  ) {
-    return next();
-  }
-
-  return res.sendFile(
+  res.sendFile(
     path.join(__dirname, "index.html")
   );
+
 });
 
 
-/*
-=========================================================
-START SERVER
-=========================================================
-*/
+/* =========================================================
+   START SERVER
+   ========================================================= */
 
 const port = Number(
   process.env.PORT || 3000
@@ -228,8 +209,10 @@ app.listen(
   port,
   "0.0.0.0",
   () => {
+
     console.log(
       `Joining Hands AI Computer Learning Lab running on port ${port}`
     );
+
   }
 );
