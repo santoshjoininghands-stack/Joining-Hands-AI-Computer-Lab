@@ -1,7 +1,6 @@
 /* =========================================================
    JOINING HANDS
    COMPUTER LEARNING LAB
-   by Santosh
    ========================================================= */
 
 "use strict";
@@ -532,6 +531,7 @@ function renderSidebar() {
           <p>
             AI Computer Learning<br>
             & Practical Lab
+            by Santosh Kumar
           </p>
 
         </div>
