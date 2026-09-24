@@ -2726,3 +2726,851 @@ joiningHandsExtraStyles.textContent = `
 `;
 
 document.head.appendChild(joiningHandsExtraStyles);
+
+/* =========================================================
+   JOINING HANDS — AI TEACHER FIX
+   APPEND THIS ENTIRE BLOCK TO THE VERY END OF public/app.js
+
+   IMPORTANT:
+   - Do not remove or change the existing MS Word code.
+   - This block only replaces the AI Teacher behaviour.
+   - It keeps the AI Teacher as an overlay/popup.
+   ========================================================= */
+
+(function () {
+
+  "use strict";
+
+  /* ---------------------------------------------------------
+     AI STATE
+     --------------------------------------------------------- */
+
+  window.jhAIState = window.jhAIState || {
+    open: false,
+    loading: false,
+    messages: [],
+    course: "General Computer Learning",
+    project: "",
+    language: "en"
+  };
+
+
+  /* ---------------------------------------------------------
+     SAFE TEXT
+     --------------------------------------------------------- */
+
+  function aiEscape(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  function aiCurrentLanguage() {
+
+    if (typeof state !== "undefined" &&
+        state.language === "hi") {
+
+      return "hi";
+
+    }
+
+    return "en";
+
+  }
+
+
+  function aiCurrentContext() {
+
+    let course = "General Computer Learning";
+    let project = "";
+
+    if (typeof state !== "undefined") {
+
+      if (state.course === "word" ||
+          state.course === "MS Word") {
+
+        course = "MS Word";
+
+      }
+
+      else if (state.course === "excel" ||
+               state.course === "MS Excel") {
+
+        course = "MS Excel";
+
+      }
+
+      else if (state.course === "powerpoint" ||
+               state.course === "MS PowerPoint") {
+
+        course = "MS PowerPoint";
+
+      }
+
+      else if (state.course) {
+
+        course = String(state.course);
+
+      }
+
+      project =
+        state.aiContext ||
+        state.projectId ||
+        state.tab ||
+        state.wordTab ||
+        "";
+
+    }
+
+    return {
+      course,
+      project
+    };
+
+  }
+
+
+  /* ---------------------------------------------------------
+     OPEN AI TEACHER
+     --------------------------------------------------------- */
+
+  window.openAITeacher = function (
+    course,
+    project
+  ) {
+
+    const context =
+      aiCurrentContext();
+
+    jhAIState.open = true;
+    jhAIState.course =
+      course || context.course;
+    jhAIState.project =
+      project || context.project;
+    jhAIState.language =
+      aiCurrentLanguage();
+
+    const old =
+      document.getElementById(
+        "jhAITeacherFixed"
+      );
+
+    if (old) {
+
+      old.remove();
+
+    }
+
+    document.body.insertAdjacentHTML(
+      "beforeend",
+
+      `
+      <div
+        id="jhAITeacherFixed"
+        class="jh-ai-fixed-overlay"
+      >
+
+        <div class="jh-ai-fixed-panel">
+
+          <div class="jh-ai-fixed-header">
+
+            <div class="jh-ai-fixed-title">
+
+              <div class="jh-ai-fixed-avatar">
+                🤖
+              </div>
+
+              <div>
+
+                <h2>
+                  AI Teacher
+                </h2>
+
+                <p>
+                  ${aiEscape(jhAIState.course)}
+                  ${
+                    jhAIState.project
+                      ? ` • ${aiEscape(jhAIState.project)}`
+                      : ""
+                  }
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="jh-ai-fixed-actions">
+
+              <button
+                type="button"
+                class="jh-ai-clear"
+                onclick="window.jhAIClear()"
+              >
+                Clear
+              </button>
+
+              <button
+                type="button"
+                class="jh-ai-fixed-close"
+                onclick="window.jhAIClose()"
+                aria-label="Close AI Teacher"
+              >
+                ×
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div
+            id="jhAIFixedMessages"
+            class="jh-ai-fixed-messages"
+          ></div>
+
+
+          <form
+            id="jhAIFixedForm"
+            class="jh-ai-fixed-form"
+          >
+
+            <textarea
+              id="jhAIFixedQuestion"
+              rows="3"
+              placeholder="${
+                jhAIState.language === "hi"
+                  ? "अपना सवाल यहाँ लिखें..."
+                  : "Type your question here..."
+              }"
+            ></textarea>
+
+
+            <button
+              id="jhAIFixedSend"
+              type="submit"
+            >
+              ${
+                jhAIState.language === "hi"
+                  ? "AI Teacher से पूछें →"
+                  : "Ask AI Teacher →"
+              }
+            </button>
+
+          </form>
+
+
+          <div class="jh-ai-fixed-footer">
+
+            ${
+              jhAIState.language === "hi"
+                ? "आप MS Word, Excel, PowerPoint या basic computer learning के बारे में सवाल पूछ सकते हैं।"
+                : "Ask about MS Word, Excel, PowerPoint or basic computer learning."
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+      `
+
+    );
+
+
+    window.jhAIRenderMessages();
+
+    const form =
+      document.getElementById(
+        "jhAIFixedForm"
+      );
+
+    const input =
+      document.getElementById(
+        "jhAIFixedQuestion"
+      );
+
+    if (form) {
+
+      form.addEventListener(
+        "submit",
+        window.jhAISubmit
+      );
+
+    }
+
+    if (input) {
+
+      input.focus();
+
+      input.addEventListener(
+        "keydown",
+        function (event) {
+
+          if (
+            event.key === "Enter" &&
+            !event.shiftKey
+          ) {
+
+            event.preventDefault();
+
+            form?.requestSubmit();
+
+          }
+
+        }
+      );
+
+    }
+
+  };
+
+
+  /* ---------------------------------------------------------
+     CLOSE
+     --------------------------------------------------------- */
+
+  window.jhAIClose = function () {
+
+    const panel =
+      document.getElementById(
+        "jhAITeacherFixed"
+      );
+
+    if (panel) {
+
+      panel.remove();
+
+    }
+
+    jhAIState.open = false;
+
+  };
+
+
+  /* ---------------------------------------------------------
+     CLEAR CHAT
+     --------------------------------------------------------- */
+
+  window.jhAIClear = function () {
+
+    jhAIState.messages = [];
+
+    window.jhAIRenderMessages();
+
+  };
+
+
+  /* ---------------------------------------------------------
+     RENDER CHAT
+     --------------------------------------------------------- */
+
+  window.jhAIRenderMessages = function () {
+
+    const box =
+      document.getElementById(
+        "jhAIFixedMessages"
+      );
+
+    if (!box) {
+
+      return;
+
+    }
+
+
+    if (!jhAIState.messages.length) {
+
+      box.innerHTML = `
+
+        <div class="jh-ai-fixed-welcome">
+
+          <div class="jh-ai-fixed-welcome-icon">
+            🎓
+          </div>
+
+          <h3>
+            ${
+              jhAIState.language === "hi"
+                ? "AI Teacher से पूछें"
+                : "Ask your AI Teacher"
+            }
+          </h3>
+
+          <p>
+            ${
+              jhAIState.language === "hi"
+                ? "MS Word, Excel या computer learning से जुड़ा कोई भी सवाल पूछें। मैं आसान भाषा में step-by-step समझाऊँगा।"
+                : "Ask anything about MS Word, Excel or computer learning. I will explain it in simple, step-by-step language."
+            }
+          </p>
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    box.innerHTML =
+      jhAIState.messages
+        .map(function (message) {
+
+          const isUser =
+            message.role === "user";
+
+          const isError =
+            message.role === "error";
+
+          return `
+
+            <div class="
+              jh-ai-fixed-message
+              ${isUser ? "user" : "assistant"}
+              ${isError ? "error" : ""}
+            ">
+
+              <div class="jh-ai-fixed-message-label">
+
+                ${
+                  isUser
+                    ? "👤 You"
+                    : "🤖 AI Teacher"
+                }
+
+              </div>
+
+              <div class="jh-ai-fixed-message-body">
+
+                ${aiEscape(message.content)
+                  .replace(/\n/g, "<br>")}
+
+              </div>
+
+            </div>
+
+          `;
+
+        })
+        .join("");
+
+    box.scrollTop =
+      box.scrollHeight;
+
+  };
+
+
+  /* ---------------------------------------------------------
+     SEND QUESTION
+     --------------------------------------------------------- */
+
+  window.jhAISubmit = async function (event) {
+
+    event.preventDefault();
+
+    if (jhAIState.loading) {
+
+      return;
+
+    }
+
+
+    const input =
+      document.getElementById(
+        "jhAIFixedQuestion"
+      );
+
+    const sendButton =
+      document.getElementById(
+        "jhAIFixedSend"
+      );
+
+    if (!input) {
+
+      return;
+
+    }
+
+
+    const question =
+      input.value.trim();
+
+    if (!question) {
+
+      input.focus();
+
+      return;
+
+    }
+
+
+    jhAIState.messages.push({
+
+      role: "user",
+
+      content: question
+
+    });
+
+    input.value = "";
+
+    jhAIState.loading = true;
+
+
+    if (sendButton) {
+
+      sendButton.disabled = true;
+
+      sendButton.textContent =
+        jhAIState.language === "hi"
+          ? "⏳ जवाब तैयार हो रहा है..."
+          : "⏳ AI Teacher is thinking...";
+
+    }
+
+
+    window.jhAIRenderMessages();
+
+
+    try {
+
+      const response =
+        await fetch(
+          "/api/ask",
+          {
+
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body:
+              JSON.stringify({
+
+                question,
+
+                course:
+                  jhAIState.course,
+
+                project:
+                  jhAIState.project,
+
+                language:
+                  jhAIState.language,
+
+                history:
+                  jhAIState.messages
+                    .slice(-12)
+
+                    .map(function (item) {
+
+                      return {
+
+                        role:
+                          item.role === "user"
+                            ? "user"
+                            : "assistant",
+
+                        content:
+                          item.content
+
+                      };
+
+                    })
+
+              })
+
+          }
+        );
+
+
+      let data = {};
+
+      try {
+
+        data =
+          await response.json();
+
+      }
+
+      catch (jsonError) {
+
+        data = {};
+
+      }
+
+
+      if (!response.ok) {
+
+        throw new Error(
+
+          data.error ||
+          `AI Teacher request failed (${response.status}).`
+
+        );
+
+      }
+
+
+      const answer =
+        String(
+          data.answer ||
+          ""
+        ).trim();
+
+
+      if (!answer) {
+
+        throw new Error(
+          "The AI Teacher returned an empty answer."
+        );
+
+      }
+
+
+      jhAIState.messages.push({
+
+        role: "assistant",
+
+        content: answer
+
+      });
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Joining Hands AI Teacher error:",
+        error
+      );
+
+
+      jhAIState.messages.push({
+
+        role: "error",
+
+        content:
+          error?.message ||
+          (
+            jhAIState.language === "hi"
+              ? "AI Teacher अभी उपलब्ध नहीं है।"
+              : "AI Teacher is currently unavailable."
+          )
+
+      });
+
+    }
+
+    finally {
+
+      jhAIState.loading = false;
+
+      window.jhAIRenderMessages();
+
+
+      if (sendButton) {
+
+        sendButton.disabled = false;
+
+        sendButton.textContent =
+          jhAIState.language === "hi"
+            ? "AI Teacher से पूछें →"
+            : "Ask AI Teacher →";
+
+      }
+
+    }
+
+  };
+
+
+  /* ---------------------------------------------------------
+     CONTEXT HELPERS
+     --------------------------------------------------------- */
+
+  window.askAIWithContext = function (
+    question,
+    course,
+    project
+  ) {
+
+    window.openAITeacher(
+      course,
+      project
+    );
+
+    setTimeout(
+      function () {
+
+        const input =
+          document.getElementById(
+            "jhAIFixedQuestion"
+          );
+
+        if (input) {
+
+          input.value =
+            question || "";
+
+          input.focus();
+
+        }
+
+      },
+      50
+    );
+
+  };
+
+
+  window.askAboutCurrentTool =
+    function () {
+
+      let toolName = "";
+
+      try {
+
+        if (
+          typeof wordTools !== "undefined" &&
+          typeof state !== "undefined"
+        ) {
+
+          const tab =
+            state.tab ||
+            state.wordTab ||
+            "Home";
+
+          const tools =
+            wordTools[tab] || [];
+
+          const index =
+            Number(
+              state.toolIndex ??
+              state.selectedTool ??
+              0
+            );
+
+          toolName =
+            tools[index]?.name ||
+            "";
+
+        }
+
+      }
+
+      catch (error) {
+
+        console.warn(
+          "Could not read current Word tool.",
+          error
+        );
+
+      }
+
+
+      const question =
+        toolName
+
+          ? `Please explain the MS Word "${toolName}" option in simple language. Tell me what it does, when I should use it, give a real-life example, and then give step-by-step instructions.`
+
+          : "Please help me learn the current MS Word topic step by step.";
+
+      window.askAIWithContext(
+        question,
+        "MS Word",
+        (
+          typeof state !== "undefined"
+            ? state.tab || state.wordTab || "MS Word"
+            : "MS Word"
+        )
+      );
+
+    };
+
+
+  window.askAboutProject =
+    function (id) {
+
+      try {
+
+        if (
+          typeof wordProjects !== "undefined"
+        ) {
+
+          const project =
+            wordProjects.find(
+              function (item) {
+
+                return item.id === id;
+
+              }
+            );
+
+          if (project) {
+
+            window.askAIWithContext(
+
+              `Please teach me how to complete "${project.title}". Give simple step-by-step instructions, explain the purpose of each important step, and tell me what the finished result should look like.`,
+
+              "MS Word",
+
+              project.title
+
+            );
+
+            return;
+
+          }
+
+        }
+
+      }
+
+      catch (error) {
+
+        console.warn(
+          "Could not read Word project.",
+          error
+        );
+
+      }
+
+
+      window.openAITeacher(
+        "MS Word",
+        "Practical Work"
+      );
+
+    };
+
+
+  /* ---------------------------------------------------------
+     KEEP THE FINALIZED WORD INTERFACE UNCHANGED
+     --------------------------------------------------------- */
+
+  window.jhAIRefreshContext = function () {
+
+    const context =
+      aiCurrentContext();
+
+    jhAIState.course =
+      context.course;
+
+    jhAIState.project =
+      context.project;
+
+  };
+
+
+})();
