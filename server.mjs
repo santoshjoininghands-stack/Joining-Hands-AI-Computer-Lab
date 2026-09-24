@@ -1,4 +1,3 @@
-Joining Hands — server.mjs
 import express from "express";
 import OpenAI from "openai";
 import path from "path";
@@ -475,4 +474,3 @@ app.listen(
 
   }
 );
-
