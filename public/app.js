@@ -3574,3 +3574,51 @@ document.head.appendChild(joiningHandsExtraStyles);
 
 
 })();
+
+
+/* =========================================================
+   JOINING HANDS — AI TEACHER NAVIGATION FIX
+   =========================================================
+   IMPORTANT:
+   The existing sidebar click handler sends every navigation
+   item other than Home/MS Word to "Coming Soon".
+   This capture handler intercepts only AI Teacher BEFORE
+   that old handler runs and opens the real AI Teacher overlay.
+   ========================================================= */
+
+(function () {
+  "use strict";
+
+  document.addEventListener(
+    "click",
+    function (event) {
+
+      const aiButton = event.target.closest(
+        '[data-nav="ai"]'
+      );
+
+      if (!aiButton) {
+        return;
+      }
+
+      /* Stop the old sidebar handler from showing
+         "AI Teacher section is coming soon." */
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      if (typeof window.openAITeacher === "function") {
+        window.openAITeacher();
+      } else {
+        console.error(
+          "AI Teacher function is not loaded."
+        );
+        alert(
+          "AI Teacher is not loaded. Please redeploy app.js."
+        );
+      }
+
+    },
+    true
+  );
+
+})();
