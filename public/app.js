@@ -1138,10 +1138,58 @@ function renderLesson() {
 
 function renderSteps(content) {
 
+  const currentTab = getCurrentTab();
+
+  const tabImage = `/${currentTab.name}.png`;
+
   return `
 
-    <div class="steps">
+    <div class="tab-image-card">
 
+      <div class="tab-image-header">
+
+        <div>
+          <strong>
+            ${escapeHTML(currentTab.name)} Tab
+          </strong>
+
+          <span>
+            Microsoft Word interface
+          </span>
+        </div>
+
+        <button
+          type="button"
+          class="tab-image-zoom"
+          data-tab-image="${escapeHTML(tabImage)}"
+          data-tab-title="${escapeHTML(currentTab.name + " Tab")}"
+        >
+          🔍 View Full Screen
+        </button>
+
+      </div>
+
+      <div class="tab-image-wrapper">
+
+        <img
+          src="${escapeHTML(tabImage)}"
+          alt="${escapeHTML(currentTab.name)} Tab"
+          class="tab-image"
+          data-tab-image="${escapeHTML(tabImage)}"
+          data-tab-title="${escapeHTML(currentTab.name + " Tab")}"
+          onerror="this.parentElement.classList.add('image-not-found');"
+        >
+
+        <div class="image-not-found-message">
+          🖼️ ${escapeHTML(currentTab.name)}.png is not available
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="steps">
 
       <div class="step">
 
@@ -1150,23 +1198,30 @@ function renderSteps(content) {
         </div>
 
         <div class="step-text">
-          Open Microsoft Word and
-          select the appropriate tab.
+
+          Open Microsoft Word and select the
+
+          <strong>
+            ${escapeHTML(currentTab.name)}
+          </strong>
+
+          tab.
+
+          <br><br>
+
+          First look at the tab image above and
+          identify the available tools.
+
         </div>
 
         <div class="step-image">
 
-          <div
-            style="
-              height:100%;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              font-size:42px;
-            "
+          <img
+            src="${escapeHTML(tabImage)}"
+            alt="${escapeHTML(currentTab.name)} Tab"
+            data-tab-image="${escapeHTML(tabImage)}"
+            data-tab-title="${escapeHTML(currentTab.name + " Tab")}"
           >
-            📄
-          </div>
 
         </div>
 
@@ -1182,10 +1237,18 @@ function renderSteps(content) {
         <div class="step-text">
 
           Find
+
           <strong>
             ${escapeHTML(content.title)}
           </strong>
-          in the tools list and click it.
+
+          in the
+
+          <strong>
+            ${escapeHTML(currentTab.name)}
+          </strong>
+
+          tab and click it.
 
         </div>
 
@@ -1369,6 +1432,24 @@ function attachEvents() {
           Number(button.dataset.toolIndex);
 
         render();
+
+      });
+
+    });
+
+
+  /* WORD TAB IMAGES */
+
+  document
+    .querySelectorAll("[data-tab-image]")
+    .forEach(element => {
+
+      element.addEventListener("click", () => {
+
+        openImageViewer(
+          element.dataset.tabImage,
+          element.dataset.tabTitle || "Word Tab"
+        );
 
       });
 
@@ -1645,6 +1726,84 @@ joiningHandsExtraStyles.textContent = `
 .practical-btn {
   background: #f1e9ff;
   color: #7139d9;
+}
+
+.tab-image-card {
+  margin: 0 0 22px;
+  padding: 16px;
+  border: 1px solid #e5ddff;
+  border-radius: 20px;
+  background: #fbfaff;
+}
+
+.tab-image-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 14px;
+}
+
+.tab-image-header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tab-image-header strong {
+  font-size: 19px;
+  color: #5034c8;
+}
+
+.tab-image-header span {
+  font-size: 13px;
+  color: #667085;
+}
+
+.tab-image-zoom {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: #eee9ff;
+  color: #5335ce;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tab-image-wrapper {
+  position: relative;
+  min-height: 260px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-image {
+  display: block;
+  width: 100%;
+  max-height: 430px;
+  object-fit: contain;
+  cursor: zoom-in;
+}
+
+.image-not-found-message {
+  display: none;
+  color: #777;
+  font-size: 16px;
+  text-align: center;
+  padding: 30px;
+}
+
+.tab-image-wrapper.image-not-found .tab-image {
+  display: none;
+}
+
+.tab-image-wrapper.image-not-found .image-not-found-message {
+  display: block;
 }
 
 .practical-section {
