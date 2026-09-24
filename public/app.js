@@ -3899,3 +3899,352 @@ document.head.appendChild(joiningHandsExtraStyles);
     }
   });
 })();
+
+/* =========================================================
+   JOINING HANDS — FINAL AI TEACHER NAV + UI FIX
+   APPEND THIS ENTIRE BLOCK TO THE VERY END OF public/app.js
+   ========================================================= */
+
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------
+     1. STOP THE OLD "COMING SOON" HANDLER
+     --------------------------------------------------------- */
+
+  document.addEventListener(
+    "click",
+    function (event) {
+      const button = event.target.closest(
+        '[data-nav="ai"], .jh-quick-item'
+      );
+
+      if (!button) return;
+
+      const text = (button.textContent || "").trim();
+
+      const isAIButton =
+        button.matches('[data-nav="ai"]') ||
+        /AI\s*Teacher/i.test(text);
+
+      if (!isAIButton) return;
+
+      /*
+       * The existing app has a generic [data-nav] click handler
+       * which sends unknown navigation items to alert("... coming soon").
+       * Capture-phase handling prevents that old handler from running.
+       */
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      if (typeof window.openAITeacher === "function") {
+        window.openAITeacher();
+      }
+    },
+    true
+  );
+
+
+  /* ---------------------------------------------------------
+     2. FINAL AI TEACHER CSS
+     --------------------------------------------------------- */
+
+  const oldStyle = document.getElementById("jhFinalAITeacherStyle");
+  if (oldStyle) oldStyle.remove();
+
+  const style = document.createElement("style");
+  style.id = "jhFinalAITeacherStyle";
+
+  style.textContent = `
+    body.jh-ai-open {
+      overflow: hidden !important;
+    }
+
+    #jhAITeacherFixed {
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 2147483000 !important;
+      display: flex !important;
+      justify-content: flex-end !important;
+      background: rgba(15, 20, 40, 0.58) !important;
+      backdrop-filter: blur(3px) !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-fixed-panel {
+      width: min(460px, 94vw) !important;
+      height: 100vh !important;
+      background: #ffffff !important;
+      box-shadow: -12px 0 35px rgba(0,0,0,.22) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+      font-family: Arial, Helvetica, sans-serif !important;
+      color: #17204a !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-fixed-header {
+      flex: 0 0 auto !important;
+      min-height: 82px !important;
+      padding: 16px 18px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      background: linear-gradient(135deg, #3d218f, #6847d9) !important;
+      color: #fff !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-fixed-title {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+      min-width: 0 !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-fixed-avatar {
+      width: 46px !important;
+      height: 46px !important;
+      border-radius: 14px !important;
+      background: rgba(255,255,255,.18) !important;
+      display: grid !important;
+      place-items: center !important;
+      font-size: 25px !important;
+      flex: 0 0 auto !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-fixed-header h2 {
+      margin: 0 !important;
+      font-size: 21px !important;
+      line-height: 1.2 !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-fixed-header p {
+      margin: 4px 0 0 !important;
+      opacity: .9 !important;
+      font-size: 12px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      max-width: 280px !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-fixed-actions {
+      display: flex !important;
+      align-items: center !important;
+      gap: 7px !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-clear,
+    #jhAITeacherFixed .jh-ai-fixed-close {
+      border: 0 !important;
+      cursor: pointer !important;
+      color: #fff !important;
+      background: rgba(255,255,255,.16) !important;
+      border-radius: 9px !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-clear {
+      padding: 8px 10px !important;
+      font-size: 12px !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-fixed-close {
+      width: 38px !important;
+      height: 38px !important;
+      font-size: 25px !important;
+      line-height: 1 !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-fixed-messages {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow-y: auto !important;
+      padding: 18px !important;
+      background: #f5f6fb !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-message {
+      display: flex !important;
+      width: 100% !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-message.user {
+      justify-content: flex-end !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-message.assistant,
+    #jhAITeacherFixed .jh-ai-message.error {
+      justify-content: flex-start !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-bubble {
+      max-width: 86% !important;
+      padding: 11px 13px !important;
+      border-radius: 15px !important;
+      font-size: 14px !important;
+      line-height: 1.55 !important;
+      white-space: pre-wrap !important;
+      overflow-wrap: anywhere !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-message.user .jh-ai-bubble {
+      background: #5a36c9 !important;
+      color: #fff !important;
+      border-bottom-right-radius: 4px !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-message.assistant .jh-ai-bubble {
+      background: #fff !important;
+      color: #263052 !important;
+      border: 1px solid #e4e5ef !important;
+      border-bottom-left-radius: 4px !important;
+      box-shadow: 0 2px 8px rgba(30,35,80,.05) !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-message.error .jh-ai-bubble {
+      background: #fff1f1 !important;
+      color: #a32929 !important;
+      border: 1px solid #f0c4c4 !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-fixed-form {
+      flex: 0 0 auto !important;
+      display: flex !important;
+      gap: 9px !important;
+      padding: 13px !important;
+      background: #fff !important;
+      border-top: 1px solid #e5e6ee !important;
+      align-items: flex-end !important;
+    }
+
+    #jhAITeacherFixed #jhAIFixedQuestion {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      resize: none !important;
+      min-height: 52px !important;
+      max-height: 130px !important;
+      border: 1px solid #d7d9e5 !important;
+      border-radius: 12px !important;
+      padding: 11px 12px !important;
+      outline: none !important;
+      font-size: 14px !important;
+      line-height: 1.45 !important;
+      font-family: inherit !important;
+      color: #202744 !important;
+      background: #fafbff !important;
+    }
+
+    #jhAITeacherFixed #jhAIFixedQuestion:focus {
+      border-color: #6847d9 !important;
+      box-shadow: 0 0 0 3px rgba(104,71,217,.10) !important;
+    }
+
+    #jhAITeacherFixed #jhAIFixedSend {
+      flex: 0 0 auto !important;
+      min-width: 110px !important;
+      min-height: 52px !important;
+      border: 0 !important;
+      border-radius: 12px !important;
+      background: #5a36c9 !important;
+      color: #fff !important;
+      font-weight: 700 !important;
+      cursor: pointer !important;
+      padding: 0 13px !important;
+    }
+
+    #jhAITeacherFixed #jhAIFixedSend:disabled {
+      opacity: .65 !important;
+      cursor: wait !important;
+    }
+
+    #jhAITeacherFixed .jh-ai-fixed-footer {
+      flex: 0 0 auto !important;
+      padding: 7px 13px 10px !important;
+      text-align: center !important;
+      font-size: 10px !important;
+      color: #8a8da0 !important;
+      background: #fff !important;
+    }
+
+    @media (max-width: 600px) {
+      #jhAITeacherFixed {
+        justify-content: center !important;
+      }
+
+      #jhAITeacherFixed .jh-ai-fixed-panel {
+        width: 100vw !important;
+      }
+
+      #jhAITeacherFixed .jh-ai-fixed-form {
+        padding-bottom: calc(13px + env(safe-area-inset-bottom)) !important;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+
+
+  /* ---------------------------------------------------------
+     3. IMPROVE THE EXISTING OPEN/CLOSE FUNCTIONS
+     --------------------------------------------------------- */
+
+  const originalOpen = window.openAITeacher;
+  const originalClose = window.jhAIClose;
+
+  window.openAITeacher = function (course, project) {
+    if (typeof originalOpen === "function") {
+      originalOpen(course, project);
+    }
+
+    document.body.classList.add("jh-ai-open");
+
+    setTimeout(function () {
+      const input = document.getElementById("jhAIFixedQuestion");
+      if (input) input.focus();
+    }, 80);
+  };
+
+  window.jhAIClose = function () {
+    document.body.classList.remove("jh-ai-open");
+
+    const panel = document.getElementById("jhAITeacherFixed");
+    if (panel) panel.remove();
+
+    if (typeof originalClose === "function") {
+      originalClose();
+    }
+  };
+
+
+  /* ---------------------------------------------------------
+     4. ESC TO CLOSE
+     --------------------------------------------------------- */
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      const panel = document.getElementById("jhAITeacherFixed");
+      if (panel) window.jhAIClose();
+    }
+  });
+
+
+  /* ---------------------------------------------------------
+     5. ENTER TO SEND / SHIFT+ENTER NEW LINE
+     --------------------------------------------------------- */
+
+  document.addEventListener("keydown", function (event) {
+    const input = event.target;
+
+    if (!input || input.id !== "jhAIFixedQuestion") return;
+
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+
+      const form = document.getElementById("jhAIFixedForm");
+      if (form) form.requestSubmit();
+    }
+  });
+
+})();
