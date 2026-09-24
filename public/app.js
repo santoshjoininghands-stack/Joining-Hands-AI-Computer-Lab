@@ -3577,48 +3577,325 @@ document.head.appendChild(joiningHandsExtraStyles);
 
 
 /* =========================================================
-   JOINING HANDS — AI TEACHER NAVIGATION FIX
-   =========================================================
-   IMPORTANT:
-   The existing sidebar click handler sends every navigation
-   item other than Home/MS Word to "Coming Soon".
-   This capture handler intercepts only AI Teacher BEFORE
-   that old handler runs and opens the real AI Teacher overlay.
+   FINAL AI TEACHER UI FIX — 24 SEP 2026
+   This block fixes the unstyled/duplicate AI Teacher panel.
+   It does NOT change the MS Word learning/practical content.
    ========================================================= */
-
 (function () {
   "use strict";
 
-  document.addEventListener(
-    "click",
-    function (event) {
+  const style = document.createElement("style");
+  style.id = "jh-final-ai-teacher-style";
+  style.textContent = `
+    body.jh-ai-open { overflow: hidden; }
 
-      const aiButton = event.target.closest(
-        '[data-nav="ai"]'
-      );
+    /* Remove legacy AI panels if an older version created them. */
+    #jhAITeacher,
+    #aiTeacherOverlay,
+    #aiTeacherModal {
+      display: none !important;
+    }
 
-      if (!aiButton) {
-        return;
+    #jhAITeacherFixed.jh-ai-fixed-overlay {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: 2147483000 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+      padding: 24px !important;
+      box-sizing: border-box !important;
+      background: rgba(15, 23, 42, .55) !important;
+      backdrop-filter: blur(3px) !important;
+    }
+
+    .jh-ai-fixed-panel {
+      width: min(520px, 100%) !important;
+      height: min(760px, calc(100vh - 48px)) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+      background: #fff !important;
+      border-radius: 22px !important;
+      border: 1px solid #e6e8f0 !important;
+      box-shadow: 0 25px 80px rgba(16, 24, 40, .28) !important;
+      color: #17233f !important;
+      font-family: Arial, sans-serif !important;
+    }
+
+    .jh-ai-fixed-header {
+      flex: 0 0 auto !important;
+      min-height: 78px !important;
+      padding: 16px 18px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 12px !important;
+      background: linear-gradient(135deg, #3026a6, #6541dc) !important;
+      color: #fff !important;
+    }
+
+    .jh-ai-fixed-title {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+      min-width: 0 !important;
+    }
+
+    .jh-ai-fixed-avatar {
+      width: 46px !important;
+      height: 46px !important;
+      flex: 0 0 46px !important;
+      display: grid !important;
+      place-items: center !important;
+      border-radius: 14px !important;
+      background: rgba(255,255,255,.18) !important;
+      font-size: 25px !important;
+    }
+
+    .jh-ai-fixed-title h2 {
+      margin: 0 !important;
+      font-size: 21px !important;
+      line-height: 1.2 !important;
+      color: #fff !important;
+    }
+
+    .jh-ai-fixed-title p {
+      margin: 4px 0 0 !important;
+      font-size: 12px !important;
+      color: rgba(255,255,255,.86) !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      max-width: 300px !important;
+    }
+
+    .jh-ai-fixed-actions {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+    }
+
+    .jh-ai-clear,
+    .jh-ai-fixed-close {
+      border: 0 !important;
+      cursor: pointer !important;
+      font-weight: 700 !important;
+    }
+
+    .jh-ai-clear {
+      padding: 8px 11px !important;
+      border-radius: 9px !important;
+      background: rgba(255,255,255,.14) !important;
+      color: #fff !important;
+    }
+
+    .jh-ai-fixed-close {
+      width: 38px !important;
+      height: 38px !important;
+      border-radius: 50% !important;
+      background: rgba(255,255,255,.16) !important;
+      color: #fff !important;
+      font-size: 25px !important;
+      line-height: 1 !important;
+    }
+
+    .jh-ai-fixed-messages {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow-y: auto !important;
+      padding: 18px !important;
+      background: #f7f8fc !important;
+      box-sizing: border-box !important;
+    }
+
+    .jh-ai-fixed-welcome {
+      min-height: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      padding: 25px !important;
+      box-sizing: border-box !important;
+      color: #667085 !important;
+    }
+
+    .jh-ai-fixed-welcome-icon {
+      width: 70px !important;
+      height: 70px !important;
+      display: grid !important;
+      place-items: center !important;
+      border-radius: 22px !important;
+      background: #ece9ff !important;
+      font-size: 34px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .jh-ai-fixed-welcome h3 {
+      margin: 0 0 8px !important;
+      color: #33278f !important;
+      font-size: 22px !important;
+    }
+
+    .jh-ai-fixed-welcome p {
+      max-width: 390px !important;
+      margin: 0 !important;
+      line-height: 1.6 !important;
+      font-size: 14px !important;
+    }
+
+    .jh-ai-fixed-message {
+      max-width: 88% !important;
+      margin: 0 0 13px !important;
+      padding: 11px 13px !important;
+      border-radius: 14px !important;
+      background: #fff !important;
+      border: 1px solid #e5e7eb !important;
+      box-shadow: 0 3px 12px rgba(20,20,60,.05) !important;
+    }
+
+    .jh-ai-fixed-message.user {
+      margin-left: auto !important;
+      background: #eeeaff !important;
+      border-color: #dcd5ff !important;
+    }
+
+    .jh-ai-fixed-message.error {
+      background: #fff1f2 !important;
+      border-color: #fecdd3 !important;
+    }
+
+    .jh-ai-fixed-message-label {
+      margin-bottom: 5px !important;
+      font-size: 11px !important;
+      font-weight: 800 !important;
+      color: #5b3bd1 !important;
+    }
+
+    .jh-ai-fixed-message-body {
+      font-size: 14px !important;
+      line-height: 1.65 !important;
+      color: #25304a !important;
+      overflow-wrap: anywhere !important;
+    }
+
+    .jh-ai-fixed-form {
+      flex: 0 0 auto !important;
+      display: flex !important;
+      gap: 10px !important;
+      padding: 13px !important;
+      background: #fff !important;
+      border-top: 1px solid #e6e8f0 !important;
+    }
+
+    .jh-ai-fixed-form textarea {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      resize: none !important;
+      min-height: 54px !important;
+      max-height: 130px !important;
+      padding: 12px 13px !important;
+      border: 1px solid #d8dce8 !important;
+      border-radius: 12px !important;
+      outline: none !important;
+      font: inherit !important;
+      line-height: 1.45 !important;
+      color: #17233f !important;
+      background: #fff !important;
+      box-sizing: border-box !important;
+    }
+
+    .jh-ai-fixed-form textarea:focus {
+      border-color: #6344dc !important;
+      box-shadow: 0 0 0 3px rgba(99,68,220,.12) !important;
+    }
+
+    .jh-ai-fixed-form button {
+      flex: 0 0 auto !important;
+      align-self: stretch !important;
+      min-width: 145px !important;
+      border: 0 !important;
+      border-radius: 12px !important;
+      padding: 0 16px !important;
+      cursor: pointer !important;
+      background: linear-gradient(135deg, #4b32c3, #7547e8) !important;
+      color: #fff !important;
+      font-weight: 800 !important;
+    }
+
+    .jh-ai-fixed-form button:disabled {
+      opacity: .65 !important;
+      cursor: wait !important;
+    }
+
+    .jh-ai-fixed-footer {
+      flex: 0 0 auto !important;
+      padding: 8px 14px 11px !important;
+      text-align: center !important;
+      background: #fff !important;
+      color: #7b8499 !important;
+      font-size: 11px !important;
+      line-height: 1.4 !important;
+    }
+
+    @media (max-width: 700px) {
+      #jhAITeacherFixed.jh-ai-fixed-overlay {
+        padding: 0 !important;
+        align-items: stretch !important;
       }
-
-      /* Stop the old sidebar handler from showing
-         "AI Teacher section is coming soon." */
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      if (typeof window.openAITeacher === "function") {
-        window.openAITeacher();
-      } else {
-        console.error(
-          "AI Teacher function is not loaded."
-        );
-        alert(
-          "AI Teacher is not loaded. Please redeploy app.js."
-        );
+      .jh-ai-fixed-panel {
+        width: 100% !important;
+        height: 100% !important;
+        max-height: none !important;
+        border-radius: 0 !important;
       }
+      .jh-ai-fixed-form {
+        flex-direction: column !important;
+      }
+      .jh-ai-fixed-form button {
+        min-height: 46px !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
 
-    },
-    true
-  );
+  function removeLegacyPanels() {
+    ["jhAITeacher", "aiTeacherOverlay", "aiTeacherModal"].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    });
+  }
 
+  const originalOpen = window.openAITeacher;
+  const originalClose = window.jhAIClose;
+
+  window.openAITeacher = function(course, project) {
+    removeLegacyPanels();
+    document.body.classList.add("jh-ai-open");
+    if (typeof originalOpen === "function") {
+      originalOpen(course, project);
+    }
+    removeLegacyPanels();
+    const fixed = document.getElementById("jhAITeacherFixed");
+    if (fixed) fixed.style.display = "flex";
+  };
+
+  window.jhAIClose = function() {
+    if (typeof originalClose === "function") originalClose();
+    const fixed = document.getElementById("jhAITeacherFixed");
+    if (fixed) fixed.remove();
+    removeLegacyPanels();
+    document.body.classList.remove("jh-ai-open");
+    if (window.jhAIState) window.jhAIState.open = false;
+  };
+
+  window.addEventListener("keydown", function(event) {
+    if (event.key === "Escape" && window.jhAIState && window.jhAIState.open) {
+      window.jhAIClose();
+    }
+  });
 })();
