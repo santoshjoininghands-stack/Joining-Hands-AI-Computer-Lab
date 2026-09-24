@@ -54,6 +54,18 @@ const tabs = [
 ];
 
 
+const tabImageFiles = {
+  home: "Home.png",
+  insert: "Insert.png",
+  layout: "Page Layout.png",
+  references: "References.png",
+  mailings: "Mailing.png",
+  review: "Review.png",
+  view: "View.png",
+  design: "Design.png"
+};
+
+
 const tools = {
 
   home: [
@@ -622,6 +634,8 @@ function renderWordContent() {
     return `
       ${renderWordHeader()}
 
+      ${renderTabImage()}
+
       <div class="learning-layout">
         ${renderToolPanel()}
         ${renderLesson()}
@@ -998,6 +1012,71 @@ function renderToolPanel() {
 
 
 /* =========================================================
+   WORD TAB IMAGE
+   ========================================================= */
+
+function renderTabImage() {
+
+  const currentTab = getCurrentTab();
+
+  const imageFile =
+    tabImageFiles[currentTab.id] || `${currentTab.name}.png`;
+
+  const tabImage =
+    `/${encodeURIComponent(imageFile).replace(/%2F/g, "/")}`;
+
+  return `
+
+    <section class="tab-image-card word-tab-image-card">
+
+      <div class="tab-image-header">
+
+        <div>
+          <strong>
+            ${escapeHTML(currentTab.name)} Tab
+          </strong>
+
+          <span>
+            Microsoft Word interface
+          </span>
+        </div>
+
+        <button
+          type="button"
+          class="tab-image-zoom"
+          data-tab-image="${escapeHTML(tabImage)}"
+          data-tab-title="${escapeHTML(currentTab.name + " Tab")}"
+        >
+          🔍 View Full Screen
+        </button>
+
+      </div>
+
+      <div class="tab-image-wrapper">
+
+        <img
+          src="${escapeHTML(tabImage)}"
+          alt="${escapeHTML(currentTab.name + " Tab")}"
+          class="tab-image"
+          data-tab-image="${escapeHTML(tabImage)}"
+          data-tab-title="${escapeHTML(currentTab.name + " Tab")}"
+          onerror="this.parentElement.classList.add('image-not-found');"
+        >
+
+        <div class="image-not-found-message">
+          🖼️ ${escapeHTML(imageFile)} is not available
+        </div>
+
+      </div>
+
+    </section>
+
+  `;
+
+}
+
+
+/* =========================================================
    LESSON
    ========================================================= */
 
@@ -1140,64 +1219,17 @@ function renderSteps(content) {
 
   const currentTab = getCurrentTab();
 
-  const tabImage = `/${currentTab.name}.png`;
-
   return `
 
-    <div class="tab-image-card">
+    <div class="steps-only">
 
-      <div class="tab-image-header">
-
-        <div>
-          <strong>
-            ${escapeHTML(currentTab.name)} Tab
-          </strong>
-
-          <span>
-            Microsoft Word interface
-          </span>
-        </div>
-
-        <button
-          type="button"
-          class="tab-image-zoom"
-          data-tab-image="${escapeHTML(tabImage)}"
-          data-tab-title="${escapeHTML(currentTab.name + " Tab")}"
-        >
-          🔍 View Full Screen
-        </button>
-
-      </div>
-
-      <div class="tab-image-wrapper">
-
-        <img
-          src="${escapeHTML(tabImage)}"
-          alt="${escapeHTML(currentTab.name)} Tab"
-          class="tab-image"
-          data-tab-image="${escapeHTML(tabImage)}"
-          data-tab-title="${escapeHTML(currentTab.name + " Tab")}"
-          onerror="this.parentElement.classList.add('image-not-found');"
-        >
-
-        <div class="image-not-found-message">
-          🖼️ ${escapeHTML(currentTab.name)}.png is not available
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="steps">
-
-      <div class="step">
+      <div class="step-text-only">
 
         <div class="step-number">
           1
         </div>
 
-        <div class="step-text">
+        <div class="step-content">
 
           Open Microsoft Word and select the
 
@@ -1209,32 +1241,21 @@ function renderSteps(content) {
 
           <br><br>
 
-          First look at the tab image above and
-          identify the available tools.
-
-        </div>
-
-        <div class="step-image">
-
-          <img
-            src="${escapeHTML(tabImage)}"
-            alt="${escapeHTML(currentTab.name)} Tab"
-            data-tab-image="${escapeHTML(tabImage)}"
-            data-tab-title="${escapeHTML(currentTab.name + " Tab")}"
-          >
+          Look at the tab image shown above the learning section
+          and identify the available tools.
 
         </div>
 
       </div>
 
 
-      <div class="step">
+      <div class="step-text-only">
 
         <div class="step-number">
           2
         </div>
 
-        <div class="step-text">
+        <div class="step-content">
 
           Find
 
@@ -1252,51 +1273,19 @@ function renderSteps(content) {
 
         </div>
 
-        <div class="step-image">
-
-          <div
-            style="
-              height:100%;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              font-size:42px;
-            "
-          >
-            🖱️
-          </div>
-
-        </div>
-
       </div>
 
 
-      <div class="step">
+      <div class="step-text-only">
 
         <div class="step-number">
           3
         </div>
 
-        <div class="step-text">
+        <div class="step-content">
 
           Follow the instructions and
           practice the option yourself.
-
-        </div>
-
-        <div class="step-image">
-
-          <div
-            style="
-              height:100%;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              font-size:42px;
-            "
-          >
-            🎯
-          </div>
 
         </div>
 
@@ -1726,6 +1715,42 @@ joiningHandsExtraStyles.textContent = `
 .practical-btn {
   background: #f1e9ff;
   color: #7139d9;
+}
+
+.word-tab-image-card {
+  margin: 18px 0 20px;
+  width: 100%;
+}
+
+.steps-only {
+  padding: 6px 0 0;
+}
+
+.step-text-only {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 22px;
+}
+
+.step-text-only .step-number {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #7144df;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 17px;
+}
+
+.step-content {
+  padding-top: 5px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #17233f;
 }
 
 .tab-image-card {
