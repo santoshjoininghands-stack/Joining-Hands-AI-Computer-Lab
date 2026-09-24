@@ -315,7 +315,10 @@ const state = {
 
   darkMode: false,
 
-  howToOpen: true
+  howToOpen: true,
+
+  wordMode: "chooser",
+  page: "word"
 
 };
 
@@ -504,6 +507,132 @@ function getLessonContent() {
 
 
 /* =========================================================
+   WORD LEARNING / PRACTICAL WORKS
+   ========================================================= */
+
+const practicalProjects = Array.from({ length: 14 }, (_, i) => ({
+  number: i + 1,
+  title: `Practical Project ${i + 1}`,
+  image: `/Project ${i + 1}.png`
+}));
+
+function renderWordChooser() {
+  return `
+    <section class="word-chooser">
+      <div class="chooser-card">
+        <div class="chooser-icon">📚</div>
+        <h2>MS Word</h2>
+        <p>Choose how you want to learn and practice Microsoft Word.</p>
+
+        <div class="chooser-actions">
+          <button type="button" class="chooser-btn learning-btn" data-word-mode="learning">
+            📖
+            <span>
+              <strong>Learning</strong>
+              <small>Learn Word tabs step-by-step</small>
+            </span>
+          </button>
+
+          <button type="button" class="chooser-btn practical-btn" data-word-mode="practical">
+            📁
+            <span>
+              <strong>Practical Works</strong>
+              <small>Practice all 14 practical projects</small>
+            </span>
+          </button>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderPracticalProjects() {
+  return `
+    <section class="practical-section">
+      <div class="practical-header">
+        <div>
+          <h2>📁 MS Word Practical Works</h2>
+          <p>Click any project to open its image in full screen.</p>
+        </div>
+        <button type="button" class="back-btn" data-word-mode="chooser">← Back</button>
+      </div>
+
+      <div class="projects-grid">
+        ${practicalProjects.map(project => `
+          <button
+            type="button"
+            class="project-card"
+            data-project-image="${escapeHTML(project.image)}"
+            data-project-title="${escapeHTML(project.title)}"
+          >
+            <div class="project-number">${project.number}</div>
+
+            <div class="project-preview">
+              <img
+                src="${escapeHTML(project.image)}"
+                alt="${escapeHTML(project.title)}"
+                loading="lazy"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="project-missing">🖼️ Image not available</div>
+            </div>
+
+            <div class="project-name">${escapeHTML(project.title)}</div>
+            <span class="project-open">Open Full Screen →</span>
+          </button>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function openImageViewer(src, title) {
+  const old = document.getElementById("image-viewer");
+  if (old) old.remove();
+
+  const viewer = document.createElement("div");
+  viewer.id = "image-viewer";
+  viewer.className = "image-viewer";
+
+  viewer.innerHTML = `
+    <button type="button" class="image-viewer-close">×</button>
+    <div class="image-viewer-title">${escapeHTML(title || "Image")}</div>
+    <img src="${escapeHTML(src)}" alt="${escapeHTML(title || "Image")}">
+  `;
+
+  document.body.appendChild(viewer);
+
+  const close = () => viewer.remove();
+
+  viewer.querySelector(".image-viewer-close")
+    .addEventListener("click", close);
+
+  viewer.addEventListener("click", event => {
+    if (event.target === viewer) close();
+  });
+}
+
+function renderWordContent() {
+
+  if (state.wordMode === "practical") {
+    return renderPracticalProjects();
+  }
+
+  if (state.wordMode === "learning") {
+    return `
+      ${renderWordHeader()}
+
+      <div class="learning-layout">
+        ${renderToolPanel()}
+        ${renderLesson()}
+      </div>
+    `;
+  }
+
+  return renderWordChooser();
+}
+
+/* =========================================================
    SIDEBAR
    ========================================================= */
 
@@ -621,8 +750,8 @@ function renderNavItem(
 ) {
 
   const active =
-    id === "home-page" ||
-    id === "word"
+    (id === "word" && state.page === "word") ||
+    (id === "home-page" && state.page === "home")
       ? "active"
       : "";
 
@@ -1138,13 +1267,24 @@ function renderSteps(content) {
 
 function render() {
 
-  const app =
-    document.getElementById("app");
+  const app = document.getElementById("app");
 
   if (!app) {
     return;
   }
 
+  const content =
+    state.page === "word"
+      ? renderWordContent()
+      : `
+        <section class="word-chooser">
+          <div class="chooser-card">
+            <div class="chooser-icon">🏠</div>
+            <h2>Welcome to Joining Hands</h2>
+            <p>Choose <strong>MS Word</strong> from the left menu to continue.</p>
+          </div>
+        </section>
+      `;
 
   app.innerHTML = `
 
@@ -1156,16 +1296,7 @@ function render() {
 
         ${renderTopHeader()}
 
-        ${renderWordHeader()}
-
-
-        <div class="learning-layout">
-
-          ${renderToolPanel()}
-
-          ${renderLesson()}
-
-        </div>
+        ${content}
 
       </main>
 
@@ -1173,9 +1304,7 @@ function render() {
 
   `;
 
-
   attachEvents();
-
   applyZoom();
 
 }
@@ -1187,6 +1316,27 @@ function render() {
 
 function attachEvents() {
 
+  /* WORD MODE */
+
+  document
+    .querySelectorAll("[data-word-mode]")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        state.wordMode = button.dataset.wordMode;
+
+        if (state.wordMode === "learning") {
+          state.section = "home";
+          state.selectedTool = 0;
+        }
+
+        render();
+
+      });
+
+    });
+
 
   /* WORD TABS */
 
@@ -1194,21 +1344,15 @@ function attachEvents() {
     .querySelectorAll("[data-tab]")
     .forEach(button => {
 
-      button.addEventListener(
-        "click",
-        () => {
+      button.addEventListener("click", () => {
 
-          const tab =
-            button.dataset.tab;
+        state.section = button.dataset.tab;
+        state.selectedTool = 0;
+        state.wordMode = "learning";
 
-          state.section = tab;
+        render();
 
-          state.selectedTool = 0;
-
-          render();
-
-        }
-      );
+      });
 
     });
 
@@ -1219,101 +1363,90 @@ function attachEvents() {
     .querySelectorAll("[data-tool-index]")
     .forEach(button => {
 
-      button.addEventListener(
-        "click",
-        () => {
+      button.addEventListener("click", () => {
 
-          state.selectedTool =
-            Number(
-              button.dataset.toolIndex
-            );
+        state.selectedTool =
+          Number(button.dataset.toolIndex);
 
-          render();
+        render();
 
-        }
-      );
+      });
 
     });
 
 
-  /* ZOOM */
+  /* PRACTICAL PROJECTS */
+
+  document
+    .querySelectorAll("[data-project-image]")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        openImageViewer(
+          button.dataset.projectImage,
+          button.dataset.projectTitle
+        );
+
+      });
+
+    });
+
+
+  /* ZOOM / THEME / HOW TO */
 
   document
     .querySelectorAll("[data-action]")
     .forEach(button => {
 
-      button.addEventListener(
-        "click",
-        () => {
+      button.addEventListener("click", () => {
 
-          const action =
-            button.dataset.action;
+        const action = button.dataset.action;
 
+        if (action === "zoom-in") {
 
-          if (
-            action === "zoom-in"
-          ) {
+          state.zoom =
+            Math.min(150, state.zoom + 10);
 
-            state.zoom =
-              Math.min(
-                150,
-                state.zoom + 10
-              );
-
-            applyZoom();
-
-            updateZoomText();
-
-          }
-
-
-          if (
-            action === "zoom-out"
-          ) {
-
-            state.zoom =
-              Math.max(
-                70,
-                state.zoom - 10
-              );
-
-            applyZoom();
-
-            updateZoomText();
-
-          }
-
-
-          if (
-            action === "theme"
-          ) {
-
-            state.darkMode =
-              !state.darkMode;
-
-            document.body.classList.toggle(
-              "dark",
-              state.darkMode
-            );
-
-            render();
-
-          }
-
-
-          if (
-            action === "toggle-how"
-          ) {
-
-            state.howToOpen =
-              !state.howToOpen;
-
-            render();
-
-          }
+          applyZoom();
+          updateZoomText();
 
         }
-      );
+
+        if (action === "zoom-out") {
+
+          state.zoom =
+            Math.max(70, state.zoom - 10);
+
+          applyZoom();
+          updateZoomText();
+
+        }
+
+        if (action === "theme") {
+
+          state.darkMode =
+            !state.darkMode;
+
+          document.body.classList.toggle(
+            "dark",
+            state.darkMode
+          );
+
+          render();
+
+        }
+
+        if (action === "toggle-how") {
+
+          state.howToOpen =
+            !state.howToOpen;
+
+          render();
+
+        }
+
+      });
 
     });
 
@@ -1324,48 +1457,35 @@ function attachEvents() {
     .querySelectorAll("[data-nav]")
     .forEach(button => {
 
-      button.addEventListener(
-        "click",
-        () => {
+      button.addEventListener("click", () => {
 
-          const nav =
-            button.dataset.nav;
+        const nav = button.dataset.nav;
 
+        if (nav === "word") {
 
-          if (nav === "word") {
+          state.page = "word";
+          state.wordMode = "chooser";
+          state.section = "home";
+          state.selectedTool = 0;
 
-            state.section = "home";
-
-            state.selectedTool = 0;
-
-            render();
-
-            return;
-
-          }
-
-
-          if (
-            nav === "home-page"
-          ) {
-
-            state.section = "home";
-
-            state.selectedTool = 0;
-
-            render();
-
-            return;
-
-          }
-
-
-          alert(
-            `${button.textContent.trim()} section is coming soon.`
-          );
+          render();
+          return;
 
         }
-      );
+
+        if (nav === "home-page") {
+
+          state.page = "home";
+          render();
+          return;
+
+        }
+
+        alert(
+          `${button.textContent.trim()} section is coming soon.`
+        );
+
+      });
 
     });
 
@@ -1443,3 +1563,239 @@ if (
   startApp();
 
 }
+
+
+/* =========================================================
+   WORD CHOOSER / PRACTICAL WORKS STYLES
+   ========================================================= */
+
+const joiningHandsExtraStyles = document.createElement("style");
+
+joiningHandsExtraStyles.textContent = `
+.word-chooser {
+  padding: 28px;
+}
+
+.chooser-card {
+  max-width: 900px;
+  margin: 25px auto;
+  padding: 42px;
+  border-radius: 28px;
+  background: rgba(255,255,255,.97);
+  box-shadow: 0 15px 45px rgba(55,35,120,.12);
+  text-align: center;
+}
+
+.chooser-icon {
+  font-size: 58px;
+  margin-bottom: 8px;
+}
+
+.chooser-card h2 {
+  font-size: 34px;
+  margin: 8px 0;
+}
+
+.chooser-card p {
+  color: #667085;
+  font-size: 17px;
+}
+
+.chooser-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.chooser-btn {
+  border: 0;
+  border-radius: 20px;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 24px;
+  transition: .2s;
+}
+
+.chooser-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(50,40,120,.16);
+}
+
+.chooser-btn span {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.chooser-btn small {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.learning-btn {
+  background: #eaf1ff;
+  color: #2855d9;
+}
+
+.practical-btn {
+  background: #f1e9ff;
+  color: #7139d9;
+}
+
+.practical-section {
+  padding: 28px;
+}
+
+.practical-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.practical-header h2 {
+  margin: 0 0 6px;
+  font-size: 30px;
+}
+
+.practical-header p {
+  margin: 0;
+  color: #667085;
+}
+
+.back-btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 18px;
+  background: #eef0ff;
+  color: #4d36c9;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.project-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 12px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 8px 22px rgba(30,30,80,.07);
+}
+
+.project-card:hover {
+  transform: translateY(-3px);
+}
+
+.project-number {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #eef0ff;
+  color: #5535d8;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.project-preview {
+  height: 190px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f7f8fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.project-missing {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  height: 100%;
+}
+
+.project-name {
+  font-weight: 800;
+  margin: 12px 4px 5px;
+}
+
+.project-open {
+  color: #5b3bd1;
+  font-size: 13px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.image-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(8,10,25,.94);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 70px 30px 30px;
+}
+
+.image-viewer img {
+  max-width: 96vw;
+  max-height: 88vh;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.image-viewer-close {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  color: #222;
+  font-size: 32px;
+  cursor: pointer;
+}
+
+.image-viewer-title {
+  position: absolute;
+  top: 22px;
+  left: 30px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+@media (max-width: 900px) {
+  .chooser-actions,
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+}
+`;
+
+document.head.appendChild(joiningHandsExtraStyles);
