@@ -1513,6 +1513,7 @@ function renderNavItem(
 
   const active =
     (id === "word" && state.page === "word") ||
+    (id === "excel" && state.page === "excel") ||
     (id === "home-page" && state.page === "home")
       ? "active"
       : "";
@@ -2031,15 +2032,17 @@ function render() {
   const content =
     state.page === "word"
       ? renderWordContent()
-      : `
-        <section class="word-chooser">
-          <div class="chooser-card">
-            <div class="chooser-icon">🏠</div>
-            <h2>Welcome to Joining Hands</h2>
-            <p>Choose <strong>MS Word</strong> from the left menu to continue.</p>
-          </div>
-        </section>
-      `;
+      : state.page === "excel"
+        ? renderExcelContent()
+        : `
+          <section class="word-chooser">
+            <div class="chooser-card">
+              <div class="chooser-icon">🏠</div>
+              <h2>Welcome to Joining Hands</h2>
+              <p>Choose <strong>MS Word</strong> or <strong>MS Excel</strong> from the left menu to continue.</p>
+            </div>
+          </section>
+        `;
 
   app.innerHTML = `
 
@@ -2243,6 +2246,12 @@ function attachEvents() {
     });
 
 
+  /* EXCEL */
+
+  if (state.page === "excel") {
+    attachExcelEvents();
+  }
+
   /* SIDEBAR */
 
   document
@@ -2259,6 +2268,19 @@ function attachEvents() {
           state.wordMode = "chooser";
           state.section = "home";
           state.selectedTool = 0;
+
+          render();
+          return;
+
+        }
+
+        if (nav === "excel") {
+
+          state.page = "excel";
+          excelState.section = "basic-learning";
+          excelState.lesson = null;
+          excelState.language =
+            state.language === "en" ? "en" : "hi";
 
           render();
           return;
@@ -2317,6 +2339,1259 @@ function updateZoomText() {
 
 }
 
+
+
+/* =========================================================
+   JOINING HANDS — MS EXCEL LEARNING MODULE
+   =========================================================
+   This module is independent of the locked MS Word and
+   AI Teacher sections.
+   ========================================================= */
+
+const excelState = {
+  section: "basic-learning",
+  lesson: null,
+  language: "hi",
+  videoBase: "/excel-videos/"
+};
+
+const excelBasicLearning = [
+  {
+    id: "what-is-excel",
+    title: "What is MS Excel?",
+    icon: "📊",
+    en: {
+      what: "Microsoft Excel is a spreadsheet program used to enter, organize, calculate, analyze and present data. It is widely used for marksheets, attendance, expenses, salary sheets, inventory, MIS reports and many other office tasks.",
+      use: "Use Excel whenever you have information arranged in rows and columns and need calculations, sorting, filtering, reporting or analysis.",
+      steps: [
+        "Open Microsoft Excel and create a Blank Workbook.",
+        "Enter headings in the first row, such as Name, Marks, Fees or Attendance.",
+        "Enter the related information below each heading.",
+        "Use formulas, formatting, sorting or filtering as required.",
+        "Save the workbook with a meaningful file name."
+      ],
+      example: "A school can maintain a student marksheet with Student Name, English, Maths, Science, Total and Average in one Excel sheet.",
+      practice: "Create a small table with five students and three subjects."
+    },
+    hi: {
+      what: "Microsoft Excel एक spreadsheet program है जिसका उपयोग data को rows और columns में enter, organize, calculate, analyze और present करने के लिए किया जाता है। इसका उपयोग marksheet, attendance, expenses, salary, inventory और MIS reports में बहुत होता है।",
+      use: "जब आपको data को rows और columns में रखना हो और calculation, sorting, filtering या report बनानी हो, तब Excel उपयोग करें।",
+      steps: [
+        "Microsoft Excel खोलें और Blank Workbook चुनें।",
+        "पहली row में headings लिखें, जैसे Name, Marks, Fees या Attendance।",
+        "हर heading के नीचे संबंधित information भरें।",
+        "जरूरत के अनुसार formula, formatting, sorting या filtering का उपयोग करें।",
+        "Workbook को meaningful file name से save करें।"
+      ],
+      example: "एक school Excel में Student Name, English, Maths, Science, Total और Average की marksheet बना सकता है।",
+      practice: "पाँच students और तीन subjects की एक छोटी table बनाइए।"
+    }
+  },
+  {
+    id: "workbook-worksheet",
+    title: "Workbook & Worksheet",
+    icon: "📒",
+    en: {
+      what: "A Workbook is the complete Excel file. A Worksheet is an individual sheet inside that workbook. One workbook can contain multiple worksheets.",
+      use: "Use separate worksheets when you want to keep related information organized, for example Students, Fees, Attendance and Reports inside one workbook.",
+      steps: [
+        "Open Excel and create a Blank Workbook.",
+        "Look at the sheet tabs at the bottom. Sheet1 is a worksheet.",
+        "Click the + button to add another worksheet.",
+        "Double-click a sheet tab or use Rename to give it a meaningful name.",
+        "Click different sheet tabs to move between worksheets."
+      ],
+      example: "A scholarship MIS workbook can have separate sheets named Students, Fees, Attendance and Final Report.",
+      practice: "Create one workbook and make four sheets: Students, Fees, Attendance and Report."
+    },
+    hi: {
+      what: "Workbook पूरी Excel file होती है। Worksheet उस file के अंदर मौजूद एक individual sheet होती है। एक workbook में कई worksheets हो सकती हैं।",
+      use: "जब अलग-अलग लेकिन related data को व्यवस्थित रखना हो, तब अलग worksheets बनाएं। जैसे Students, Fees, Attendance और Reports।",
+      steps: [
+        "Excel खोलकर Blank Workbook बनाएं।",
+        "नीचे दिखाई देने वाले sheet tabs देखें। Sheet1 एक worksheet है।",
+        "+ button पर click करके नई worksheet जोड़ें।",
+        "Sheet tab पर double-click करके उसका नाम बदलें।",
+        "अलग-अलग sheet tabs पर click करके worksheets के बीच जाएं।"
+      ],
+      example: "Scholarship MIS workbook में Students, Fees, Attendance और Final Report की अलग-अलग sheets रखी जा सकती हैं।",
+      practice: "एक workbook बनाकर Students, Fees, Attendance और Report नाम की चार sheets बनाएं।"
+    }
+  },
+  {
+    id: "rows-columns",
+    title: "Rows & Columns",
+    icon: "▦",
+    en: {
+      what: "Rows run horizontally and are identified by numbers. Columns run vertically and are identified by letters. Their intersection creates a cell, such as A1.",
+      use: "Understanding rows and columns is essential for entering data, selecting ranges and writing formulas.",
+      steps: [
+        "Open a worksheet.",
+        "Look at the numbers on the left: these are row numbers.",
+        "Look at the letters at the top: these are column letters.",
+        "Click cell A1, then B1, then A2 to see how the cell address changes.",
+        "Select a complete row by clicking its number or a complete column by clicking its letter."
+      ],
+      example: "In a marksheet, one row can represent one student while columns represent subjects such as English, Maths and Science.",
+      practice: "Enter five student names in column A and their marks in columns B, C and D."
+    },
+    hi: {
+      what: "Rows horizontal होती हैं और numbers से पहचानी जाती हैं। Columns vertical होते हैं और letters से पहचाने जाते हैं। Row और Column के intersection को cell कहते हैं, जैसे A1।",
+      use: "Data entry, range selection और formulas समझने के लिए rows और columns की basic understanding जरूरी है।",
+      steps: [
+        "एक worksheet खोलें।",
+        "बाईं तरफ के numbers देखें — ये row numbers हैं।",
+        "ऊपर के letters देखें — ये column letters हैं।",
+        "A1, फिर B1 और फिर A2 पर click करके cell address का बदलाव देखें।",
+        "Row number पर click करके पूरी row और column letter पर click करके पूरा column select करें।"
+      ],
+      example: "Marksheet में एक row एक student को represent कर सकती है और columns English, Maths और Science को।",
+      practice: "Column A में पाँच student names और B, C, D में उनके marks भरें।"
+    }
+  },
+  {
+    id: "add-delete-rows-columns",
+    title: "Add / Delete Rows & Columns",
+    icon: "➕",
+    en: {
+      what: "Excel lets you insert new rows or columns and remove rows or columns that you no longer need.",
+      use: "Use this when your data structure changes, such as adding a new subject column or inserting a new student between existing records.",
+      steps: [
+        "Select the row number or column letter where you want the new row or column.",
+        "Right-click the selection.",
+        "Choose Insert to add a row or column.",
+        "To remove one, select the row or column and choose Delete.",
+        "Check the surrounding data after inserting or deleting to make sure the layout is correct."
+      ],
+      example: "If a marksheet needs a new Computer subject between Maths and Science, insert a new column at the required position.",
+      practice: "Create a three-column table, then insert one new column and one new row. Delete them again."
+    },
+    hi: {
+      what: "Excel में आप नई rows या columns जोड़ सकते हैं और जरूरत न होने पर उन्हें delete भी कर सकते हैं।",
+      use: "जब data की structure बदलती है, जैसे नया subject जोड़ना या existing records के बीच नया student जोड़ना, तब इसका उपयोग करें।",
+      steps: [
+        "जिस row या column के पास नया row/column चाहिए उसे select करें।",
+        "Selection पर right-click करें।",
+        "नई row या column के लिए Insert चुनें।",
+        "हटाने के लिए row/column select करके Delete चुनें।",
+        "Insert या Delete के बाद आसपास के data को check करें।"
+      ],
+      example: "अगर marksheet में Maths और Science के बीच Computer subject जोड़ना है, तो उस position पर नया column insert करें।",
+      practice: "तीन columns की table बनाएं, एक नया column और एक नई row insert करें, फिर दोनों को delete करके देखें।"
+    }
+  },
+  {
+    id: "editing-data",
+    title: "Editing Data",
+    icon: "✏️",
+    en: {
+      what: "Editing data means changing information that is already entered in a cell. You can replace, correct or modify cell contents.",
+      use: "Use it when a name, number, date or other information has been entered incorrectly or needs updating.",
+      steps: [
+        "Click the cell containing the information.",
+        "Type the new value and press Enter to replace the old value.",
+        "Or double-click the cell to edit part of the existing text.",
+        "You can also select the cell and edit its content in the Formula Bar.",
+        "Use Ctrl+Z if you make a mistake and need to undo the change."
+      ],
+      example: "If a student's name was entered as 'Rhaul' instead of 'Rahul', edit the cell and correct the spelling.",
+      practice: "Enter five names, deliberately make one spelling mistake, then correct it using two different editing methods."
+    },
+    hi: {
+      what: "Editing data का मतलब है cell में पहले से मौजूद information को बदलना, सही करना या update करना।",
+      use: "जब name, number, date या कोई दूसरी information गलत हो या update करनी हो, तब इसका उपयोग करें।",
+      steps: [
+        "जिस cell में information है उस पर click करें।",
+        "नई value type करके Enter दबाएं — पुरानी value replace हो जाएगी।",
+        "या cell पर double-click करके existing text के किसी हिस्से को edit करें।",
+        "आप Formula Bar से भी cell की content edit कर सकते हैं।",
+        "गलती होने पर Ctrl+Z से change undo करें।"
+      ],
+      example: "अगर student का नाम 'Rhaul' लिखा गया है और सही नाम 'Rahul' है, तो cell को edit करके spelling ठीक करें।",
+      practice: "पाँच names लिखें, एक में जानबूझकर spelling mistake करें और दो अलग methods से उसे correct करें।"
+    }
+  },
+  {
+    id: "flash-fill",
+    title: "Flash Fill",
+    icon: "⚡",
+    en: {
+      what: "Flash Fill automatically recognizes a pattern in your data and fills the remaining cells based on that pattern.",
+      use: "Use it for quick text transformations such as separating a full name, extracting a first name, creating an ID pattern or changing the format of repeated text.",
+      steps: [
+        "Enter the original data in a column.",
+        "In the next column, type the desired result for the first row.",
+        "Start typing the desired result for the second row. Excel may preview the pattern.",
+        "Press Enter if the preview is correct, or use Data > Flash Fill / Ctrl+E.",
+        "Check the filled values before using them in an important report."
+      ],
+      example: "If A2 contains 'Rahul Kumar' and you want only 'Rahul' in B2, type Rahul. Excel can recognize the pattern and fill first names for the remaining rows.",
+      practice: "Create a list of five full names and use Flash Fill to create a separate First Name column."
+    },
+    hi: {
+      what: "Flash Fill आपके data में pattern पहचानकर बाकी cells को उसी pattern के अनुसार automatically fill करता है।",
+      use: "Full name से first name निकालने, text का format बदलने, ID pattern बनाने या repeated text transformation जैसे कामों में इसका उपयोग करें।",
+      steps: [
+        "एक column में original data भरें।",
+        "अगले column में पहली row का desired result लिखें।",
+        "दूसरी row में desired result लिखना शुरू करें। Excel pattern का preview दिखा सकता है।",
+        "Preview सही हो तो Enter दबाएं या Data > Flash Fill / Ctrl+E का उपयोग करें।",
+        "Important report में उपयोग करने से पहले filled values को check करें।"
+      ],
+      example: "अगर A2 में 'Rahul Kumar' है और B2 में केवल 'Rahul' चाहिए, तो Rahul लिखें। Excel बाकी rows के first names का pattern पहचान सकता है।",
+      practice: "पाँच full names की list बनाकर Flash Fill से अलग First Name column तैयार करें।"
+    }
+  },
+  {
+    id: "basic-formatting",
+    title: "Basic Formatting",
+    icon: "🎨",
+    en: {
+      what: "Formatting changes how data looks without changing the underlying value. It includes font, size, bold, color, alignment, borders, fill color and number formats.",
+      use: "Use formatting to make spreadsheets easier to read, understand and present professionally.",
+      steps: [
+        "Select the cells you want to format.",
+        "Use the Home tab to change font, size, Bold, Italic or font color.",
+        "Use Fill Color and Borders to highlight and organize information.",
+        "Use alignment and Wrap Text when content needs better positioning.",
+        "Use number formats such as Number, Currency, Percentage or Date where appropriate."
+      ],
+      example: "In a fee report, make the heading bold, use borders for the table, format fees as currency and use a fill color for important headings.",
+      practice: "Create a five-row student table and format the heading, borders, marks and fee column professionally."
+    },
+    hi: {
+      what: "Formatting का मतलब data की value बदले बिना उसके appearance को बदलना है। इसमें font, size, bold, color, alignment, borders, fill color और number formats शामिल हैं।",
+      use: "Spreadsheet को readable, understandable और professional बनाने के लिए formatting का उपयोग करें।",
+      steps: [
+        "जिन cells को format करना है उन्हें select करें।",
+        "Home tab से font, size, Bold, Italic या font color बदलें।",
+        "Fill Color और Borders से information को highlight और organize करें।",
+        "जरूरत के अनुसार alignment और Wrap Text का उपयोग करें।",
+        "Number, Currency, Percentage या Date जैसे number formats चुनें।"
+      ],
+      example: "Fee report में heading को bold करें, table में borders लगाएं, fees को currency format में रखें और important headings को highlight करें।",
+      practice: "पाँच students की table बनाकर heading, borders, marks और fee column को professional तरीके से format करें।"
+    }
+  }
+];
+
+const excelBasicFormulas = [
+  ["SUM","➕","Add numbers","=SUM(B2:B6)"],
+  ["MIN","⬇️","Find the smallest value","=MIN(B2:B6)"],
+  ["MAX","⬆️","Find the largest value","=MAX(B2:B6)"],
+  ["AVERAGE","📊","Calculate the average","=AVERAGE(B2:B6)"],
+  ["COUNT","🔢","Count cells containing numbers","=COUNT(B2:B6)"],
+  ["COUNTA","🔢","Count non-empty cells","=COUNTA(A2:A6)"],
+  ["COUNTBLANK","◻️","Count empty cells","=COUNTBLANK(A2:A6)"],
+  ["IF","🔀","Return one result when a condition is true and another when false","=IF(B2>=40,\"Pass\",\"Fail\")"],
+  ["LARGE","🏆","Find the nth largest value","=LARGE(B2:B10,2)"],
+  ["SMALL","🏅","Find the nth smallest value","=SMALL(B2:B10,2)"],
+  ["ROUND","🔵","Round a number to specified decimal places","=ROUND(B2,2)"],
+  ["ROUNDUP","⬆️","Round a number upward","=ROUNDUP(B2,2)"],
+  ["ROUNDDOWN","⬇️","Round a number downward","=ROUNDDOWN(B2,2)"],
+  ["DAY","📅","Extract the day from a date","=DAY(A2)"],
+  ["MONTH","📅","Extract the month from a date","=MONTH(A2)"],
+  ["YEAR","📅","Extract the year from a date","=YEAR(A2)"],
+  ["DATE","📅","Create a date from year, month and day","=DATE(2026,9,29)"],
+  ["TODAY","📅","Show today's date","=TODAY()"],
+  ["NOW","🕒","Show current date and time","=NOW()"],
+  ["LOWER","🔤","Convert text to lowercase","=LOWER(A2)"],
+  ["UPPER","🔠","Convert text to uppercase","=UPPER(A2)"],
+  ["PROPER","🔤","Capitalize the first letter of each word","=PROPER(A2)"],
+  ["TRIM","🧹","Remove extra spaces from text","=TRIM(A2)"],
+  ["LEFT","⬅️","Extract characters from the left","=LEFT(A2,5)"],
+  ["RIGHT","➡️","Extract characters from the right","=RIGHT(A2,4)"],
+  ["MID","↔️","Extract characters from the middle","=MID(A2,3,5)"],
+  ["LEN","📏","Count the number of characters","=LEN(A2)"]
+];
+
+const excelAdvancedFormulas = [
+  ["XLOOKUP","🔎","Find a value in a range and return a related value","=XLOOKUP(A2,D2:D10,E2:E10,\"Not found\")","Lookup & Reference"],
+  ["VLOOKUP","🔎","Look vertically through the first column and return a related value","=VLOOKUP(A2,D2:F10,3,FALSE)","Lookup & Reference"],
+  ["HLOOKUP","🔎","Look horizontally across the first row and return a related value","=HLOOKUP(B1,B1:F3,3,FALSE)","Lookup & Reference"],
+  ["INDEX","📍","Return a value from a specific position in a range","=INDEX(B2:D10,3,2)","Lookup & Reference"],
+  ["MATCH","🔍","Find the position of a value in a range","=MATCH(A2,D2:D10,0)","Lookup & Reference"],
+  ["XMATCH","🔍","Find the relative position of a value with flexible matching","=XMATCH(A2,D2:D10,0)","Lookup & Reference"],
+  ["INDEX + MATCH","🔗","Look up a value using a flexible row/column combination","=INDEX(E2:E10,MATCH(A2,D2:D10,0))","Lookup & Reference"],
+  ["FILTER","🧪","Return only rows that meet a condition","=FILTER(A2:C10,C2:C10=\"Delhi\")","Lookup & Reference"],
+  ["SORT","↕️","Sort a range using a formula","=SORT(A2:C10,2,1)","Lookup & Reference"],
+  ["UNIQUE","✨","Return unique values from a range","=UNIQUE(A2:A20)","Lookup & Reference"],
+  ["IF","🔀","Make a logical decision","=IF(B2>=50,\"Pass\",\"Fail\")","Logical"],
+  ["IFS","🧠","Test multiple conditions in order","=IFS(B2>=80,\"A\",B2>=60,\"B\",B2>=40,\"C\",TRUE,\"F\")","Logical"],
+  ["AND","🔗","Check whether all conditions are true","=AND(B2>=40,C2>=40)","Logical"],
+  ["OR","🔀","Check whether at least one condition is true","=OR(B2>=40,C2>=40)","Logical"],
+  ["IFERROR","🛡️","Return a custom result when a formula produces an error","=IFERROR(A2/B2,\"Check data\")","Logical"],
+  ["SUMIFS","➕","Add values meeting multiple conditions","=SUMIFS(E2:E100,B2:B100,\"Delhi\",C2:C100,\"Paid\")","Conditional / Calculation"],
+  ["COUNTIFS","🔢","Count cells meeting multiple conditions","=COUNTIFS(B2:B100,\"Delhi\",C2:C100,\"Paid\")","Conditional / Calculation"],
+  ["AVERAGEIFS","📊","Average values meeting multiple conditions","=AVERAGEIFS(E2:E100,B2:B100,\"Delhi\")","Conditional / Calculation"],
+  ["MAXIFS","⬆️","Find the largest value meeting conditions","=MAXIFS(E2:E100,B2:B100,\"Delhi\")","Conditional / Calculation"],
+  ["MINIFS","⬇️","Find the smallest value meeting conditions","=MINIFS(E2:E100,B2:B100,\"Delhi\")","Conditional / Calculation"],
+  ["TEXT","🔤","Display a number or date in a chosen text format","=TEXT(A2,\"dd-mmm-yyyy\")","Text"],
+  ["TEXTJOIN","🔗","Join text from multiple cells with a delimiter","=TEXTJOIN(\" \",TRUE,A2:C2)","Text"],
+  ["LEFT","⬅️","Extract characters from the left","=LEFT(A2,5)","Text"],
+  ["RIGHT","➡️","Extract characters from the right","=RIGHT(A2,4)","Text"],
+  ["MID","↔️","Extract characters from the middle","=MID(A2,3,5)","Text"],
+  ["EXACT","✅","Check whether two text values are exactly the same","=EXACT(A2,B2)","Text"],
+  ["TODAY","📅","Return today's date","=TODAY()","Date & Time"],
+  ["NOW","🕒","Return current date and time","=NOW()","Date & Time"],
+  ["DATE","📅","Create a date from year, month and day","=DATE(2026,9,29)","Date & Time"],
+  ["DATEDIF","📅","Calculate the difference between two dates","=DATEDIF(A2,B2,\"Y\")","Date & Time"],
+  ["WORKDAY","💼","Calculate a date a number of working days away","=WORKDAY(A2,10)","Date & Time"],
+  ["PMT","💰","Calculate a periodic loan payment","=PMT(8%/12,60,-500000)","Financial / Useful Office"]
+];
+
+const excelAdvancedFeatures = [
+  ["Conditional Formatting","🎨","Automatically format cells when a rule is met.","Useful for highlighting low marks, overdue fees, high sales or duplicate-looking patterns.","Home → Conditional Formatting → choose a rule → set the condition → choose the format → Apply."],
+  ["Data Validation","✅","Control what users can enter into a cell.","Useful for restricting entries to dates, numbers, a list or a defined range.","Data → Data Validation → choose Allow → set the rule → OK."],
+  ["Drop-down Lists","🔽","Give users a selectable list of allowed values.","Useful for Course, Gender, Status, Region, Payment Status and similar MIS fields.","Create the allowed list → select target cells → Data → Data Validation → List → select Source → OK."],
+  ["Pivot Tables","📊","Summarize and analyze large datasets without changing the original data.","Useful for MIS summaries such as students by course, fees by month or sales by region.","Select the dataset → Insert → PivotTable → choose location → drag fields into Rows, Columns, Values and Filters."],
+  ["Pivot Charts","📈","Create a chart linked to a PivotTable summary.","Useful when a report needs both a summarized table and a visual chart.","Select the PivotTable → Insert → PivotChart → choose chart type → customize the chart."],
+  ["Slicers","🎛️","Provide clickable visual filters for tables or PivotTables.","Useful when users need to filter a report quickly by Course, Region, Status or Month.","Select a table/PivotTable → Insert → Slicer → select fields → use the slicer buttons to filter."],
+  ["Remove Duplicates","🧹","Remove repeated records from selected columns.","Useful for cleaning student, customer, employee or inventory lists.","Select the dataset → Data → Remove Duplicates → choose columns → OK → review the result."],
+  ["Text to Columns","✂️","Split data from one column into multiple columns.","Useful for separating Full Name, comma-separated data, codes or imported text.","Select the column → Data → Text to Columns → choose Delimited or Fixed Width → follow the wizard → Finish."],
+  ["Protect Sheet","🔒","Prevent unwanted changes to a worksheet.","Useful when a report is ready and users should only edit permitted cells.","Review → Protect Sheet → set permissions/password if needed → confirm."],
+  ["Protect Workbook","🔐","Protect workbook structure so sheets cannot be freely added, deleted, moved or renamed.","Useful for controlled office templates and MIS workbooks.","Review → Protect Workbook → choose Structure → set password if needed → confirm."],
+  ["Group / Ungroup","🗂️","Group rows or columns so sections can be collapsed and expanded.","Useful for monthly reports, department-wise data and long worksheets.","Select rows or columns → Data → Group. To reverse it, select the grouped area → Data → Ungroup."],
+  ["Advanced Filter","🔎","Filter data using a more controlled criteria range and optionally copy filtered results elsewhere.","Useful for complex MIS reporting and extracting records that meet multiple criteria.","Prepare the criteria range → select the dataset → Data → Advanced → choose filter/copy option → set criteria range → OK."]
+];
+
+const excelVideoName = (title) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + ".mp4";
+
+function excelT(value) {
+  return escapeHTML(value);
+}
+
+function renderExcelContent() {
+  return `
+    <section class="excel-shell">
+      <div class="excel-header">
+        <div>
+          <div class="excel-kicker">JOINING HANDS • PRACTICAL LAB</div>
+          <h1>📊 MS Excel</h1>
+          <p>Learn Excel from beginner level to real office & MIS work.</p>
+        </div>
+        <button class="excel-ai-button" type="button" data-excel-ai="1">🤖 Ask AI Teacher</button>
+      </div>
+
+      <div class="excel-section-tabs">
+        ${excelSectionButton("basic-learning","🟢","Basic Learning Tool")}
+        ${excelSectionButton("basic-formulas","🔵","Basic Formulas")}
+        ${excelSectionButton("advanced-formulas","🟣","Advanced Formulas")}
+        ${excelSectionButton("advanced-features","🟠","Advanced Features")}
+      </div>
+
+      ${
+        excelState.section === "basic-learning"
+          ? renderExcelBasicLearning()
+          : excelState.section === "basic-formulas"
+            ? renderExcelFormulaList(false)
+            : excelState.section === "advanced-formulas"
+              ? renderExcelFormulaList(true)
+              : renderExcelAdvancedFeatures()
+      }
+    </section>
+  `;
+}
+
+function excelSectionButton(id, icon, label) {
+  return `
+    <button
+      type="button"
+      class="excel-section-tab ${excelState.section === id ? "active" : ""}"
+      data-excel-section="${id}"
+    >
+      <span>${icon}</span>
+      <span>${excelT(label)}</span>
+    </button>
+  `;
+}
+
+function renderExcelBasicLearning() {
+  const current = excelState.lesson
+    ? excelBasicLearning.find(x => x.id === excelState.lesson)
+    : null;
+
+  if (current) {
+    return renderExcelLearningLesson(current);
+  }
+
+  return `
+    <div class="excel-intro-card">
+      <span class="excel-big-icon">📘</span>
+      <div>
+        <h2>Basic Learning Tool</h2>
+        <p>First understand how Excel works. Formulas come after these basics.</p>
+      </div>
+    </div>
+
+    <div class="excel-card-grid">
+      ${excelBasicLearning.map((item, index) => `
+        <button type="button" class="excel-topic-card" data-excel-basic="${item.id}">
+          <span class="excel-topic-number">${index + 1}</span>
+          <span class="excel-topic-icon">${item.icon}</span>
+          <strong>${excelT(item.title)}</strong>
+          <span>Learn step-by-step →</span>
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderExcelLearningLesson(item) {
+  const data = item[excelState.language] || item.en;
+  const video = excelVideoName(item.title);
+
+  return `
+    <div class="excel-back-row">
+      <button type="button" class="excel-back" data-excel-back="basic-learning">← Back to Basic Learning</button>
+    </div>
+
+    <article class="excel-lesson-card">
+      <div class="excel-lesson-title">
+        <span>${item.icon}</span>
+        <div>
+          <div class="excel-kicker">BASIC LEARNING TOOL</div>
+          <h2>${excelT(item.title)}</h2>
+        </div>
+      </div>
+
+      <div class="excel-language-row">
+        <button type="button" class="${excelState.language === "en" ? "active" : ""}" data-excel-language="en">English</button>
+        <button type="button" class="${excelState.language === "hi" ? "active" : ""}" data-excel-language="hi">हिन्दी</button>
+      </div>
+
+      <div class="excel-video-card">
+        <div class="excel-video-label">🎥 Video Tutorial</div>
+        <video controls preload="metadata">
+          <source src="${excelState.videoBase}${video}" type="video/mp4">
+          Your browser does not have a video for this lesson yet.
+        </video>
+        <p>Upload your video as <code>public/excel-videos/${video}</code>.</p>
+      </div>
+
+      ${excelExplanationBlock("What is it?", data.what)}
+      ${excelExplanationBlock("What does it do?", data.use)}
+      ${excelStepsBlock("How to use it — Step by step", data.steps)}
+      ${excelExplanationBlock("Real-life example", data.example)}
+
+      <div class="excel-practice-prompt">
+        <h3>🧪 Practice Task</h3>
+        <p>${excelT(data.practice)}</p>
+      </div>
+    </article>
+  `;
+}
+
+function excelExplanationBlock(title, text) {
+  return `
+    <section class="excel-explain-block">
+      <h3>${excelT(title)}</h3>
+      <p>${excelT(text)}</p>
+    </section>
+  `;
+}
+
+function excelStepsBlock(title, steps) {
+  return `
+    <section class="excel-explain-block">
+      <h3>${excelT(title)}</h3>
+      <ol class="excel-steps">
+        ${steps.map(step => `<li>${excelT(step)}</li>`).join("")}
+      </ol>
+    </section>
+  `;
+}
+
+function renderExcelFormulaList(isAdvanced) {
+  const list = isAdvanced ? excelAdvancedFormulas : excelBasicFormulas;
+  const current = excelState.lesson
+    ? list.find(x => x[0] === excelState.lesson)
+    : null;
+
+  if (current) {
+    return renderExcelFormulaLesson(current, isAdvanced);
+  }
+
+  const grouped = isAdvanced
+    ? groupAdvancedExcelFormulas(list)
+    : { "Basic Formulas": list };
+
+  return `
+    <div class="excel-intro-card">
+      <span class="excel-big-icon">${isAdvanced ? "🧠" : "🧮"}</span>
+      <div>
+        <h2>${isAdvanced ? "Advanced Formulas" : "Basic Formulas"}</h2>
+        <p>${isAdvanced ? "Powerful formulas for real office and MIS work." : "Start with the formulas used most often by beginners."}</p>
+      </div>
+    </div>
+
+    ${Object.entries(grouped).map(([group, items]) => `
+      <div class="excel-formula-group">
+        <h3>${excelT(group)}</h3>
+        <div class="excel-formula-grid">
+          ${items.map((item, index) => `
+            <button type="button" class="excel-formula-card" data-excel-formula="${excelT(item[0])}">
+              <span class="excel-formula-icon">${item[1]}</span>
+              <span class="excel-formula-name">${excelT(item[0])}</span>
+              <span class="excel-formula-desc">${excelT(item[2])}</span>
+              <code>${excelT(item[3])}</code>
+              <span class="excel-open-label">Open lesson →</span>
+            </button>
+          `).join("")}
+        </div>
+      </div>
+    `).join("")}
+  `;
+}
+
+function groupAdvancedExcelFormulas(list) {
+  const groups = {};
+  list.forEach(item => {
+    const group = item[4] || "Advanced Formulas";
+    if (!groups[group]) groups[group] = [];
+    groups[group].push(item);
+  });
+  return groups;
+}
+
+function renderExcelFormulaLesson(item, isAdvanced) {
+  const name = item[0];
+  const icon = item[1];
+  const purpose = item[2];
+  const syntax = item[3];
+  const video = excelVideoName(name);
+  const data = excelFormulaDetails(name, purpose, syntax, isAdvanced);
+
+  return `
+    <div class="excel-back-row">
+      <button type="button" class="excel-back" data-excel-back="${isAdvanced ? "advanced-formulas" : "basic-formulas"}">← Back to ${isAdvanced ? "Advanced Formulas" : "Basic Formulas"}</button>
+    </div>
+
+    <article class="excel-lesson-card">
+      <div class="excel-lesson-title">
+        <span>${icon}</span>
+        <div>
+          <div class="excel-kicker">${isAdvanced ? "ADVANCED FORMULA" : "BASIC FORMULA"}</div>
+          <h2>${excelT(name)}</h2>
+          <p>${excelT(purpose)}</p>
+        </div>
+      </div>
+
+      <div class="excel-language-row">
+        <button type="button" class="${excelState.language === "en" ? "active" : ""}" data-excel-language="en">English</button>
+        <button type="button" class="${excelState.language === "hi" ? "active" : ""}" data-excel-language="hi">हिन्दी</button>
+      </div>
+
+      <div class="excel-video-card">
+        <div class="excel-video-label">🎥 ${excelT(name)} Video Tutorial</div>
+        <video controls preload="metadata">
+          <source src="${excelState.videoBase}${video}" type="video/mp4">
+          Your browser does not have a video for this formula yet.
+        </video>
+        <p>Upload your video as <code>public/excel-videos/${video}</code>.</p>
+      </div>
+
+      ${excelExplanationBlock(data.labels.what, data.what)}
+      ${excelExplanationBlock(data.labels.do, data.does)}
+      ${excelExplanationBlock(data.labels.when, data.when)}
+      <section class="excel-explain-block">
+        <h3>${excelT(data.labels.syntax)}</h3>
+        <pre class="excel-code">${excelT(syntax)}</pre>
+      </section>
+      ${excelStepsBlock(data.labels.steps, data.steps)}
+      ${excelExplanationBlock(data.labels.example, data.example)}
+
+      ${renderExcelPractice(name)}
+    </article>
+  `;
+}
+
+function excelFormulaDetails(name, purpose, syntax, isAdvanced) {
+  const hi = excelState.language === "hi";
+  const labels = hi
+    ? {
+        what: "यह क्या है?",
+        do: "यह क्या करता है?",
+        when: "कब उपयोग करें?",
+        syntax: "Syntax",
+        steps: "कैसे उपयोग करें — Step by step",
+        example: "Real-life example"
+      }
+    : {
+        what: "What is it?",
+        do: "What does it do?",
+        when: "When should you use it?",
+        syntax: "Syntax",
+        steps: "How to use it — Step by step",
+        example: "Real-life example"
+      };
+
+  const examples = {
+    SUM: ["SUM numbers को जोड़कर total देता है।", "Marks, fees, expenses या sales का total निकालने में उपयोग करें.", "एक marksheet में B2:D2 के marks को जोड़कर Total column में result निकालें."],
+    MIN: ["MIN range में सबसे छोटी numeric value देता है।", "Lowest marks, lowest price या minimum expense खोजने में उपयोग करें.", "Students के marks में सबसे कम score पता करें."],
+    MAX: ["MAX range में सबसे बड़ी numeric value देता है।", "Highest marks, highest sale या maximum value खोजने में उपयोग करें.", "Class में highest marks निकालें."],
+    AVERAGE: ["AVERAGE numbers का arithmetic average निकालता है।", "Average marks, average sales या average expense जानने में उपयोग करें.", "Five students के Maths marks का average निकालें."],
+    COUNT: ["COUNT केवल numeric cells की संख्या गिनता है।", "कितने cells में numbers मौजूद हैं यह जानने के लिए उपयोग करें.", "एक marks column में कितने students के marks entered हैं पता करें."],
+    COUNTA: ["COUNTA खाली न होने वाले cells गिनता है।", "Names, IDs या mixed data वाली filled cells count करने में उपयोग करें.", "Student Name column में कितने records filled हैं गिनें."],
+    COUNTBLANK: ["COUNTBLANK खाली cells की संख्या बताता है।", "Missing information या incomplete forms खोजने में उपयोग करें.", "Student records में कितने phone numbers missing हैं पता करें."],
+    IF: ["IF condition को check करके अलग result देता है।", "Pass/Fail, Paid/Pending, Eligible/Not Eligible जैसे decisions में उपयोग करें.", "अगर marks 40 या अधिक हैं तो Pass, नहीं तो Fail."],
+    LARGE: ["LARGE nth largest value निकालता है।", "Top 1, Top 2, Top 3 scores जैसी ranking में उपयोग करें.", "Class के second-highest marks निकालें."],
+    SMALL: ["SMALL nth smallest value निकालता है।", "Lowest values या bottom rankings निकालने में उपयोग करें.", "Class के second-lowest marks निकालें."],
+    ROUND: ["ROUND number को specified decimal places तक round करता है।", "Reports में clean decimal values दिखाने के लिए उपयोग करें.", "Average 78.456 को 78.46 दिखाएं."],
+    ROUNDUP: ["ROUNDUP number को ऊपर की तरफ round करता है।", "जब calculation में हमेशा upward rounding चाहिए.", "2.341 को two decimals पर 2.35 करना."],
+    ROUNDDOWN: ["ROUNDDOWN number को नीचे की तरफ round करता है।", "जब value को specified decimals तक नीचे रखना हो.", "2.349 को two decimals पर 2.34 करना."],
+    DAY: ["DAY date से day number निकालता है।", "Date-based reports में day अलग निकालने के लिए.", "15-Sep-2026 से 15 निकालना."],
+    MONTH: ["MONTH date से month number निकालता है।", "Monthly reports और grouping में.", "15-Sep-2026 से 9 निकालना."],
+    YEAR: ["YEAR date से year निकालता है।", "Year-wise reports और records में.", "15-Sep-2026 से 2026 निकालना."],
+    DATE: ["DATE year, month और day से valid Excel date बनाता है।", "जब date components अलग-अलग cells में हों.", "Year, Month और Day columns से admission date बनाना."],
+    TODAY: ["TODAY current date automatically देता है।", "Daily reports, age/date calculations या due-date sheets में.", "Report में today's date automatically दिखाना."],
+    NOW: ["NOW current date और time देता है।", "Timestamp या current date-time display के लिए.", "Report में last-open/current time दिखाना."],
+    LOWER: ["LOWER text को lowercase में बदलता है।", "Data standardization में.", "RAHUL KUMAR को rahul kumar बनाना."],
+    UPPER: ["UPPER text को uppercase में बदलता है।", "IDs, codes और headings को standardize करने में.", "delhi को DELHI बनाना."],
+    PROPER: ["PROPER हर word का first letter capital करता है।", "Names और titles को proper case में लाने के लिए.", "rahul kumar को Rahul Kumar बनाना."],
+    TRIM: ["TRIM extra spaces हटाता है।", "Imported या copied data साफ करने में.", "Name के बीच accidental extra spaces हटाना."],
+    LEFT: ["LEFT text के left side से characters निकालता है।", "Codes या names के शुरुआती characters निकालने में.", "Student ID के पहले 3 characters निकालना."],
+    RIGHT: ["RIGHT text के right side से characters निकालता है।", "Codes या phone/ID endings निकालने में.", "ID के आखिरी 4 digits निकालना."],
+    MID: ["MID text के बीच से specified characters निकालता है।", "Structured IDs या codes से middle part निकालने में.", "Admission code से बीच का year segment निकालना."],
+    LEN: ["LEN text में total characters गिनता है।", "Data validation या text length checking में.", "Phone/ID field की length check करना."]
+  };
+
+  const item = examples[name];
+  if (item) {
+    return {
+      labels,
+      what: hi ? item[0] : purpose,
+      does: hi ? item[0] : purpose,
+      when: hi ? item[1] : `Use ${name} when you need to ${purpose.toLowerCase()}.`,
+      steps: hi
+        ? [
+            "Practice table में required data enter करें।",
+            `जिस cell में result चाहिए वहां ${syntax} जैसी formula लिखें।`,
+            "Enter दबाएं और result देखें।",
+            "जरूरत हो तो source values बदलकर result दोबारा देखें।"
+          ]
+        : [
+            "Enter the required data in the practice table.",
+            `Select the result cell and enter a formula such as ${syntax}.`,
+            "Press Enter and check the result.",
+            "Change a source value and confirm that the result updates."
+          ],
+      example: hi ? item[2] : `Example: ${item[2]}`
+    };
+  }
+
+  return {
+    labels,
+    what: hi ? `${name} एक Excel function है जो ${purpose.toLowerCase()}।` : `${name} is an Excel function used to ${purpose.toLowerCase()}.`,
+    does: hi ? purpose : purpose,
+    when: hi ? "जब इस तरह की calculation या data task बार-बार करना हो, तब इसका उपयोग करें।" : `Use it when this calculation or data task needs to be performed reliably and repeatedly.`,
+    steps: hi
+      ? ["Practice data तैयार करें।", `Result cell में ${syntax} जैसी formula लिखें।`, "Enter दबाएं और result देखें।", "Source data बदलकर formula का behavior observe करें।"]
+      : ["Prepare the practice data.", `Enter a formula such as ${syntax} in the result cell.`, "Press Enter and review the result.", "Change the source data and observe the updated result."],
+    example: hi ? "Real office/MIS data पर formula लगाकर result verify करें।" : "Apply the formula to a small office/MIS dataset and verify the result."
+  };
+}
+
+function renderExcelPractice(name) {
+  const config = excelPracticeConfig(name);
+  const hi = excelState.language === "hi";
+
+  return `
+    <section class="excel-practice">
+      <div class="excel-practice-heading">
+        <div>
+          <div class="excel-kicker">PRACTICE LAB</div>
+          <h3>🧪 ${hi ? "अब खुद practice करें" : "Now practice it yourself"}</h3>
+          <p>${hi ? "नीचे cells में values/formula बदलकर real-time result देखें।" : "Edit cells and formulas below to see the result in real time."}</p>
+        </div>
+        <button type="button" class="excel-reset" data-excel-reset="1">↻ Reset</button>
+      </div>
+
+      <div class="excel-task">
+        <strong>${hi ? "Practice Task:" : "Practice Task:"}</strong>
+        ${excelT(config.task)}
+      </div>
+
+      <div class="excel-grid-wrap">
+        <table class="excel-grid" data-excel-grid>
+          <tbody>
+            ${config.rows.map((row, r) => `
+              <tr>
+                <th class="excel-row-head">${r + 1}</th>
+                ${row.map((cell, c) => `
+                  <td>
+                    <input
+                      class="excel-cell"
+                      data-excel-cell="${r},${c}"
+                      value="${excelT(cell)}"
+                      aria-label="Excel cell ${String.fromCharCode(65+c)}${r+1}"
+                    >
+                  </td>
+                `).join("")}
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="excel-practice-help">
+        <span>💡 ${hi ? "Formula cell में = से शुरू करें। उदाहरण: =SUM(B2:D2)" : "Start a formula with =. Example: =SUM(B2:D2)"}</span>
+        <span class="excel-practice-result" data-excel-result>Ready</span>
+      </div>
+    </section>
+  `;
+}
+
+function excelPracticeConfig(name) {
+  const common = {
+    task: `Use ${name} in the highlighted result cells.`,
+    rows: [
+      ["Student","English","Maths","Science","Result"],
+      ["Rahul","78","85","72",""],
+      ["Priya","88","91","79",""],
+      ["Amit","65","72","70",""],
+      ["Neha","92","76","88",""]
+    ]
+  };
+
+  const configs = {
+    SUM: {
+      task: "In E2, enter =SUM(B2:D2), then copy it down for the other students.",
+      rows: common.rows
+    },
+    AVERAGE: {
+      task: "In E2, enter =AVERAGE(B2:D2), then copy it down.",
+      rows: common.rows
+    },
+    MIN: {
+      task: "In E2, enter =MIN(B2:D2) to find Rahul's lowest subject mark.",
+      rows: common.rows
+    },
+    MAX: {
+      task: "In E2, enter =MAX(B2:D2) to find Rahul's highest subject mark.",
+      rows: common.rows
+    },
+    COUNT: {
+      task: "In E2, enter =COUNT(B2:D2) to count Rahul's numeric marks.",
+      rows: common.rows
+    },
+    COUNTA: {
+      task: "In E2, enter =COUNTA(A2:A5) to count the student names.",
+      rows: common.rows
+    },
+    COUNTBLANK: {
+      task: "Delete one or two marks, then use =COUNTBLANK(B2:D5) to count missing marks.",
+      rows: common.rows
+    },
+    IF: {
+      task: "In E2, enter =IF(B2>=40,\"Pass\",\"Fail\") and copy it down.",
+      rows: [
+        ["Student","English","Maths","Science","Result"],
+        ["Rahul","78","85","72",""],
+        ["Priya","88","91","79",""],
+        ["Amit","35","72","70",""],
+        ["Neha","92","36","88",""]
+      ]
+    },
+    LARGE: {
+      task: "In E2, enter =LARGE(B2:B5,2) to find the second-highest English mark.",
+      rows: common.rows
+    },
+    SMALL: {
+      task: "In E2, enter =SMALL(B2:B5,2) to find the second-lowest English mark.",
+      rows: common.rows
+    },
+    LOWER: {
+      task: "Replace a name with uppercase text and use =LOWER(A2).",
+      rows: [["Name","Result"],["RAHUL KUMAR",""] ,["PRIYA SHARMA",""],["AMIT SINGH",""],["NEHA GUPTA",""]]
+    },
+    UPPER: {
+      task: "Use =UPPER(A2) to convert the name to uppercase.",
+      rows: [["Name","Result"],["rahul kumar",""],["priya sharma",""],["amit singh",""],["neha gupta",""]]
+    },
+    PROPER: {
+      task: "Use =PROPER(A2) to convert names to proper case.",
+      rows: [["Name","Result"],["rahul kumar",""],["PRIYA SHARMA",""],["amit singh",""],["neha gupta",""]]
+    },
+    TRIM: {
+      task: "Enter extra spaces in A2 and use =TRIM(A2) to clean them.",
+      rows: [["Name","Clean Name"],["  Rahul   Kumar  ",""],[" Priya Sharma ",""],["  Amit  Singh",""],["Neha   Gupta",""]]
+    },
+    LEFT: {
+      task: "Use =LEFT(A2,3) to extract the first three characters.",
+      rows: [["Student ID","Result"],["DEL-001",""],["MUM-002",""],["BLR-003",""],["JAI-004",""]]
+    },
+    RIGHT: {
+      task: "Use =RIGHT(A2,3) to extract the last three characters.",
+      rows: [["Student ID","Result"],["DEL-001",""],["MUM-002",""],["BLR-003",""],["JAI-004",""]]
+    },
+    MID: {
+      task: "Use =MID(A2,5,3) to extract the three digits after DEL-/MUM-/BLR-.",
+      rows: [["Student ID","Result"],["DEL-001",""],["MUM-002",""],["BLR-003",""],["JAI-004",""]]
+    },
+    LEN: {
+      task: "Use =LEN(A2) to count characters in each name.",
+      rows: [["Name","Characters"],["Rahul Kumar",""],["Priya Sharma",""],["Amit Singh",""],["Neha Gupta",""]]
+    }
+  };
+
+  return configs[name] || common;
+}
+
+function renderExcelAdvancedFeatures() {
+  const current = excelState.lesson
+    ? excelAdvancedFeatures.find(x => x[0] === excelState.lesson)
+    : null;
+
+  if (current) {
+    return renderExcelFeatureLesson(current);
+  }
+
+  return `
+    <div class="excel-intro-card">
+      <span class="excel-big-icon">🛠️</span>
+      <div>
+        <h2>Advanced Features</h2>
+        <p>Practical Excel tools for reporting, data cleaning, analysis and protection.</p>
+      </div>
+    </div>
+
+    <div class="excel-feature-grid">
+      ${excelAdvancedFeatures.map((item, index) => `
+        <button type="button" class="excel-feature-card" data-excel-feature="${excelT(item[0])}">
+          <span class="excel-feature-icon">${item[1]}</span>
+          <span class="excel-feature-number">${index + 1}</span>
+          <strong>${excelT(item[0])}</strong>
+          <span>${excelT(item[2])}</span>
+          <em>Open lesson →</em>
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderExcelFeatureLesson(item) {
+  const hi = excelState.language === "hi";
+
+  const labels = hi
+    ? {
+        what: "यह क्या है?",
+        use: "कब उपयोग करें?",
+        steps: "कैसे उपयोग करें — Step by step",
+        example: "Real-life example"
+      }
+    : {
+        what: "What is it?",
+        use: "When should you use it?",
+        steps: "How to use it — Step by step",
+        example: "Real-life example"
+      };
+
+  const steps = item[4].split(" → ").map(x => x.trim());
+
+  return `
+    <div class="excel-back-row">
+      <button type="button" class="excel-back" data-excel-back="advanced-features">← Back to Advanced Features</button>
+    </div>
+
+    <article class="excel-lesson-card">
+      <div class="excel-lesson-title">
+        <span>${item[1]}</span>
+        <div>
+          <div class="excel-kicker">ADVANCED FEATURE</div>
+          <h2>${excelT(item[0])}</h2>
+        </div>
+      </div>
+
+      <div class="excel-language-row">
+        <button type="button" class="${excelState.language === "en" ? "active" : ""}" data-excel-language="en">English</button>
+        <button type="button" class="${excelState.language === "hi" ? "active" : ""}" data-excel-language="hi">हिन्दी</button>
+      </div>
+
+      <div class="excel-video-card">
+        <div class="excel-video-label">🎥 ${excelT(item[0])} Video Tutorial</div>
+        <video controls preload="metadata">
+          <source src="${excelState.videoBase}${excelVideoName(item[0])}" type="video/mp4">
+          Your browser does not have a video for this feature yet.
+        </video>
+        <p>Upload your video as <code>public/excel-videos/${excelVideoName(item[0])}</code>.</p>
+      </div>
+
+      ${excelExplanationBlock(labels.what, item[2])}
+      ${excelExplanationBlock(labels.use, item[3])}
+      ${excelStepsBlock(labels.steps, hi ? steps.map(x => `Excel में जाएं और संबंधित option खोलें: ${x}`) : steps)}
+      ${excelExplanationBlock(labels.example, `Example: Use ${item[0]} in a student/MIS report to keep the data organized and easy to analyze.`)}
+    </article>
+  `;
+}
+
+/* ---------------------------------------------------------
+   EXCEL EVENT HANDLERS
+   --------------------------------------------------------- */
+
+function attachExcelEvents() {
+  document.querySelectorAll("[data-excel-section]").forEach(button => {
+    button.addEventListener("click", () => {
+      excelState.section = button.dataset.excelSection;
+      excelState.lesson = null;
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-excel-basic]").forEach(button => {
+    button.addEventListener("click", () => {
+      excelState.lesson = button.dataset.excelBasic;
+      excelState.language = state.language === "en" ? "en" : "hi";
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-excel-formula]").forEach(button => {
+    button.addEventListener("click", () => {
+      excelState.lesson = button.dataset.excelFormula;
+      excelState.language = state.language === "en" ? "en" : "hi";
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-excel-feature]").forEach(button => {
+    button.addEventListener("click", () => {
+      excelState.lesson = button.dataset.excelFeature;
+      excelState.language = state.language === "en" ? "en" : "hi";
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-excel-back]").forEach(button => {
+    button.addEventListener("click", () => {
+      excelState.section = button.dataset.excelBack;
+      excelState.lesson = null;
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-excel-language]").forEach(button => {
+    button.addEventListener("click", () => {
+      excelState.language = button.dataset.excelLanguage;
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-excel-reset]").forEach(button => {
+    button.addEventListener("click", () => {
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-excel-ai]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (typeof window.openAITeacher === "function") {
+        window.openAITeacher("MS Excel", excelState.lesson || excelState.section);
+      } else {
+        alert("AI Teacher is loading. Please try again.");
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-excel-cell]").forEach(input => {
+    input.addEventListener("input", () => {
+      excelCalculatePractice();
+    });
+    input.addEventListener("change", () => {
+      excelCalculatePractice();
+    });
+  });
+
+  excelCalculatePractice();
+}
+
+function excelCalculatePractice() {
+  const inputs = [...document.querySelectorAll("[data-excel-cell]")];
+  if (!inputs.length) return;
+
+  const cells = {};
+  inputs.forEach(input => {
+    cells[input.dataset.excelCell] = input.value;
+  });
+
+  // Basic formula evaluator for the practice lab.
+  // It intentionally supports the learning formulas rather than trying
+  // to reproduce the entire Excel calculation engine.
+  function cellValue(ref) {
+    const m = String(ref).toUpperCase().match(/^([A-Z]+)(\d+)$/);
+    if (!m) return "";
+    const col = m[1].charCodeAt(0) - 65;
+    const row = Number(m[2]) - 1;
+    return cells[`${row},${col}`] ?? "";
+  }
+
+  function rangeValues(start, end) {
+    const a = start.match(/^([A-Z]+)(\d+)$/i);
+    const b = end.match(/^([A-Z]+)(\d+)$/i);
+    if (!a || !b) return [];
+    const c1 = a[1].toUpperCase().charCodeAt(0) - 65;
+    const r1 = Number(a[2]) - 1;
+    const c2 = b[1].toUpperCase().charCodeAt(0) - 65;
+    const r2 = Number(b[2]) - 1;
+    const values = [];
+    for (let r = Math.min(r1,r2); r <= Math.max(r1,r2); r++) {
+      for (let c = Math.min(c1,c2); c <= Math.max(c1,c2); c++) {
+        values.push(cells[`${r},${c}`] ?? "");
+      }
+    }
+    return values;
+  }
+
+  function numericValues(args) {
+    return args.flatMap(arg => {
+      const s = String(arg).trim();
+      const rm = s.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);
+      if (rm) return rangeValues(rm[1], rm[2]).map(Number).filter(Number.isFinite);
+      const n = Number(cellValue(s) || s);
+      return Number.isFinite(n) ? [n] : [];
+    });
+  }
+
+  function splitArgs(s) {
+    const result = [];
+    let current = "";
+    let quote = null;
+    let depth = 0;
+    for (const ch of s) {
+      if (quote) {
+        current += ch;
+        if (ch === quote) quote = null;
+      } else if (ch === '"' || ch === "'") {
+        quote = ch;
+        current += ch;
+      } else if (ch === "(") {
+        depth++;
+        current += ch;
+      } else if (ch === ")") {
+        depth--;
+        current += ch;
+      } else if (ch === "," && depth === 0) {
+        result.push(current.trim());
+        current = "";
+      } else {
+        current += ch;
+      }
+    }
+    if (current.trim() || s.endsWith(",")) result.push(current.trim());
+    return result;
+  }
+
+  function unquote(v) {
+    const s = String(v).trim();
+    if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+      return s.slice(1,-1);
+    }
+    return s;
+  }
+
+  function evalFormula(formula) {
+    let f = String(formula).trim();
+    if (!f.startsWith("=")) return f;
+    f = f.slice(1).trim();
+
+    const m = f.match(/^([A-Z][A-Z0-9.]*)\((.*)\)$/i);
+    if (!m) {
+      const n = Number(f);
+      return Number.isFinite(n) ? n : "#NAME?";
+    }
+
+    const fn = m[1].toUpperCase();
+    const args = splitArgs(m[2]);
+
+    try {
+      if (fn === "SUM") return numericValues(args).reduce((a,b)=>a+b,0);
+      if (fn === "MIN") return Math.min(...numericValues(args));
+      if (fn === "MAX") return Math.max(...numericValues(args));
+      if (fn === "AVERAGE") {
+        const v = numericValues(args);
+        return v.length ? v.reduce((a,b)=>a+b,0)/v.length : "#DIV/0!";
+      }
+      if (fn === "COUNT") return numericValues(args).length;
+      if (fn === "COUNTA") return args.flatMap(a => {
+        const rm = a.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);
+        return rm ? rangeValues(rm[1],rm[2]).filter(v => String(v).trim() !== "") : [unquote(cellValue(a) || a)];
+      }).filter(v => String(v).trim() !== "").length;
+      if (fn === "COUNTBLANK") return args.flatMap(a => {
+        const rm = a.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);
+        return rm ? rangeValues(rm[1],rm[2]) : [cellValue(a)];
+      }).filter(v => String(v).trim() === "").length;
+      if (fn === "LARGE") {
+        const v = numericValues([args[0]]);
+        const k = Number(unquote(args[1]));
+        return v.sort((a,b)=>b-a)[k-1] ?? "#NUM!";
+      }
+      if (fn === "SMALL") {
+        const v = numericValues([args[0]]);
+        const k = Number(unquote(args[1]));
+        return v.sort((a,b)=>a-b)[k-1] ?? "#NUM!";
+      }
+      if (fn === "ROUND") return Math.round(Number(cellValue(args[0]) || args[0]) * 10 ** Number(args[1])) / 10 ** Number(args[1]);
+      if (fn === "ROUNDUP") {
+        const n = Number(cellValue(args[0]) || args[0]), p = Number(args[1]);
+        const factor = 10 ** p;
+        return Math.ceil(n * factor) / factor;
+      }
+      if (fn === "ROUNDDOWN") {
+        const n = Number(cellValue(args[0]) || args[0]), p = Number(args[1]);
+        const factor = 10 ** p;
+        return Math.floor(n * factor) / factor;
+      }
+      if (fn === "LEFT") return String(cellValue(args[0]) || unquote(args[0])).slice(0, Number(args[1] || 1));
+      if (fn === "RIGHT") {
+        const s = String(cellValue(args[0]) || unquote(args[0]));
+        return s.slice(-Number(args[1] || 1));
+      }
+      if (fn === "MID") {
+        const s = String(cellValue(args[0]) || unquote(args[0]));
+        return s.substr(Number(args[1])-1, Number(args[2]));
+      }
+      if (fn === "LEN") return String(cellValue(args[0]) || unquote(args[0])).length;
+      if (fn === "LOWER") return String(cellValue(args[0]) || unquote(args[0])).toLowerCase();
+      if (fn === "UPPER") return String(cellValue(args[0]) || unquote(args[0])).toUpperCase();
+      if (fn === "PROPER") return String(cellValue(args[0]) || unquote(args[0])).toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
+      if (fn === "TRIM") return String(cellValue(args[0]) || unquote(args[0])).trim().replace(/\s+/g," ");
+      if (fn === "IF") {
+        const cond = args[0].replace(/([A-Z]+\d+)/gi, (_,ref)=>JSON.stringify(cellValue(ref)));
+        const op = cond.match(/^\s*(.+?)\s*(>=|<=|<>|=|>|<)\s*(.+?)\s*$/);
+        let truth = false;
+        if (op) {
+          const left = unquote(op[1]), right = unquote(op[3]);
+          const ln = Number(left), rn = Number(right);
+          const a = Number.isFinite(ln) && Number.isFinite(rn) ? ln : left;
+          const b = Number.isFinite(ln) && Number.isFinite(rn) ? rn : right;
+          if (op[2] === ">=") truth = a >= b;
+          if (op[2] === "<=") truth = a <= b;
+          if (op[2] === ">") truth = a > b;
+          if (op[2] === "<") truth = a < b;
+          if (op[2] === "=") truth = a === b;
+          if (op[2] === "<>") truth = a !== b;
+        }
+        return truth ? unquote(args[1] || "") : unquote(args[2] || "");
+      }
+      if (fn === "DAY" || fn === "MONTH" || fn === "YEAR") {
+        const raw = cellValue(args[0]) || unquote(args[0]);
+        const d = new Date(raw);
+        if (Number.isNaN(d.getTime())) return "#VALUE!";
+        if (fn === "DAY") return d.getDate();
+        if (fn === "MONTH") return d.getMonth()+1;
+        return d.getFullYear();
+      }
+      if (fn === "DATE") {
+        return new Date(Number(args[0]), Number(args[1])-1, Number(args[2])).toLocaleDateString();
+      }
+      if (fn === "TODAY") return new Date().toLocaleDateString();
+      if (fn === "NOW") return new Date().toLocaleString();
+      return "#SUPPORTED?";
+    } catch {
+      return "#ERROR!";
+    }
+  }
+
+  inputs.forEach(input => {
+    const value = input.value.trim();
+    if (!value.startsWith("=")) return;
+
+    const result = evalFormula(value);
+    input.title = String(result);
+
+    // Only visually show a calculation result in a small tooltip-like
+    // area; keep the formula in the cell so students can see what they typed.
+    input.classList.toggle("formula-valid", !String(result).startsWith("#"));
+    input.dataset.calculatedResult = String(result);
+  });
+
+  const resultBox = document.querySelector("[data-excel-result]");
+  if (resultBox) {
+    const formulaInput = inputs.find(i => i.value.trim().startsWith("="));
+    if (formulaInput) {
+      resultBox.textContent = `Result: ${formulaInput.dataset.calculatedResult || "—"}`;
+    } else {
+      resultBox.textContent = "Ready";
+    }
+  }
+}
+
+/* ---------------------------------------------------------
+   EXCEL STYLES
+   --------------------------------------------------------- */
+
+(function injectExcelStyles() {
+  if (document.getElementById("joiningHandsExcelStyles")) return;
+
+  const style = document.createElement("style");
+  style.id = "joiningHandsExcelStyles";
+  style.textContent = `
+    .excel-shell{padding:24px 28px 60px;max-width:1400px;margin:0 auto}
+    .excel-header{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:24px;border-radius:24px;background:linear-gradient(135deg,#eefaf1,#f5fbff);border:1px solid #dcebe1;margin-bottom:20px}
+    .excel-header h1{margin:4px 0;font-size:34px}
+    .excel-header p{margin:6px 0 0;color:#5d6875}
+    .excel-kicker{font-size:11px;font-weight:800;letter-spacing:1.5px;color:#178344}
+    .excel-ai-button{border:0;border-radius:14px;padding:12px 18px;background:#1677ff;color:#fff;font-weight:800;cursor:pointer}
+    .excel-section-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+    .excel-section-tab{border:1px solid #dfe6ec;background:#fff;border-radius:16px;padding:16px;text-align:left;cursor:pointer;font-weight:800;display:flex;gap:10px;align-items:center}
+    .excel-section-tab.active{border-color:#1677ff;box-shadow:0 5px 20px rgba(22,119,255,.12);background:#f6faff}
+    .excel-intro-card{display:flex;gap:18px;align-items:center;background:#fff;border:1px solid #e3e8ed;border-radius:20px;padding:22px;margin-bottom:18px}
+    .excel-big-icon{font-size:42px}
+    .excel-intro-card h2{margin:0 0 6px}
+    .excel-intro-card p{margin:0;color:#65717e}
+    .excel-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .excel-topic-card,.excel-formula-card,.excel-feature-card{border:1px solid #e2e7eb;background:#fff;border-radius:18px;padding:18px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:9px;min-height:150px}
+    .excel-topic-card:hover,.excel-formula-card:hover,.excel-feature-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.08)}
+    .excel-topic-number,.excel-formula-icon,.excel-feature-icon{font-size:24px}
+    .excel-topic-card strong,.excel-formula-name,.excel-feature-card strong{font-size:18px}
+    .excel-topic-card span:last-child,.excel-open-label,.excel-feature-card em{color:#1677ff;font-size:13px;font-style:normal}
+    .excel-formula-group{margin-bottom:26px}
+    .excel-formula-group h3{margin:0 0 12px}
+    .excel-formula-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .excel-formula-card code{background:#f3f6f8;padding:8px;border-radius:8px;font-size:12px;overflow:auto}
+    .excel-formula-desc{color:#66727f;font-size:13px;line-height:1.45}
+    .excel-feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .excel-feature-number{font-size:12px;color:#84909c}
+    .excel-back-row{margin-bottom:14px}
+    .excel-back{border:0;background:transparent;color:#1677ff;font-weight:800;cursor:pointer;padding:6px 0}
+    .excel-lesson-card{background:#fff;border:1px solid #e0e6eb;border-radius:22px;padding:24px}
+    .excel-lesson-title{display:flex;gap:16px;align-items:center}
+    .excel-lesson-title>span{font-size:38px}
+    .excel-lesson-title h2{margin:4px 0}
+    .excel-lesson-title p{margin:4px 0;color:#65717e}
+    .excel-language-row{display:flex;gap:8px;margin:18px 0}
+    .excel-language-row button{border:1px solid #d7dee5;background:#fff;border-radius:10px;padding:8px 13px;cursor:pointer;font-weight:700}
+    .excel-language-row button.active{background:#1677ff;color:#fff;border-color:#1677ff}
+    .excel-video-card{background:#f7f9fb;border-radius:16px;padding:16px;margin:18px 0}
+    .excel-video-label{font-weight:800;margin-bottom:10px}
+    .excel-video-card video{display:block;width:100%;max-height:420px;background:#101418;border-radius:12px}
+    .excel-video-card p{margin:9px 0 0;color:#78838e;font-size:12px}
+    .excel-explain-block{border-left:4px solid #1677ff;background:#f8fbff;padding:16px 18px;border-radius:0 14px 14px 0;margin:16px 0}
+    .excel-explain-block h3{margin:0 0 8px}
+    .excel-explain-block p{margin:0;line-height:1.7;color:#33404d}
+    .excel-steps{margin:0;padding-left:22px;line-height:1.75}
+    .excel-practice-prompt{background:#fff8e7;border:1px solid #f0dfb0;padding:16px;border-radius:14px;margin-top:18px}
+    .excel-practice{margin-top:24px;border:2px solid #dfe8ef;border-radius:20px;padding:18px;background:#fbfcfd}
+    .excel-practice-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .excel-practice-heading h3{margin:3px 0}
+    .excel-practice-heading p{margin:4px 0;color:#6c7782}
+    .excel-reset{border:1px solid #d8e0e7;background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;font-weight:700}
+    .excel-task{background:#eef7ff;border-radius:12px;padding:12px;margin:14px 0}
+    .excel-grid-wrap{overflow:auto;border:1px solid #ccd5dd;background:#fff}
+    .excel-grid{border-collapse:collapse;min-width:700px;width:100%}
+    .excel-grid td,.excel-grid th{border:1px solid #d8dee4;height:40px}
+    .excel-row-head{background:#f1f4f6;color:#6a7480;width:45px;text-align:center}
+    .excel-cell{width:100%;height:39px;border:0;padding:8px 10px;box-sizing:border-box;font:inherit;background:#fff}
+    .excel-cell:focus{outline:2px solid #1677ff;outline-offset:-2px}
+    .excel-cell.formula-valid{background:#f0fff4}
+    .excel-practice-help{display:flex;justify-content:space-between;gap:15px;margin-top:10px;color:#68737e;font-size:13px}
+    .excel-practice-result{font-weight:800;color:#1677ff}
+    @media(max-width:1050px){.excel-card-grid,.excel-formula-grid,.excel-feature-grid{grid-template-columns:repeat(2,1fr)}.excel-section-tabs{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:700px){.excel-shell{padding:15px}.excel-header{align-items:flex-start;flex-direction:column}.excel-card-grid,.excel-formula-grid,.excel-feature-grid,.excel-section-tabs{grid-template-columns:1fr}.excel-lesson-card{padding:16px}}
+  `;
+  document.head.appendChild(style);
+})();
 
 /* =========================================================
    START APPLICATION
@@ -3898,353 +5173,4 @@ document.head.appendChild(joiningHandsExtraStyles);
       window.jhAIClose();
     }
   });
-})();
-
-/* =========================================================
-   JOINING HANDS — FINAL AI TEACHER NAV + UI FIX
-   APPEND THIS ENTIRE BLOCK TO THE VERY END OF public/app.js
-   ========================================================= */
-
-(function () {
-  "use strict";
-
-  /* ---------------------------------------------------------
-     1. STOP THE OLD "COMING SOON" HANDLER
-     --------------------------------------------------------- */
-
-  document.addEventListener(
-    "click",
-    function (event) {
-      const button = event.target.closest(
-        '[data-nav="ai"], .jh-quick-item'
-      );
-
-      if (!button) return;
-
-      const text = (button.textContent || "").trim();
-
-      const isAIButton =
-        button.matches('[data-nav="ai"]') ||
-        /AI\s*Teacher/i.test(text);
-
-      if (!isAIButton) return;
-
-      /*
-       * The existing app has a generic [data-nav] click handler
-       * which sends unknown navigation items to alert("... coming soon").
-       * Capture-phase handling prevents that old handler from running.
-       */
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      if (typeof window.openAITeacher === "function") {
-        window.openAITeacher();
-      }
-    },
-    true
-  );
-
-
-  /* ---------------------------------------------------------
-     2. FINAL AI TEACHER CSS
-     --------------------------------------------------------- */
-
-  const oldStyle = document.getElementById("jhFinalAITeacherStyle");
-  if (oldStyle) oldStyle.remove();
-
-  const style = document.createElement("style");
-  style.id = "jhFinalAITeacherStyle";
-
-  style.textContent = `
-    body.jh-ai-open {
-      overflow: hidden !important;
-    }
-
-    #jhAITeacherFixed {
-      position: fixed !important;
-      inset: 0 !important;
-      z-index: 2147483000 !important;
-      display: flex !important;
-      justify-content: flex-end !important;
-      background: rgba(15, 20, 40, 0.58) !important;
-      backdrop-filter: blur(3px) !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-fixed-panel {
-      width: min(460px, 94vw) !important;
-      height: 100vh !important;
-      background: #ffffff !important;
-      box-shadow: -12px 0 35px rgba(0,0,0,.22) !important;
-      display: flex !important;
-      flex-direction: column !important;
-      overflow: hidden !important;
-      font-family: Arial, Helvetica, sans-serif !important;
-      color: #17204a !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-fixed-header {
-      flex: 0 0 auto !important;
-      min-height: 82px !important;
-      padding: 16px 18px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: space-between !important;
-      background: linear-gradient(135deg, #3d218f, #6847d9) !important;
-      color: #fff !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-fixed-title {
-      display: flex !important;
-      align-items: center !important;
-      gap: 12px !important;
-      min-width: 0 !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-fixed-avatar {
-      width: 46px !important;
-      height: 46px !important;
-      border-radius: 14px !important;
-      background: rgba(255,255,255,.18) !important;
-      display: grid !important;
-      place-items: center !important;
-      font-size: 25px !important;
-      flex: 0 0 auto !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-fixed-header h2 {
-      margin: 0 !important;
-      font-size: 21px !important;
-      line-height: 1.2 !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-fixed-header p {
-      margin: 4px 0 0 !important;
-      opacity: .9 !important;
-      font-size: 12px !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-      max-width: 280px !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-fixed-actions {
-      display: flex !important;
-      align-items: center !important;
-      gap: 7px !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-clear,
-    #jhAITeacherFixed .jh-ai-fixed-close {
-      border: 0 !important;
-      cursor: pointer !important;
-      color: #fff !important;
-      background: rgba(255,255,255,.16) !important;
-      border-radius: 9px !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-clear {
-      padding: 8px 10px !important;
-      font-size: 12px !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-fixed-close {
-      width: 38px !important;
-      height: 38px !important;
-      font-size: 25px !important;
-      line-height: 1 !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-fixed-messages {
-      flex: 1 1 auto !important;
-      min-height: 0 !important;
-      overflow-y: auto !important;
-      padding: 18px !important;
-      background: #f5f6fb !important;
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 12px !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-message {
-      display: flex !important;
-      width: 100% !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-message.user {
-      justify-content: flex-end !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-message.assistant,
-    #jhAITeacherFixed .jh-ai-message.error {
-      justify-content: flex-start !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-bubble {
-      max-width: 86% !important;
-      padding: 11px 13px !important;
-      border-radius: 15px !important;
-      font-size: 14px !important;
-      line-height: 1.55 !important;
-      white-space: pre-wrap !important;
-      overflow-wrap: anywhere !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-message.user .jh-ai-bubble {
-      background: #5a36c9 !important;
-      color: #fff !important;
-      border-bottom-right-radius: 4px !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-message.assistant .jh-ai-bubble {
-      background: #fff !important;
-      color: #263052 !important;
-      border: 1px solid #e4e5ef !important;
-      border-bottom-left-radius: 4px !important;
-      box-shadow: 0 2px 8px rgba(30,35,80,.05) !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-message.error .jh-ai-bubble {
-      background: #fff1f1 !important;
-      color: #a32929 !important;
-      border: 1px solid #f0c4c4 !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-fixed-form {
-      flex: 0 0 auto !important;
-      display: flex !important;
-      gap: 9px !important;
-      padding: 13px !important;
-      background: #fff !important;
-      border-top: 1px solid #e5e6ee !important;
-      align-items: flex-end !important;
-    }
-
-    #jhAITeacherFixed #jhAIFixedQuestion {
-      flex: 1 1 auto !important;
-      min-width: 0 !important;
-      resize: none !important;
-      min-height: 52px !important;
-      max-height: 130px !important;
-      border: 1px solid #d7d9e5 !important;
-      border-radius: 12px !important;
-      padding: 11px 12px !important;
-      outline: none !important;
-      font-size: 14px !important;
-      line-height: 1.45 !important;
-      font-family: inherit !important;
-      color: #202744 !important;
-      background: #fafbff !important;
-    }
-
-    #jhAITeacherFixed #jhAIFixedQuestion:focus {
-      border-color: #6847d9 !important;
-      box-shadow: 0 0 0 3px rgba(104,71,217,.10) !important;
-    }
-
-    #jhAITeacherFixed #jhAIFixedSend {
-      flex: 0 0 auto !important;
-      min-width: 110px !important;
-      min-height: 52px !important;
-      border: 0 !important;
-      border-radius: 12px !important;
-      background: #5a36c9 !important;
-      color: #fff !important;
-      font-weight: 700 !important;
-      cursor: pointer !important;
-      padding: 0 13px !important;
-    }
-
-    #jhAITeacherFixed #jhAIFixedSend:disabled {
-      opacity: .65 !important;
-      cursor: wait !important;
-    }
-
-    #jhAITeacherFixed .jh-ai-fixed-footer {
-      flex: 0 0 auto !important;
-      padding: 7px 13px 10px !important;
-      text-align: center !important;
-      font-size: 10px !important;
-      color: #8a8da0 !important;
-      background: #fff !important;
-    }
-
-    @media (max-width: 600px) {
-      #jhAITeacherFixed {
-        justify-content: center !important;
-      }
-
-      #jhAITeacherFixed .jh-ai-fixed-panel {
-        width: 100vw !important;
-      }
-
-      #jhAITeacherFixed .jh-ai-fixed-form {
-        padding-bottom: calc(13px + env(safe-area-inset-bottom)) !important;
-      }
-    }
-  `;
-
-  document.head.appendChild(style);
-
-
-  /* ---------------------------------------------------------
-     3. IMPROVE THE EXISTING OPEN/CLOSE FUNCTIONS
-     --------------------------------------------------------- */
-
-  const originalOpen = window.openAITeacher;
-  const originalClose = window.jhAIClose;
-
-  window.openAITeacher = function (course, project) {
-    if (typeof originalOpen === "function") {
-      originalOpen(course, project);
-    }
-
-    document.body.classList.add("jh-ai-open");
-
-    setTimeout(function () {
-      const input = document.getElementById("jhAIFixedQuestion");
-      if (input) input.focus();
-    }, 80);
-  };
-
-  window.jhAIClose = function () {
-    document.body.classList.remove("jh-ai-open");
-
-    const panel = document.getElementById("jhAITeacherFixed");
-    if (panel) panel.remove();
-
-    if (typeof originalClose === "function") {
-      originalClose();
-    }
-  };
-
-
-  /* ---------------------------------------------------------
-     4. ESC TO CLOSE
-     --------------------------------------------------------- */
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-      const panel = document.getElementById("jhAITeacherFixed");
-      if (panel) window.jhAIClose();
-    }
-  });
-
-
-  /* ---------------------------------------------------------
-     5. ENTER TO SEND / SHIFT+ENTER NEW LINE
-     --------------------------------------------------------- */
-
-  document.addEventListener("keydown", function (event) {
-    const input = event.target;
-
-    if (!input || input.id !== "jhAIFixedQuestion") return;
-
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-
-      const form = document.getElementById("jhAIFixedForm");
-      if (form) form.requestSubmit();
-    }
-  });
-
 })();
