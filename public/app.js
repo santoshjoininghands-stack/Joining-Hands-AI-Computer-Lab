@@ -3231,938 +3231,315 @@ function renderExcelFeatureLesson(item) {
    --------------------------------------------------------- */
 
 function attachExcelEvents() {
-  document.querySelectorAll("[data-excel-section]").forEach(button => {
-    button.addEventListener("click", () => {
-      excelState.section = button.dataset.excelSection;
-      excelState.lesson = null;
-      render();
-    });
-  });
+  document.querySelectorAll("[data-excel-section]").forEach(button => button.addEventListener("click", () => {
+    excelState.section = button.dataset.excelSection;
+    excelState.lesson = null;
+    render();
+  }));
+  document.querySelectorAll("[data-excel-basic]").forEach(button => button.addEventListener("click", () => {
+    excelState.lesson = button.dataset.excelBasic;
+    excelState.language = state.language === "en" ? "en" : "hi";
+    render();
+  }));
+  document.querySelectorAll("[data-excel-formula]").forEach(button => button.addEventListener("click", () => {
+    excelState.lesson = button.dataset.excelFormula;
+    excelState.language = state.language === "en" ? "en" : "hi";
+    render();
+  }));
+  document.querySelectorAll("[data-excel-feature]").forEach(button => button.addEventListener("click", () => {
+    excelState.lesson = button.dataset.excelFeature;
+    excelState.language = state.language === "en" ? "en" : "hi";
+    render();
+  }));
+  document.querySelectorAll("[data-excel-back]").forEach(button => button.addEventListener("click", () => {
+    excelState.section = button.dataset.excelBack;
+    excelState.lesson = null;
+    render();
+  }));
+  document.querySelectorAll("[data-excel-language]").forEach(button => button.addEventListener("click", () => {
+    excelState.language = button.dataset.excelLanguage;
+    render();
+  }));
+  document.querySelectorAll("[data-excel-reset]").forEach(button => button.addEventListener("click", () => render()));
+  document.querySelectorAll("[data-excel-ai]").forEach(button => button.addEventListener("click", () => {
+    if (typeof window.openAITeacher === "function") window.openAITeacher("MS Excel", excelState.lesson || excelState.section);
+    else alert("AI Teacher is loading. Please try again.");
+  }));
 
-  document.querySelectorAll("[data-excel-basic]").forEach(button => {
-    button.addEventListener("click", () => {
-      excelState.lesson = button.dataset.excelBasic;
-      excelState.language = state.language === "en" ? "en" : "hi";
-      render();
-    });
-  });
+  const cells = [...document.querySelectorAll("[data-excel-cell]")];
+  let selected = cells[0] || null;
+  let rangeStart = null;
+  let rangeEnd = null;
+  let isDraggingRange = false;
+  let dragStartCell = null;
+  const nameBox = document.querySelector("[data-excel-name-box]");
+  const formulaBar = document.querySelector("[data-excel-formula-bar]");
 
-  document.querySelectorAll("[data-excel-formula]").forEach(button => {
-    button.addEventListener("click", () => {
-      excelState.lesson = button.dataset.excelFormula;
-      excelState.language = state.language === "en" ? "en" : "hi";
-      render();
-    });
-  });
-
-  document.querySelectorAll("[data-excel-feature]").forEach(button => {
-    button.addEventListener("click", () => {
-      excelState.lesson = button.dataset.excelFeature;
-      excelState.language = state.language === "en" ? "en" : "hi";
-      render();
-    });
-  });
-
-  document.querySelectorAll("[data-excel-back]").forEach(button => {
-    button.addEventListener("click", () => {
-      excelState.section = button.dataset.excelBack;
-      excelState.lesson = null;
-      render();
-    });
-  });
-
-  document.querySelectorAll("[data-excel-language]").forEach(button => {
-    button.addEventListener("click", () => {
-      excelState.language = button.dataset.excelLanguage;
-      render();
-    });
-  });
-
-  document.querySelectorAll("[data-excel-reset]").forEach(button => {
-    button.addEventListener("click", () => {
-      render();
-    });
-  });
-
-  document.querySelectorAll("[data-excel-ai]").forEach(button => {
-    button.addEventListener("click", () => {
-      if (typeof window.openAITeacher === "function") {
-        window.openAITeacher("MS Excel", excelState.lesson || excelState.section);
-      } else {
-        alert("AI Teacher is loading. Please try again.");
-      }
-    });
-  });
-
-  document.querySelectorAll("[data-excel-cell]").forEach(input => {
-    input.addEventListener("input", () => {
-      excelCalculatePractice();
-    });
-    input.addEventListener("change", () => {
-      excelCalculatePractice();
-    });
-  });
-
-  excelCalculatePractice();
-}
-
-function excelCalculatePractice() {
-  const inputs = [...document.querySelectorAll("[data-excel-cell]")];
-  if (!inputs.length) return;
-
-  const cells = {};
-  inputs.forEach(input => {
-    cells[input.dataset.excelCell] = input.value;
-  });
-
-  // Basic formula evaluator for the practice lab.
-  // It intentionally supports the learning formulas rather than trying
-  // to reproduce the entire Excel calculation engine.
-  function cellValue(ref) {
-    const m = String(ref).toUpperCase().match(/^([A-Z]+)(\d+)$/);
-    if (!m) return "";
-    const col = m[1].charCodeAt(0) - 65;
-    const row = Number(m[2]) - 1;
-    return cells[`${row},${col}`] ?? "";
-  }
-
-  function rangeValues(start, end) {
-    const a = start.match(/^([A-Z]+)(\d+)$/i);
-    const b = end.match(/^([A-Z]+)(\d+)$/i);
-    if (!a || !b) return [];
-    const c1 = a[1].toUpperCase().charCodeAt(0) - 65;
-    const r1 = Number(a[2]) - 1;
-    const c2 = b[1].toUpperCase().charCodeAt(0) - 65;
-    const r2 = Number(b[2]) - 1;
-    const values = [];
-    for (let r = Math.min(r1,r2); r <= Math.max(r1,r2); r++) {
-      for (let c = Math.min(c1,c2); c <= Math.max(c1,c2); c++) {
-        values.push(cells[`${r},${c}`] ?? "");
-      }
-    }
-    return values;
-  }
-
-  function numericValues(args) {
-    return args.flatMap(arg => {
-      const s = String(arg).trim();
-      const rm = s.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);
-      if (rm) return rangeValues(rm[1], rm[2]).map(Number).filter(Number.isFinite);
-      const n = Number(cellValue(s) || s);
-      return Number.isFinite(n) ? [n] : [];
-    });
-  }
-
-  function splitArgs(s) {
-    const result = [];
-    let current = "";
-    let quote = null;
-    let depth = 0;
-    for (const ch of s) {
-      if (quote) {
-        current += ch;
-        if (ch === quote) quote = null;
-      } else if (ch === '"' || ch === "'") {
-        quote = ch;
-        current += ch;
-      } else if (ch === "(") {
-        depth++;
-        current += ch;
-      } else if (ch === ")") {
-        depth--;
-        current += ch;
-      } else if (ch === "," && depth === 0) {
-        result.push(current.trim());
-        current = "";
-      } else {
-        current += ch;
-      }
-    }
-    if (current.trim() || s.endsWith(",")) result.push(current.trim());
-    return result;
-  }
-
-  function unquote(v) {
-    const s = String(v).trim();
-    if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
-      return s.slice(1,-1);
-    }
-    return s;
-  }
-
-  function evalFormula(formula) {
-    let f = String(formula).trim();
-    if (!f.startsWith("=")) return f;
-    f = f.slice(1).trim();
-
-    const m = f.match(/^([A-Z][A-Z0-9.]*)\((.*)\)$/i);
-    if (!m) {
-      const n = Number(f);
-      return Number.isFinite(n) ? n : "#NAME?";
-    }
-
-    const fn = m[1].toUpperCase();
-    const args = splitArgs(m[2]);
-
-    try {
-      if (fn === "SUM") return numericValues(args).reduce((a,b)=>a+b,0);
-      if (fn === "MIN") return Math.min(...numericValues(args));
-      if (fn === "MAX") return Math.max(...numericValues(args));
-      if (fn === "AVERAGE") {
-        const v = numericValues(args);
-        return v.length ? v.reduce((a,b)=>a+b,0)/v.length : "#DIV/0!";
-      }
-      if (fn === "COUNT") return numericValues(args).length;
-      if (fn === "COUNTA") return args.flatMap(a => {
-        const rm = a.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);
-        return rm ? rangeValues(rm[1],rm[2]).filter(v => String(v).trim() !== "") : [unquote(cellValue(a) || a)];
-      }).filter(v => String(v).trim() !== "").length;
-      if (fn === "COUNTBLANK") return args.flatMap(a => {
-        const rm = a.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);
-        return rm ? rangeValues(rm[1],rm[2]) : [cellValue(a)];
-      }).filter(v => String(v).trim() === "").length;
-      if (fn === "LARGE") {
-        const v = numericValues([args[0]]);
-        const k = Number(unquote(args[1]));
-        return v.sort((a,b)=>b-a)[k-1] ?? "#NUM!";
-      }
-      if (fn === "SMALL") {
-        const v = numericValues([args[0]]);
-        const k = Number(unquote(args[1]));
-        return v.sort((a,b)=>a-b)[k-1] ?? "#NUM!";
-      }
-      if (fn === "ROUND") return Math.round(Number(cellValue(args[0]) || args[0]) * 10 ** Number(args[1])) / 10 ** Number(args[1]);
-      if (fn === "ROUNDUP") {
-        const n = Number(cellValue(args[0]) || args[0]), p = Number(args[1]);
-        const factor = 10 ** p;
-        return Math.ceil(n * factor) / factor;
-      }
-      if (fn === "ROUNDDOWN") {
-        const n = Number(cellValue(args[0]) || args[0]), p = Number(args[1]);
-        const factor = 10 ** p;
-        return Math.floor(n * factor) / factor;
-      }
-      if (fn === "LEFT") return String(cellValue(args[0]) || unquote(args[0])).slice(0, Number(args[1] || 1));
-      if (fn === "RIGHT") {
-        const s = String(cellValue(args[0]) || unquote(args[0]));
-        return s.slice(-Number(args[1] || 1));
-      }
-      if (fn === "MID") {
-        const s = String(cellValue(args[0]) || unquote(args[0]));
-        return s.substr(Number(args[1])-1, Number(args[2]));
-      }
-      if (fn === "LEN") return String(cellValue(args[0]) || unquote(args[0])).length;
-      if (fn === "LOWER") return String(cellValue(args[0]) || unquote(args[0])).toLowerCase();
-      if (fn === "UPPER") return String(cellValue(args[0]) || unquote(args[0])).toUpperCase();
-      if (fn === "PROPER") return String(cellValue(args[0]) || unquote(args[0])).toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
-      if (fn === "TRIM") return String(cellValue(args[0]) || unquote(args[0])).trim().replace(/\s+/g," ");
-      if (fn === "IF") {
-        const cond = args[0].replace(/([A-Z]+\d+)/gi, (_,ref)=>JSON.stringify(cellValue(ref)));
-        const op = cond.match(/^\s*(.+?)\s*(>=|<=|<>|=|>|<)\s*(.+?)\s*$/);
-        let truth = false;
-        if (op) {
-          const left = unquote(op[1]), right = unquote(op[3]);
-          const ln = Number(left), rn = Number(right);
-          const a = Number.isFinite(ln) && Number.isFinite(rn) ? ln : left;
-          const b = Number.isFinite(ln) && Number.isFinite(rn) ? rn : right;
-          if (op[2] === ">=") truth = a >= b;
-          if (op[2] === "<=") truth = a <= b;
-          if (op[2] === ">") truth = a > b;
-          if (op[2] === "<") truth = a < b;
-          if (op[2] === "=") truth = a === b;
-          if (op[2] === "<>") truth = a !== b;
-        }
-        return truth ? unquote(args[1] || "") : unquote(args[2] || "");
-      }
-      if (fn === "DAY" || fn === "MONTH" || fn === "YEAR") {
-        const raw = cellValue(args[0]) || unquote(args[0]);
-        const d = new Date(raw);
-        if (Number.isNaN(d.getTime())) return "#VALUE!";
-        if (fn === "DAY") return d.getDate();
-        if (fn === "MONTH") return d.getMonth()+1;
-        return d.getFullYear();
-      }
-      if (fn === "DATE") {
-        return new Date(Number(args[0]), Number(args[1])-1, Number(args[2])).toLocaleDateString();
-      }
-      if (fn === "TODAY") return new Date().toLocaleDateString();
-      if (fn === "NOW") return new Date().toLocaleString();
-      return "#SUPPORTED?";
-    } catch {
-      return "#ERROR!";
-    }
-  }
-
-  inputs.forEach(input => {
-    const value = input.value.trim();
-    if (!value.startsWith("=")) return;
-
-    const result = evalFormula(value);
-    input.title = String(result);
-
-    // Only visually show a calculation result in a small tooltip-like
-    // area; keep the formula in the cell so students can see what they typed.
-    input.classList.toggle("formula-valid", !String(result).startsWith("#"));
-    input.dataset.calculatedResult = String(result);
-  });
-
-  const resultBox = document.querySelector("[data-excel-result]");
-  if (resultBox) {
-    const formulaInput = inputs.find(i => i.value.trim().startsWith("="));
-    if (formulaInput) {
-      resultBox.textContent = `Result: ${formulaInput.dataset.calculatedResult || "—"}`;
-    } else {
-      resultBox.textContent = "Ready";
-    }
-  }
-}
-
-/* ---------------------------------------------------------
-   EXCEL STYLES
-   --------------------------------------------------------- */
-
-(function injectExcelStyles() {
-  if (document.getElementById("joiningHandsExcelStyles")) return;
-
-  const style = document.createElement("style");
-  style.id = "joiningHandsExcelStyles";
-  style.textContent = `
-    .excel-shell{padding:24px 28px 60px;max-width:1400px;margin:0 auto}
-    .excel-header{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:24px;border-radius:24px;background:linear-gradient(135deg,#eefaf1,#f5fbff);border:1px solid #dcebe1;margin-bottom:20px}
-    .excel-header h1{margin:4px 0;font-size:34px}
-    .excel-header p{margin:6px 0 0;color:#5d6875}
-    .excel-kicker{font-size:11px;font-weight:800;letter-spacing:1.5px;color:#178344}
-    .excel-ai-button{border:0;border-radius:14px;padding:12px 18px;background:#1677ff;color:#fff;font-weight:800;cursor:pointer}
-    .excel-section-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
-    .excel-section-tab{border:1px solid #dfe6ec;background:#fff;border-radius:16px;padding:16px;text-align:left;cursor:pointer;font-weight:800;display:flex;gap:10px;align-items:center}
-    .excel-section-tab.active{border-color:#1677ff;box-shadow:0 5px 20px rgba(22,119,255,.12);background:#f6faff}
-    .excel-intro-card{display:flex;gap:18px;align-items:center;background:#fff;border:1px solid #e3e8ed;border-radius:20px;padding:22px;margin-bottom:18px}
-    .excel-big-icon{font-size:42px}
-    .excel-intro-card h2{margin:0 0 6px}
-    .excel-intro-card p{margin:0;color:#65717e}
-    .excel-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .excel-topic-card,.excel-formula-card,.excel-feature-card{border:1px solid #e2e7eb;background:#fff;border-radius:18px;padding:18px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:9px;min-height:150px}
-    .excel-topic-card:hover,.excel-formula-card:hover,.excel-feature-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.08)}
-    .excel-topic-number,.excel-formula-icon,.excel-feature-icon{font-size:24px}
-    .excel-topic-card strong,.excel-formula-name,.excel-feature-card strong{font-size:18px}
-    .excel-topic-card span:last-child,.excel-open-label,.excel-feature-card em{color:#1677ff;font-size:13px;font-style:normal}
-    .excel-formula-group{margin-bottom:26px}
-    .excel-formula-group h3{margin:0 0 12px}
-    .excel-formula-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .excel-formula-card code{background:#f3f6f8;padding:8px;border-radius:8px;font-size:12px;overflow:auto}
-    .excel-formula-desc{color:#66727f;font-size:13px;line-height:1.45}
-    .excel-feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .excel-feature-number{font-size:12px;color:#84909c}
-    .excel-back-row{margin-bottom:14px}
-    .excel-back{border:0;background:transparent;color:#1677ff;font-weight:800;cursor:pointer;padding:6px 0}
-    .excel-lesson-card{background:#fff;border:1px solid #e0e6eb;border-radius:22px;padding:24px}
-    .excel-lesson-title{display:flex;gap:16px;align-items:center}
-    .excel-lesson-title>span{font-size:38px}
-    .excel-lesson-title h2{margin:4px 0}
-    .excel-lesson-title p{margin:4px 0;color:#65717e}
-    .excel-language-row{display:flex;gap:8px;margin:18px 0}
-    .excel-language-row button{border:1px solid #d7dee5;background:#fff;border-radius:10px;padding:8px 13px;cursor:pointer;font-weight:700}
-    .excel-language-row button.active{background:#1677ff;color:#fff;border-color:#1677ff}
-    .excel-video-card{background:#f7f9fb;border-radius:16px;padding:16px;margin:18px 0}
-    .excel-video-label{font-weight:800;margin-bottom:10px}
-    .excel-video-card video{display:block;width:100%;max-height:420px;background:#101418;border-radius:12px}
-    .excel-video-card p{margin:9px 0 0;color:#78838e;font-size:12px}
-    .excel-explain-block{border-left:4px solid #1677ff;background:#f8fbff;padding:16px 18px;border-radius:0 14px 14px 0;margin:16px 0}
-    .excel-explain-block h3{margin:0 0 8px}
-    .excel-explain-block p{margin:0;line-height:1.7;color:#33404d}
-    .excel-steps{margin:0;padding-left:22px;line-height:1.75}
-    .excel-practice-prompt{background:#fff8e7;border:1px solid #f0dfb0;padding:16px;border-radius:14px;margin-top:18px}
-    .excel-practice{margin-top:24px;border:2px solid #dfe8ef;border-radius:20px;padding:18px;background:#fbfcfd}
-    .excel-practice-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
-    .excel-practice-heading h3{margin:3px 0}
-    .excel-practice-heading p{margin:4px 0;color:#6c7782}
-    .excel-reset{border:1px solid #d8e0e7;background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;font-weight:700}
-    .excel-task{background:#eef7ff;border-radius:12px;padding:12px;margin:14px 0}
-    .excel-grid-wrap{overflow:auto;border:1px solid #ccd5dd;background:#fff}
-    .excel-grid{border-collapse:collapse;min-width:700px;width:100%}
-    .excel-grid td,.excel-grid th{border:1px solid #d8dee4;height:40px}
-    .excel-row-head{background:#f1f4f6;color:#6a7480;width:45px;text-align:center}
-    .excel-cell{width:100%;height:39px;border:0;padding:8px 10px;box-sizing:border-box;font:inherit;background:#fff}
-    .excel-cell:focus{outline:2px solid #1677ff;outline-offset:-2px}
-    .excel-cell.formula-valid{background:#f0fff4}
-    .excel-practice-help{display:flex;justify-content:space-between;gap:15px;margin-top:10px;color:#68737e;font-size:13px}
-    .excel-practice-result{font-weight:800;color:#1677ff}
-    .excel-selected-cell{outline:2px solid #1677ff !important;outline-offset:-2px;background:#eef6ff !important;position:relative;z-index:2}
-    .excel-range-selected{outline:2px solid #1677ff !important;outline-offset:-2px;background:#eaf3ff !important;position:relative}
-    .excel-range-preview{outline:2px dashed #1677ff !important;outline-offset:-2px;background:#eef6ff !important;position:relative}
-    .excel-range-anchor{box-shadow:inset 0 0 0 2px #1677ff !important}
-    .excel-grid-cell{position:relative}
-    @media(max-width:1050px){.excel-card-grid,.excel-formula-grid,.excel-feature-grid{grid-template-columns:repeat(2,1fr)}.excel-section-tabs{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:700px){.excel-shell{padding:15px}.excel-header{align-items:flex-start;flex-direction:column}.excel-card-grid,.excel-formula-grid,.excel-feature-grid,.excel-section-tabs{grid-template-columns:1fr}.excel-lesson-card{padding:16px}}
-  `;
-  document.head.appendChild(style);
-})();
-
-
-/* =========================================================
-   EXCEL V3 OVERRIDES — FORMULA SIDEBAR + REAL PRACTICE GRID
-   MS WORD / AI TEACHER are intentionally untouched.
-   ========================================================= */
-
-function renderExcelFormulaList(isAdvanced) {
-  const list = isAdvanced ? excelAdvancedFormulas : excelBasicFormulas;
-  const current = excelState.lesson ? list.find(x => x[0] === excelState.lesson) : null;
-  const groups = isAdvanced ? groupAdvancedExcelFormulas(list) : { "Basic Formulas": list };
-
-  const sidebar = `
-    <aside class="excel-formula-sidebar">
-      <div class="excel-sidebar-title">${isAdvanced ? "🧠 Advanced Formulas" : "🧮 Basic Formulas"}</div>
-      <div class="excel-sidebar-subtitle">Select a formula to learn and practice</div>
-      ${Object.entries(groups).map(([group, items]) => `
-        <div class="excel-sidebar-group">
-          ${isAdvanced ? `<div class="excel-sidebar-group-title">${excelT(group)}</div>` : ""}
-          ${items.map(item => `
-            <button type="button" class="excel-sidebar-item ${excelState.lesson === item[0] ? "active" : ""}" data-excel-formula="${excelT(item[0])}">
-              <span class="excel-sidebar-icon">${item[1]}</span>
-              <span><strong>${excelT(item[0])}</strong><small>${excelT(item[2])}</small></span>
-            </button>
-          `).join("")}
-        </div>
-      `).join("")}
-    </aside>
-  `;
-
-  const main = current
-    ? `<main class="excel-formula-main">${renderExcelFormulaLesson(current, isAdvanced)}</main>`
-    : `
-      <main class="excel-formula-main">
-        <div class="excel-intro-card excel-empty-selection">
-          <span class="excel-big-icon">${isAdvanced ? "🧠" : "🧮"}</span>
-          <div>
-            <h2>${isAdvanced ? "Advanced Formulas" : "Basic Formulas"}</h2>
-            <p>Select any formula from the left. Its video, explanation, steps, real-life example and an interactive Excel practice sheet will appear here.</p>
-          </div>
-        </div>
-      </main>
+  // Make the practice grid behave more like real Excel.
+  // A single click selects a cell. Dragging selects a rectangular range.
+  // When a formula is being entered, the selected range is inserted into the formula
+  // so students do NOT have to type A1:A4 manually.
+  if (!document.getElementById("excel-range-selection-style")) {
+    const style = document.createElement("style");
+    style.id = "excel-range-selection-style";
+    style.textContent = `
+      .excel-cell.excel-range-cell{background:#dbeafe!important;box-shadow:inset 0 0 0 1px #60a5fa!important}
+      .excel-cell.excel-range-anchor{background:#eef6ff!important;box-shadow:inset 0 0 0 2px #1677ff!important}
+      .excel-grid-cell.excel-dragging{cursor:crosshair}
+      .excel-formula-bar.excel-formula-selecting{background:#fffdf2}
     `;
+    document.head.appendChild(style);
+  }
 
-  return `<div class="excel-formula-layout">${sidebar}${main}</div>`;
-}
+  function refParts(ref) {
+    const m = String(ref || "").toUpperCase().match(/^([A-Z]+)(\d+)$/);
+    if (!m) return null;
+    let col = 0;
+    for (const ch of m[1]) col = col * 26 + (ch.charCodeAt(0) - 64);
+    return { col: col - 1, row: Number(m[2]) - 1, ref: `${m[1]}${m[2]}` };
+  }
 
-function renderExcelPractice(name) {
-  const config = excelPracticeConfigV3(name);
-  const hi = excelState.language === "hi";
-  const cols = Math.max(7, ...config.rows.map(r => r.length));
-  const letters = Array.from({length: cols}, (_, i) => String.fromCharCode(65 + i));
+  function refFromParts(row, col) {
+    let n = col + 1;
+    let letters = "";
+    while (n > 0) {
+      const rem = (n - 1) % 26;
+      letters = String.fromCharCode(65 + rem) + letters;
+      n = Math.floor((n - 1) / 26);
+    }
+    return `${letters}${row + 1}`;
+  }
 
-  return `
-    <section class="excel-practice excel-practice-v3" data-excel-practice-name="${excelT(name)}">
-      <div class="excel-practice-heading">
-        <div>
-          <div class="excel-kicker">LIVE EXCEL PRACTICE</div>
-          <h3>🧪 ${hi ? "अब खुद Excel में practice करें" : "Now practice it yourself in Excel"}</h3>
-          <p>${hi ? "Cell select करें, formula type करें और fill handle से copy करके real-time result देखें।" : "Select a cell, type a formula, and drag the fill handle to copy it like Excel."}</p>
-        </div>
-        <button type="button" class="excel-reset" data-excel-reset="1">↻ Reset</button>
-      </div>
-
-      <div class="excel-task"><strong>Practice Task:</strong> ${excelT(config.task)}</div>
-
-      <div class="excel-formula-bar-wrap">
-        <div class="excel-name-box" data-excel-name-box>A1</div>
-        <div class="excel-fx">fx</div>
-        <input class="excel-formula-bar" data-excel-formula-bar placeholder="Select a cell and enter a value or formula…">
-        <button type="button" class="excel-enter-btn" data-excel-enter>✓</button>
-      </div>
-
-      <div class="excel-grid-wrap excel-grid-wrap-v3">
-        <table class="excel-grid excel-grid-v3" data-excel-grid>
-          <thead>
-            <tr><th class="excel-corner"></th>${letters.map(l => `<th class="excel-col-head">${l}</th>`).join("")}</tr>
-          </thead>
-          <tbody>
-            ${config.rows.map((row, r) => `
-              <tr>
-                <th class="excel-row-head">${r + 1}</th>
-                ${letters.map((letter, c) => {
-                  const value = row[c] ?? "";
-                  return `<td class="excel-grid-cell"><input class="excel-cell" data-excel-cell="${letter}${r+1}" value="${escapeHTML(String(value))}" aria-label="Excel cell ${letter}${r+1}"><span class="excel-fill-handle" data-excel-fill="${letter}${r+1}"></span></td>`;
-                }).join("")}
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      </div>
-
-      <div class="excel-practice-help">
-        <span>💡 ${hi ? "Formula हमेशा = से शुरू करें। Example: =SUM(B2:D2)" : "Start formulas with =. Example: =SUM(B2:D2)"}</span>
-        <span class="excel-practice-result" data-excel-result>Ready</span>
-      </div>
-    </section>
-  `;
-}
-
-function excelPracticeConfigV3(name) {
-  const configs = {
-    SUM: {task:"Calculate each employee's total monthly sales in column E.", rows:[["Employee","Jan","Feb","Mar","Total","Target","Status"],["Amit","42000","38500","45000","","120000",""],["Neha","51000","47000","49500","","140000",""],["Ravi","33000","36000","39000","","100000",""]]},
-    MIN: {task:"Find the minimum monthly expense from B2:B6.", rows:[["Department","Expense"],["Training","18500"],["Travel","12200"],["Stationery","6400"],["Internet","8900"],["Utilities","15300"]]},
-    MAX: {task:"Find the highest monthly sales from B2:B6.", rows:[["Salesperson","Sales"],["Amit","78500"],["Neha","92400"],["Ravi","68100"],["Pooja","105200"],["Karan","87300"]]},
-    AVERAGE: {task:"Calculate the average marks of each student in column E.", rows:[["Student","English","Maths","Science","Average"],["Rahul","78","85","72",""],["Priya","88","91","79",""],["Amit","65","72","70",""],["Neha","92","76","88",""]]},
-    COUNT: {task:"Count how many numeric attendance values are present in B2:B7.", rows:[["Student","Days Present"],["Rahul","24"],["Priya","26"],["Amit",""],["Neha","25"],["Karan","23"],["Pooja","26"]]},
-    COUNTA: {task:"Count how many employee names are entered in A2:A7.", rows:[["Employee Name"],["Amit Sharma"],["Neha Verma"],["Ravi Kumar"],["Pooja Singh"],["Karan Mehta"],[""]]},
-    COUNTBLANK: {task:"Count the blank cells in the scholarship status column.", rows:[["Student","Status"],["Rahul","Selected"],["Priya",""],["Amit","Pending"],["Neha",""],["Karan","Selected"],["Pooja",""]]},
-    IF: {task:"In G2 enter =IF(E2>=F2,\"Achieved\",\"Below Target\") and copy down.", rows:[["Employee","Jan","Feb","Mar","Total","Target","Status"],["Amit","42000","38500","45000","125500","120000",""],["Neha","51000","47000","49500","147500","140000",""],["Ravi","33000","36000","39000","108000","110000",""]]},
-    LARGE: {task:"Find the 2nd highest sales value from B2:B6.", rows:[["Salesperson","Sales"],["Amit","78500"],["Neha","92400"],["Ravi","68100"],["Pooja","105200"],["Karan","87300"]]},
-    SMALL: {task:"Find the 2nd lowest fee from B2:B6.", rows:[["Course","Fee"],["Excel","3500"],["Word","2500"],["PowerPoint","3000"],["English","2200"],["AI Basics","4000"]]},
-    ROUND: {task:"Round each percentage to 1 decimal place.", rows:[["Student","Percentage","Rounded"],["Rahul","87.456",""],["Priya","91.234",""],["Amit","76.789",""],["Neha","84.651",""]]},
-    ROUNDUP: {task:"Round each invoice amount upward to the nearest whole number.", rows:[["Invoice","Amount","Rounded Up"],["INV-101","1250.21",""],["INV-102","987.01",""],["INV-103","4500.12",""]]},
-    ROUNDDOWN: {task:"Round each invoice amount downward to the nearest whole number.", rows:[["Invoice","Amount","Rounded Down"],["INV-201","1250.89",""],["INV-202","987.99",""],["INV-203","4500.75",""]]},
-    DAY: {task:"Extract the day from each admission date.", rows:[["Student","Admission Date","Day"],["Rahul","2026-04-15",""],["Priya","2026-05-22",""],["Amit","2026-06-03",""]]},
-    MONTH: {task:"Extract the month number from each admission date.", rows:[["Student","Admission Date","Month"],["Rahul","2026-04-15",""],["Priya","2026-05-22",""],["Amit","2026-06-03",""]]},
-    YEAR: {task:"Extract the year from each joining date.", rows:[["Employee","Joining Date","Year"],["Amit","2024-07-12",""],["Neha","2025-01-20",""],["Ravi","2023-11-08",""]]},
-    DATE: {task:"Create a date from separate Year, Month and Day columns.", rows:[["Year","Month","Day","Date"],["2026","9","15",""],["2026","10","5",""],["2027","1","20",""]]},
-    TODAY: {task:"Enter =TODAY() in B2 to show today's date. It updates automatically.", rows:[["Item","Current Date"],["Today",""]]},
-    NOW: {task:"Enter =NOW() in B2 to show the current date and time.", rows:[["Item","Current Date & Time"],["Now",""]]},
-    LOWER: {task:"Convert department codes to lowercase.", rows:[["Code","Lowercase"],["DEL-ADMIN",""],["MUM-HR",""],["BLR-MIS",""]]},
-    UPPER: {task:"Convert city names to uppercase.", rows:[["City","Uppercase"],["Delhi",""],["Mumbai",""],["Bengaluru",""]]},
-    PROPER: {task:"Clean names into Proper Case.", rows:[["Raw Name","Proper Name"],["rahul kumar",""],["PRIYA SHARMA",""],["amit singh",""]]},
-    TRIM: {task:"Remove extra spaces from imported employee names.", rows:[["Imported Name","Clean Name"],["  Rahul   Kumar  ",""],[" Priya   Sharma ",""],["  Amit Singh  ",""]]},
-    LEFT: {task:"Extract the first 3 characters from each branch code.", rows:[["Branch Code","Prefix"],["DEL-001",""],["MUM-002",""],["BLR-003",""]]},
-    RIGHT: {task:"Extract the last 3 digits from each student ID.", rows:[["Student ID","Number"],["STU-1001",""],["STU-2045",""],["STU-3099",""]]},
-    MID: {task:"Extract the middle 3 digits from each employee code.", rows:[["Employee Code","Middle"],["EMP-101-DEL",""],["EMP-205-MUM",""],["EMP-310-BLR",""]]},
-    LEN: {task:"Count characters in each student name.", rows:[["Student Name","Characters"],["Rahul Kumar",""],["Priya Sharma",""],["Amit Singh",""]]}
-  };
-
-  const advanced = {
-    XLOOKUP:{task:"Enter =XLOOKUP(B2,A5:A8,B5:B8) to return the student's course.",rows:[["Student ID","Course"],["STU103",""],["STU101",""],["STU104",""],["STU102",""],["",""],["Lookup Table",""],["STU101","Excel"],["STU102","MIS"],["STU103","PowerPoint"],["STU104","AI Basics"]]},
-    VLOOKUP:{task:"Enter =VLOOKUP(B2,A5:C8,3,FALSE) to return the student's fee.",rows:[["Student ID","Student","Fee"],["STU103","",""],["STU101","",""],["STU104","",""],["STU102","",""],["","",""],["Student ID","Student","Fee"],["STU101","Rahul","3500"],["STU102","Priya","4200"],["STU103","Amit","3000"],["STU104","Neha","5000"]]},
-    HLOOKUP:{task:"Enter =HLOOKUP(B2,B5:E6,2,FALSE) to return the month's sales.",rows:[["Month","Sales"],["Mar",""],["",""],["Month","Jan","Feb","Mar","Apr"],["Sales","42000","45500","51000","48000"]]},
-    INDEX:{task:"Enter =INDEX(B2:B5,MATCH(E2,A2:A5,0)) to return a selected student's city.",rows:[["Student","City"],["Rahul","Delhi"],["Priya","Mumbai"],["Amit","Jaipur"],["Neha","Pune"],["Selected Student","Amit"]]},
-    MATCH:{task:"Enter =MATCH(E2,A2:A5,0) to find the position of the selected student.",rows:[["Student"],["Rahul"],["Priya"],["Amit"],["Neha"],["Selected Student","Amit"]]},
-    XMATCH:{task:"Enter =XMATCH(E2,A2:A5,0) to find the position of the selected student.",rows:[["Student"],["Rahul"],["Priya"],["Amit"],["Neha"],["Selected Student","Neha"]]},
-    FILTER:{task:"Use FILTER to return employees whose status is Selected.",rows:[["Employee","Status"],["Rahul","Selected"],["Priya","Pending"],["Amit","Selected"],["Neha","Rejected"]]},
-    SORT:{task:"Use SORT to sort the sales table by the first column.",rows:[["Employee","Sales"],["Neha","92000"],["Amit","78000"],["Ravi","85000"],["Pooja","67000"]]},
-    UNIQUE:{task:"Use UNIQUE to extract distinct course names.",rows:[["Course"],["Excel"],["MIS"],["Excel"],["PowerPoint"],["MIS"]]},
-    IFS:{task:"Use IFS to classify marks as Excellent, Good or Needs Improvement.",rows:[["Student","Marks","Grade"],["Rahul","92",""],["Priya","78",""],["Amit","55",""]]},
-    AND:{task:"Use AND to check whether both sales target and attendance targets are met.",rows:[["Employee","Sales","Attendance","Result"],["Amit","125000","96",""],["Neha","98000","94",""],["Ravi","132000","88",""]]},
-    OR:{task:"Use OR to check whether an employee qualifies through either high sales or high attendance.",rows:[["Employee","Sales","Attendance","Result"],["Amit","125000","96",""],["Neha","98000","94",""],["Ravi","132000","88",""]]},
-    IFERROR:{task:"Wrap a lookup in IFERROR so a missing Student ID shows 'Not Found'.",rows:[["Student ID","Result"],["STU101",""],["STU999",""]]}
-  };
-  if (advanced[name]) return advanced[name];
-
-  const conditional = ["SUMIFS","COUNTIFS","AVERAGEIFS","MAXIFS","MINIFS"].includes(name);
-  if (conditional) return {task:`Use ${name} with the department/sales dataset to calculate a conditional result.`,rows:[["Employee","Department","Sales","Status","Result"],["Amit","North","82000","Selected",""],["Neha","South","95000","Pending",""],["Ravi","North","76000","Selected",""],["Pooja","South","105000","Selected",""]]};
-
-  const textAdv = {TEXT:[["Invoice","Amount","Formatted"] , ["INV-101","12500.5",""]],TEXTJOIN:[["First Name","Last Name","City","Full Details"],["Rahul","Kumar","Delhi",""]],EXACT:[["Password 1","Password 2","Match?"],["Excel123","Excel123",""]]};
-  if (textAdv[name]) return {task:`Practice ${name} with the sample text/data.`,rows:textAdv[name]};
-  const dateAdv = {DATEDIF:[["Start Date","End Date","Years/Days"],["2020-01-15","2026-09-15",""]],WORKDAY:[["Start Date","Working Days","Result"],["2026-09-01","10",""]]};
-  if (dateAdv[name]) return {task:`Practice ${name} using the date data.`,rows:dateAdv[name]};
-  if (name === "PMT") return {task:"Calculate the monthly EMI for a loan using =PMT(rate/12,months,-loan).",rows:[["Loan","Annual Rate","Months","Monthly EMI"],["500000","10%","60",""]]};
-  return {task:`Practice ${name} with the sample office data.`,rows:[["Value","Result"],["100",""] , ["250",""] , ["500",""]]};
-}
-
-function attachExcelEvents() {
-  document.querySelectorAll("[data-excel-section]").forEach(button => {
-    button.addEventListener("click", () => {
-      excelState.section = button.dataset.excelSection;
-      excelState.lesson = null;
-      render();
+  function cellsBetween(a, b) {
+    const p1 = refParts(a.dataset.excelCell);
+    const p2 = refParts(b.dataset.excelCell);
+    if (!p1 || !p2) return [];
+    const minRow = Math.min(p1.row, p2.row);
+    const maxRow = Math.max(p1.row, p2.row);
+    const minCol = Math.min(p1.col, p2.col);
+    const maxCol = Math.max(p1.col, p2.col);
+    return cells.filter(cell => {
+      const p = refParts(cell.dataset.excelCell);
+      return p && p.row >= minRow && p.row <= maxRow && p.col >= minCol && p.col <= maxCol;
     });
-  });
+  }
 
-  document.querySelectorAll("[data-excel-basic]").forEach(button => {
-    button.addEventListener("click", () => {
-      excelState.lesson = button.dataset.excelBasic;
-      excelState.language = state.language === "en" ? "en" : "hi";
-      render();
+  function clearRangeClasses() {
+    cells.forEach(x => {
+      x.classList.remove("excel-selected-cell", "excel-range-cell", "excel-range-anchor");
+      x.closest(".excel-grid-cell")?.classList.remove("excel-dragging");
     });
-  });
+  }
 
-  document.querySelectorAll("[data-excel-formula]").forEach(button => {
-    button.addEventListener("click", () => {
-      excelState.lesson = button.dataset.excelFormula;
-      excelState.language = state.language === "en" ? "en" : "hi";
-      render();
+  function showFillHandle(input) {
+    document.querySelectorAll(".excel-fill-handle").forEach(h => h.classList.remove("visible"));
+    if (!input) return;
+    const handle = document.querySelector(`[data-excel-fill="${input.dataset.excelCell}"]`);
+    if (handle) handle.classList.add("visible");
+  }
+
+  function selectCell(input, focusInput = true) {
+    if (!input) return;
+    clearRangeClasses();
+    input.classList.add("excel-selected-cell", "excel-range-anchor");
+    selected = input;
+    rangeStart = input;
+    rangeEnd = input;
+    if (nameBox) nameBox.textContent = input.dataset.excelCell;
+    if (formulaBar) {
+      formulaBar.value = input.value;
+      if (focusInput) {
+        formulaBar.focus();
+        formulaBar.select();
+      }
+    }
+    showFillHandle(input);
+  }
+
+  function selectRange(startCell, endCell, updateFormula = true) {
+    if (!startCell || !endCell) return;
+    clearRangeClasses();
+    const selectedCells = cellsBetween(startCell, endCell);
+    selectedCells.forEach(cell => cell.classList.add("excel-range-cell"));
+    startCell.classList.add("excel-range-anchor");
+    selected = startCell;
+    rangeStart = startCell;
+    rangeEnd = endCell;
+    const a = refParts(startCell.dataset.excelCell);
+    const b = refParts(endCell.dataset.excelCell);
+    const startRef = startCell.dataset.excelCell;
+    const endRef = endCell.dataset.excelCell;
+    const rangeRef = startRef === endRef ? startRef : `${refFromParts(Math.min(a.row,b.row), Math.min(a.col,b.col))}:${refFromParts(Math.max(a.row,b.row), Math.max(a.col,b.col))}`;
+    if (nameBox) nameBox.textContent = rangeRef;
+    showFillHandle(startCell);
+
+    if (updateFormula && formulaBar && formulaBar.value.trim().startsWith("=")) {
+      insertSelectedRangeIntoFormula(rangeRef);
+    }
+  }
+
+  function insertSelectedRangeIntoFormula(rangeRef) {
+    if (!formulaBar) return;
+    let formula = formulaBar.value || "";
+    if (!formula.startsWith("=")) return;
+
+    // Remove a previously inserted range from the current drag operation.
+    if (formulaBar.dataset.excelLastRange) {
+      const old = formulaBar.dataset.excelLastRange;
+      const idx = formula.indexOf(old);
+      if (idx !== -1) {
+        formula = formula.slice(0, idx) + formula.slice(idx + old.length);
+      }
+    }
+
+    const start = Number.isInteger(formulaBar.dataset.excelRangeCaret)
+      ? formulaBar.dataset.excelRangeCaret
+      : (formulaBar.selectionStart ?? formula.length);
+    const safeStart = Math.max(1, Math.min(start, formula.length));
+
+    formula = formula.slice(0, safeStart) + rangeRef + formula.slice(safeStart);
+    formulaBar.value = formula;
+    formulaBar.dataset.excelLastRange = rangeRef;
+    formulaBar.classList.add("excel-formula-selecting");
+    if (selected) selected.value = formula;
+    excelCalculatePractice();
+  }
+
+  cells.forEach(input => {
+    input.addEventListener("focus", () => {
+      if (!isDraggingRange) selectCell(input, false);
     });
-  });
 
-  document.querySelectorAll("[data-excel-feature]").forEach(button => {
-    button.addEventListener("click", () => {
-      excelState.lesson = button.dataset.excelFeature;
-      excelState.language = state.language === "en" ? "en" : "hi";
-      render();
-    });
-  });
-
-  document.querySelectorAll("[data-excel-back]").forEach(button => {
-    button.addEventListener("click", () => {
-      excelState.section = button.dataset.excelBack;
-      excelState.lesson = null;
-      render();
-    });
-  });
-
-  document.querySelectorAll("[data-excel-language]").forEach(button => {
-    button.addEventListener("click", () => {
-      excelState.language = button.dataset.excelLanguage;
-      render();
-    });
-  });
-
-  document.querySelectorAll("[data-excel-reset]").forEach(button => {
-    button.addEventListener("click", () => {
-      render();
-    });
-  });
-
-  document.querySelectorAll("[data-excel-ai]").forEach(button => {
-    button.addEventListener("click", () => {
-      if (typeof window.openAITeacher === "function") {
-        window.openAITeacher("MS Excel", excelState.lesson || excelState.section);
+    input.addEventListener("click", e => {
+      if (isDraggingRange) return;
+      selectCell(input, false);
+      if (formulaBar && formulaBar.value.trim().startsWith("=")) {
+        formulaBar.focus();
+        formulaBar.setSelectionRange(formulaBar.value.length, formulaBar.value.length);
       } else {
-        alert("AI Teacher is loading. Please try again.");
+        input.focus();
       }
     });
-  });
 
-  document.querySelectorAll("[data-excel-cell]").forEach(input => {
     input.addEventListener("input", () => {
+      if (formulaBar && selected === input && !isDraggingRange) {
+        formulaBar.value = input.value;
+        formulaBar.dataset.excelLastRange = "";
+      }
       excelCalculatePractice();
     });
-    input.addEventListener("change", () => {
-      excelCalculatePractice();
+
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const n = cells[cells.indexOf(input) + 1];
+        if (n) n.focus();
+      }
     });
   });
 
-  excelCalculatePractice();
-}
+  // Mouse drag selection over cells.
+  cells.forEach(input => {
+    input.addEventListener("mousedown", e => {
+      // Left mouse button only. Shift-click also extends the current selection.
+      if (e.button !== 0) return;
+      e.preventDefault();
+      e.stopPropagation();
 
-function excelCalculatePractice() {
-  const inputs = [...document.querySelectorAll("[data-excel-cell]")];
-  if (!inputs.length) return;
+      dragStartCell = input;
+      isDraggingRange = false;
+      const formulaIsActive = !!(formulaBar && formulaBar.value.trim().startsWith("="));
 
-  const cells = {};
-  inputs.forEach(input => {
-    cells[input.dataset.excelCell] = input.value;
+      if (formulaIsActive) {
+        // Save the insertion point before the mouse leaves the formula bar.
+        formulaBar.dataset.excelRangeCaret = String(formulaBar.selectionStart ?? formulaBar.value.length);
+        formulaBar.classList.add("excel-formula-selecting");
+      }
+
+      clearRangeClasses();
+      input.classList.add("excel-selected-cell", "excel-range-anchor");
+      selected = input;
+      rangeStart = input;
+      rangeEnd = input;
+      if (nameBox) nameBox.textContent = input.dataset.excelCell;
+      showFillHandle(input);
+
+      const onMove = ev => {
+        const target = document.elementFromPoint(ev.clientX, ev.clientY)?.closest("[data-excel-cell]");
+        if (!target) return;
+        if (target !== dragStartCell) isDraggingRange = true;
+        selectRange(dragStartCell, target, formulaIsActive);
+      };
+
+      const onUp = () => {
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onUp);
+        document.querySelectorAll(".excel-grid-cell").forEach(x => x.classList.remove("excel-dragging"));
+        isDraggingRange = false;
+        if (formulaBar) formulaBar.classList.remove("excel-formula-selecting");
+        excelCalculatePractice();
+      };
+
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onUp, { once: true });
+    });
   });
 
-  // Basic formula evaluator for the practice lab.
-  // It intentionally supports the learning formulas rather than trying
-  // to reproduce the entire Excel calculation engine.
-  function cellValue(ref) {
-    const m = String(ref).toUpperCase().match(/^([A-Z]+)(\d+)$/);
-    if (!m) return "";
-    const col = m[1].charCodeAt(0) - 65;
-    const row = Number(m[2]) - 1;
-    return cells[`${row},${col}`] ?? "";
-  }
-
-  function rangeValues(start, end) {
-    const a = start.match(/^([A-Z]+)(\d+)$/i);
-    const b = end.match(/^([A-Z]+)(\d+)$/i);
-    if (!a || !b) return [];
-    const c1 = a[1].toUpperCase().charCodeAt(0) - 65;
-    const r1 = Number(a[2]) - 1;
-    const c2 = b[1].toUpperCase().charCodeAt(0) - 65;
-    const r2 = Number(b[2]) - 1;
-    const values = [];
-    for (let r = Math.min(r1,r2); r <= Math.max(r1,r2); r++) {
-      for (let c = Math.min(c1,c2); c <= Math.max(c1,c2); c++) {
-        values.push(cells[`${r},${c}`] ?? "");
-      }
-    }
-    return values;
-  }
-
-  function numericValues(args) {
-    return args.flatMap(arg => {
-      const s = String(arg).trim();
-      const rm = s.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);
-      if (rm) return rangeValues(rm[1], rm[2]).map(Number).filter(Number.isFinite);
-      const n = Number(cellValue(s) || s);
-      return Number.isFinite(n) ? [n] : [];
+  if (formulaBar) {
+    formulaBar.addEventListener("focus", () => {
+      formulaBar.dataset.excelRangeCaret = String(formulaBar.selectionStart ?? formulaBar.value.length);
+      formulaBar.dataset.excelLastRange = "";
+    });
+    formulaBar.addEventListener("click", () => {
+      formulaBar.dataset.excelRangeCaret = String(formulaBar.selectionStart ?? formulaBar.value.length);
+      formulaBar.dataset.excelLastRange = "";
+    });
+    formulaBar.addEventListener("input", () => {
+      if (selected) selected.value = formulaBar.value;
+      formulaBar.dataset.excelLastRange = "";
+      excelCalculatePractice();
     });
   }
 
-  function splitArgs(s) {
-    const result = [];
-    let current = "";
-    let quote = null;
-    let depth = 0;
-    for (const ch of s) {
-      if (quote) {
-        current += ch;
-        if (ch === quote) quote = null;
-      } else if (ch === '"' || ch === "'") {
-        quote = ch;
-        current += ch;
-      } else if (ch === "(") {
-        depth++;
-        current += ch;
-      } else if (ch === ")") {
-        depth--;
-        current += ch;
-      } else if (ch === "," && depth === 0) {
-        result.push(current.trim());
-        current = "";
-      } else {
-        current += ch;
-      }
+  document.querySelector("[data-excel-enter]")?.addEventListener("click", () => {
+    if (selected && formulaBar) {
+      selected.value = formulaBar.value;
+      formulaBar.dataset.excelLastRange = "";
+      excelCalculatePractice();
+      selected.focus();
     }
-    if (current.trim() || s.endsWith(",")) result.push(current.trim());
-    return result;
-  }
+  });
 
-  function unquote(v) {
-    const s = String(v).trim();
-    if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
-      return s.slice(1,-1);
-    }
-    return s;
-  }
-
-  function evalFormula(formula) {
-    let f = String(formula).trim();
-    if (!f.startsWith("=")) return f;
-    f = f.slice(1).trim();
-
-    const m = f.match(/^([A-Z][A-Z0-9.]*)\((.*)\)$/i);
-    if (!m) {
-      const n = Number(f);
-      return Number.isFinite(n) ? n : "#NAME?";
-    }
-
-    const fn = m[1].toUpperCase();
-    const args = splitArgs(m[2]);
-
-    try {
-      if (fn === "SUM") return numericValues(args).reduce((a,b)=>a+b,0);
-      if (fn === "MIN") return Math.min(...numericValues(args));
-      if (fn === "MAX") return Math.max(...numericValues(args));
-      if (fn === "AVERAGE") {
-        const v = numericValues(args);
-        return v.length ? v.reduce((a,b)=>a+b,0)/v.length : "#DIV/0!";
-      }
-      if (fn === "COUNT") return numericValues(args).length;
-      if (fn === "COUNTA") return args.flatMap(a => {
-        const rm = a.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);
-        return rm ? rangeValues(rm[1],rm[2]).filter(v => String(v).trim() !== "") : [unquote(cellValue(a) || a)];
-      }).filter(v => String(v).trim() !== "").length;
-      if (fn === "COUNTBLANK") return args.flatMap(a => {
-        const rm = a.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);
-        return rm ? rangeValues(rm[1],rm[2]) : [cellValue(a)];
-      }).filter(v => String(v).trim() === "").length;
-      if (fn === "LARGE") {
-        const v = numericValues([args[0]]);
-        const k = Number(unquote(args[1]));
-        return v.sort((a,b)=>b-a)[k-1] ?? "#NUM!";
-      }
-      if (fn === "SMALL") {
-        const v = numericValues([args[0]]);
-        const k = Number(unquote(args[1]));
-        return v.sort((a,b)=>a-b)[k-1] ?? "#NUM!";
-      }
-      if (fn === "ROUND") return Math.round(Number(cellValue(args[0]) || args[0]) * 10 ** Number(args[1])) / 10 ** Number(args[1]);
-      if (fn === "ROUNDUP") {
-        const n = Number(cellValue(args[0]) || args[0]), p = Number(args[1]);
-        const factor = 10 ** p;
-        return Math.ceil(n * factor) / factor;
-      }
-      if (fn === "ROUNDDOWN") {
-        const n = Number(cellValue(args[0]) || args[0]), p = Number(args[1]);
-        const factor = 10 ** p;
-        return Math.floor(n * factor) / factor;
-      }
-      if (fn === "LEFT") return String(cellValue(args[0]) || unquote(args[0])).slice(0, Number(args[1] || 1));
-      if (fn === "RIGHT") {
-        const s = String(cellValue(args[0]) || unquote(args[0]));
-        return s.slice(-Number(args[1] || 1));
-      }
-      if (fn === "MID") {
-        const s = String(cellValue(args[0]) || unquote(args[0]));
-        return s.substr(Number(args[1])-1, Number(args[2]));
-      }
-      if (fn === "LEN") return String(cellValue(args[0]) || unquote(args[0])).length;
-      if (fn === "LOWER") return String(cellValue(args[0]) || unquote(args[0])).toLowerCase();
-      if (fn === "UPPER") return String(cellValue(args[0]) || unquote(args[0])).toUpperCase();
-      if (fn === "PROPER") return String(cellValue(args[0]) || unquote(args[0])).toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
-      if (fn === "TRIM") return String(cellValue(args[0]) || unquote(args[0])).trim().replace(/\s+/g," ");
-      if (fn === "IF") {
-        const cond = args[0].replace(/([A-Z]+\d+)/gi, (_,ref)=>JSON.stringify(cellValue(ref)));
-        const op = cond.match(/^\s*(.+?)\s*(>=|<=|<>|=|>|<)\s*(.+?)\s*$/);
-        let truth = false;
-        if (op) {
-          const left = unquote(op[1]), right = unquote(op[3]);
-          const ln = Number(left), rn = Number(right);
-          const a = Number.isFinite(ln) && Number.isFinite(rn) ? ln : left;
-          const b = Number.isFinite(ln) && Number.isFinite(rn) ? rn : right;
-          if (op[2] === ">=") truth = a >= b;
-          if (op[2] === "<=") truth = a <= b;
-          if (op[2] === ">") truth = a > b;
-          if (op[2] === "<") truth = a < b;
-          if (op[2] === "=") truth = a === b;
-          if (op[2] === "<>") truth = a !== b;
+  // Existing Excel-like fill handle: drag the small blue square to copy formulas.
+  document.querySelectorAll("[data-excel-fill]").forEach(handle => {
+    handle.addEventListener("mousedown", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      const source = document.querySelector(`[data-excel-cell="${handle.dataset.excelFill}"]`);
+      if (!source) return;
+      let active = true;
+      const onMove = ev => {
+        if (!active) return;
+        const target = document.elementFromPoint(ev.clientX, ev.clientY)?.closest("[data-excel-cell]");
+        if (target && target !== source) {
+          target.value = adjustExcelFormula(source.value, source.dataset.excelCell, target.dataset.excelCell);
+          target.classList.add("excel-fill-preview");
         }
-        return truth ? unquote(args[1] || "") : unquote(args[2] || "");
-      }
-      if (fn === "DAY" || fn === "MONTH" || fn === "YEAR") {
-        const raw = cellValue(args[0]) || unquote(args[0]);
-        const d = new Date(raw);
-        if (Number.isNaN(d.getTime())) return "#VALUE!";
-        if (fn === "DAY") return d.getDate();
-        if (fn === "MONTH") return d.getMonth()+1;
-        return d.getFullYear();
-      }
-      if (fn === "DATE") {
-        return new Date(Number(args[0]), Number(args[1])-1, Number(args[2])).toLocaleDateString();
-      }
-      if (fn === "TODAY") return new Date().toLocaleDateString();
-      if (fn === "NOW") return new Date().toLocaleString();
-      return "#SUPPORTED?";
-    } catch {
-      return "#ERROR!";
-    }
-  }
-
-  inputs.forEach(input => {
-    const value = input.value.trim();
-    if (!value.startsWith("=")) return;
-
-    const result = evalFormula(value);
-    input.title = String(result);
-
-    // Only visually show a calculation result in a small tooltip-like
-    // area; keep the formula in the cell so students can see what they typed.
-    input.classList.toggle("formula-valid", !String(result).startsWith("#"));
-    input.dataset.calculatedResult = String(result);
+      };
+      const onUp = () => {
+        active = false;
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onUp);
+        document.querySelectorAll(".excel-fill-preview").forEach(x => x.classList.remove("excel-fill-preview"));
+        excelCalculatePractice();
+      };
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onUp, { once: true });
+    });
   });
 
-  const resultBox = document.querySelector("[data-excel-result]");
-  if (resultBox) {
-    const formulaInput = inputs.find(i => i.value.trim().startsWith("="));
-    if (formulaInput) {
-      resultBox.textContent = `Result: ${formulaInput.dataset.calculatedResult || "—"}`;
-    } else {
-      resultBox.textContent = "Ready";
-    }
-  }
-}
-
-/* ---------------------------------------------------------
-   EXCEL STYLES
-   --------------------------------------------------------- */
-
-(function injectExcelStyles() {
-  if (document.getElementById("joiningHandsExcelStyles")) return;
-
-  const style = document.createElement("style");
-  style.id = "joiningHandsExcelStyles";
-  style.textContent = `
-    .excel-shell{padding:24px 28px 60px;max-width:1400px;margin:0 auto}
-    .excel-header{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:24px;border-radius:24px;background:linear-gradient(135deg,#eefaf1,#f5fbff);border:1px solid #dcebe1;margin-bottom:20px}
-    .excel-header h1{margin:4px 0;font-size:34px}
-    .excel-header p{margin:6px 0 0;color:#5d6875}
-    .excel-kicker{font-size:11px;font-weight:800;letter-spacing:1.5px;color:#178344}
-    .excel-ai-button{border:0;border-radius:14px;padding:12px 18px;background:#1677ff;color:#fff;font-weight:800;cursor:pointer}
-    .excel-section-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
-    .excel-section-tab{border:1px solid #dfe6ec;background:#fff;border-radius:16px;padding:16px;text-align:left;cursor:pointer;font-weight:800;display:flex;gap:10px;align-items:center}
-    .excel-section-tab.active{border-color:#1677ff;box-shadow:0 5px 20px rgba(22,119,255,.12);background:#f6faff}
-    .excel-intro-card{display:flex;gap:18px;align-items:center;background:#fff;border:1px solid #e3e8ed;border-radius:20px;padding:22px;margin-bottom:18px}
-    .excel-big-icon{font-size:42px}
-    .excel-intro-card h2{margin:0 0 6px}
-    .excel-intro-card p{margin:0;color:#65717e}
-    .excel-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .excel-topic-card,.excel-formula-card,.excel-feature-card{border:1px solid #e2e7eb;background:#fff;border-radius:18px;padding:18px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:9px;min-height:150px}
-    .excel-topic-card:hover,.excel-formula-card:hover,.excel-feature-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.08)}
-    .excel-topic-number,.excel-formula-icon,.excel-feature-icon{font-size:24px}
-    .excel-topic-card strong,.excel-formula-name,.excel-feature-card strong{font-size:18px}
-    .excel-topic-card span:last-child,.excel-open-label,.excel-feature-card em{color:#1677ff;font-size:13px;font-style:normal}
-    .excel-formula-group{margin-bottom:26px}
-    .excel-formula-group h3{margin:0 0 12px}
-    .excel-formula-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .excel-formula-card code{background:#f3f6f8;padding:8px;border-radius:8px;font-size:12px;overflow:auto}
-    .excel-formula-desc{color:#66727f;font-size:13px;line-height:1.45}
-    .excel-feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .excel-feature-number{font-size:12px;color:#84909c}
-    .excel-back-row{margin-bottom:14px}
-    .excel-back{border:0;background:transparent;color:#1677ff;font-weight:800;cursor:pointer;padding:6px 0}
-    .excel-lesson-card{background:#fff;border:1px solid #e0e6eb;border-radius:22px;padding:24px}
-    .excel-lesson-title{display:flex;gap:16px;align-items:center}
-    .excel-lesson-title>span{font-size:38px}
-    .excel-lesson-title h2{margin:4px 0}
-    .excel-lesson-title p{margin:4px 0;color:#65717e}
-    .excel-language-row{display:flex;gap:8px;margin:18px 0}
-    .excel-language-row button{border:1px solid #d7dee5;background:#fff;border-radius:10px;padding:8px 13px;cursor:pointer;font-weight:700}
-    .excel-language-row button.active{background:#1677ff;color:#fff;border-color:#1677ff}
-    .excel-video-card{background:#f7f9fb;border-radius:16px;padding:16px;margin:18px 0}
-    .excel-video-label{font-weight:800;margin-bottom:10px}
-    .excel-video-card video{display:block;width:100%;max-height:420px;background:#101418;border-radius:12px}
-    .excel-video-card p{margin:9px 0 0;color:#78838e;font-size:12px}
-    .excel-explain-block{border-left:4px solid #1677ff;background:#f8fbff;padding:16px 18px;border-radius:0 14px 14px 0;margin:16px 0}
-    .excel-explain-block h3{margin:0 0 8px}
-    .excel-explain-block p{margin:0;line-height:1.7;color:#33404d}
-    .excel-steps{margin:0;padding-left:22px;line-height:1.75}
-    .excel-practice-prompt{background:#fff8e7;border:1px solid #f0dfb0;padding:16px;border-radius:14px;margin-top:18px}
-    .excel-practice{margin-top:24px;border:2px solid #dfe8ef;border-radius:20px;padding:18px;background:#fbfcfd}
-    .excel-practice-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
-    .excel-practice-heading h3{margin:3px 0}
-    .excel-practice-heading p{margin:4px 0;color:#6c7782}
-    .excel-reset{border:1px solid #d8e0e7;background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;font-weight:700}
-    .excel-task{background:#eef7ff;border-radius:12px;padding:12px;margin:14px 0}
-    .excel-grid-wrap{overflow:auto;border:1px solid #ccd5dd;background:#fff}
-    .excel-grid{border-collapse:collapse;min-width:700px;width:100%}
-    .excel-grid td,.excel-grid th{border:1px solid #d8dee4;height:40px}
-    .excel-row-head{background:#f1f4f6;color:#6a7480;width:45px;text-align:center}
-    .excel-cell{width:100%;height:39px;border:0;padding:8px 10px;box-sizing:border-box;font:inherit;background:#fff}
-    .excel-cell:focus{outline:2px solid #1677ff;outline-offset:-2px}
-    .excel-cell.formula-valid{background:#f0fff4}
-    .excel-practice-help{display:flex;justify-content:space-between;gap:15px;margin-top:10px;color:#68737e;font-size:13px}
-    .excel-practice-result{font-weight:800;color:#1677ff}
-    @media(max-width:1050px){.excel-card-grid,.excel-formula-grid,.excel-feature-grid{grid-template-columns:repeat(2,1fr)}.excel-section-tabs{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:700px){.excel-shell{padding:15px}.excel-header{align-items:flex-start;flex-direction:column}.excel-card-grid,.excel-formula-grid,.excel-feature-grid,.excel-section-tabs{grid-template-columns:1fr}.excel-lesson-card{padding:16px}}
-  `;
-  document.head.appendChild(style);
-})();
-
-
-/* =========================================================
-   EXCEL V3 OVERRIDES — FORMULA SIDEBAR + REAL PRACTICE GRID
-   MS WORD / AI TEACHER are intentionally untouched.
-   ========================================================= */
-
-function renderExcelFormulaList(isAdvanced) {
-  const list = isAdvanced ? excelAdvancedFormulas : excelBasicFormulas;
-  const current = excelState.lesson ? list.find(x => x[0] === excelState.lesson) : null;
-  const groups = isAdvanced ? groupAdvancedExcelFormulas(list) : { "Basic Formulas": list };
-
-  const sidebar = `
-    <aside class="excel-formula-sidebar">
-      <div class="excel-sidebar-title">${isAdvanced ? "🧠 Advanced Formulas" : "🧮 Basic Formulas"}</div>
-      <div class="excel-sidebar-subtitle">Select a formula to learn and practice</div>
-      ${Object.entries(groups).map(([group, items]) => `
-        <div class="excel-sidebar-group">
-          ${isAdvanced ? `<div class="excel-sidebar-group-title">${excelT(group)}</div>` : ""}
-          ${items.map(item => `
-            <button type="button" class="excel-sidebar-item ${excelState.lesson === item[0] ? "active" : ""}" data-excel-formula="${excelT(item[0])}">
-              <span class="excel-sidebar-icon">${item[1]}</span>
-              <span><strong>${excelT(item[0])}</strong><small>${excelT(item[2])}</small></span>
-            </button>
-          `).join("")}
-        </div>
-      `).join("")}
-    </aside>
-  `;
-
-  const main = current
-    ? `<main class="excel-formula-main">${renderExcelFormulaLesson(current, isAdvanced)}</main>`
-    : `
-      <main class="excel-formula-main">
-        <div class="excel-intro-card excel-empty-selection">
-          <span class="excel-big-icon">${isAdvanced ? "🧠" : "🧮"}</span>
-          <div>
-            <h2>${isAdvanced ? "Advanced Formulas" : "Basic Formulas"}</h2>
-            <p>Select any formula from the left. Its video, explanation, steps, real-life example and an interactive Excel practice sheet will appear here.</p>
-          </div>
-        </div>
-      </main>
-    `;
-
-  return `<div class="excel-formula-layout">${sidebar}${main}</div>`;
+  if (cells[0]) selectCell(cells[0], false);
+  excelCalculatePractice();
 }
 
 function adjustExcelFormula(formula, fromRef, toRef) {
