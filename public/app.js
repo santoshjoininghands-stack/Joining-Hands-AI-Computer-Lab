@@ -3593,6 +3593,309 @@ function excelCalculatePractice() {
   document.head.appendChild(style);
 })();
 
+
+/* =========================================================
+   EXCEL V3 OVERRIDES — FORMULA SIDEBAR + REAL PRACTICE GRID
+   MS WORD / AI TEACHER are intentionally untouched.
+   ========================================================= */
+
+function renderExcelFormulaList(isAdvanced) {
+  const list = isAdvanced ? excelAdvancedFormulas : excelBasicFormulas;
+  const current = excelState.lesson ? list.find(x => x[0] === excelState.lesson) : null;
+  const groups = isAdvanced ? groupAdvancedExcelFormulas(list) : { "Basic Formulas": list };
+
+  const sidebar = `
+    <aside class="excel-formula-sidebar">
+      <div class="excel-sidebar-title">${isAdvanced ? "🧠 Advanced Formulas" : "🧮 Basic Formulas"}</div>
+      <div class="excel-sidebar-subtitle">Select a formula to learn and practice</div>
+      ${Object.entries(groups).map(([group, items]) => `
+        <div class="excel-sidebar-group">
+          ${isAdvanced ? `<div class="excel-sidebar-group-title">${excelT(group)}</div>` : ""}
+          ${items.map(item => `
+            <button type="button" class="excel-sidebar-item ${excelState.lesson === item[0] ? "active" : ""}" data-excel-formula="${excelT(item[0])}">
+              <span class="excel-sidebar-icon">${item[1]}</span>
+              <span><strong>${excelT(item[0])}</strong><small>${excelT(item[2])}</small></span>
+            </button>
+          `).join("")}
+        </div>
+      `).join("")}
+    </aside>
+  `;
+
+  const main = current
+    ? `<main class="excel-formula-main">${renderExcelFormulaLesson(current, isAdvanced)}</main>`
+    : `
+      <main class="excel-formula-main">
+        <div class="excel-intro-card excel-empty-selection">
+          <span class="excel-big-icon">${isAdvanced ? "🧠" : "🧮"}</span>
+          <div>
+            <h2>${isAdvanced ? "Advanced Formulas" : "Basic Formulas"}</h2>
+            <p>Select any formula from the left. Its video, explanation, steps, real-life example and an interactive Excel practice sheet will appear here.</p>
+          </div>
+        </div>
+      </main>
+    `;
+
+  return `<div class="excel-formula-layout">${sidebar}${main}</div>`;
+}
+
+function renderExcelPractice(name) {
+  const config = excelPracticeConfigV3(name);
+  const hi = excelState.language === "hi";
+  const cols = Math.max(7, ...config.rows.map(r => r.length));
+  const letters = Array.from({length: cols}, (_, i) => String.fromCharCode(65 + i));
+
+  return `
+    <section class="excel-practice excel-practice-v3" data-excel-practice-name="${excelT(name)}">
+      <div class="excel-practice-heading">
+        <div>
+          <div class="excel-kicker">LIVE EXCEL PRACTICE</div>
+          <h3>🧪 ${hi ? "अब खुद Excel में practice करें" : "Now practice it yourself in Excel"}</h3>
+          <p>${hi ? "Cell select करें, formula type करें और fill handle से copy करके real-time result देखें।" : "Select a cell, type a formula, and drag the fill handle to copy it like Excel."}</p>
+        </div>
+        <button type="button" class="excel-reset" data-excel-reset="1">↻ Reset</button>
+      </div>
+
+      <div class="excel-task"><strong>Practice Task:</strong> ${excelT(config.task)}</div>
+
+      <div class="excel-formula-bar-wrap">
+        <div class="excel-name-box" data-excel-name-box>A1</div>
+        <div class="excel-fx">fx</div>
+        <input class="excel-formula-bar" data-excel-formula-bar placeholder="Select a cell and enter a value or formula…">
+        <button type="button" class="excel-enter-btn" data-excel-enter>✓</button>
+      </div>
+
+      <div class="excel-grid-wrap excel-grid-wrap-v3">
+        <table class="excel-grid excel-grid-v3" data-excel-grid>
+          <thead>
+            <tr><th class="excel-corner"></th>${letters.map(l => `<th class="excel-col-head">${l}</th>`).join("")}</tr>
+          </thead>
+          <tbody>
+            ${config.rows.map((row, r) => `
+              <tr>
+                <th class="excel-row-head">${r + 1}</th>
+                ${letters.map((letter, c) => {
+                  const value = row[c] ?? "";
+                  return `<td class="excel-grid-cell"><input class="excel-cell" data-excel-cell="${letter}${r+1}" value="${escapeHTML(String(value))}" aria-label="Excel cell ${letter}${r+1}"><span class="excel-fill-handle" data-excel-fill="${letter}${r+1}"></span></td>`;
+                }).join("")}
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="excel-practice-help">
+        <span>💡 ${hi ? "Formula हमेशा = से शुरू करें। Example: =SUM(B2:D2)" : "Start formulas with =. Example: =SUM(B2:D2)"}</span>
+        <span class="excel-practice-result" data-excel-result>Ready</span>
+      </div>
+    </section>
+  `;
+}
+
+function excelPracticeConfigV3(name) {
+  const configs = {
+    SUM: {task:"Calculate each employee's total monthly sales in column E.", rows:[["Employee","Jan","Feb","Mar","Total","Target","Status"],["Amit","42000","38500","45000","","120000",""],["Neha","51000","47000","49500","","140000",""],["Ravi","33000","36000","39000","","100000",""]]},
+    MIN: {task:"Find the minimum monthly expense from B2:B6.", rows:[["Department","Expense"],["Training","18500"],["Travel","12200"],["Stationery","6400"],["Internet","8900"],["Utilities","15300"]]},
+    MAX: {task:"Find the highest monthly sales from B2:B6.", rows:[["Salesperson","Sales"],["Amit","78500"],["Neha","92400"],["Ravi","68100"],["Pooja","105200"],["Karan","87300"]]},
+    AVERAGE: {task:"Calculate the average marks of each student in column E.", rows:[["Student","English","Maths","Science","Average"],["Rahul","78","85","72",""],["Priya","88","91","79",""],["Amit","65","72","70",""],["Neha","92","76","88",""]]},
+    COUNT: {task:"Count how many numeric attendance values are present in B2:B7.", rows:[["Student","Days Present"],["Rahul","24"],["Priya","26"],["Amit",""],["Neha","25"],["Karan","23"],["Pooja","26"]]},
+    COUNTA: {task:"Count how many employee names are entered in A2:A7.", rows:[["Employee Name"],["Amit Sharma"],["Neha Verma"],["Ravi Kumar"],["Pooja Singh"],["Karan Mehta"],[""]]},
+    COUNTBLANK: {task:"Count the blank cells in the scholarship status column.", rows:[["Student","Status"],["Rahul","Selected"],["Priya",""],["Amit","Pending"],["Neha",""],["Karan","Selected"],["Pooja",""]]},
+    IF: {task:"In G2 enter =IF(E2>=F2,\"Achieved\",\"Below Target\") and copy down.", rows:[["Employee","Jan","Feb","Mar","Total","Target","Status"],["Amit","42000","38500","45000","125500","120000",""],["Neha","51000","47000","49500","147500","140000",""],["Ravi","33000","36000","39000","108000","110000",""]]},
+    LARGE: {task:"Find the 2nd highest sales value from B2:B6.", rows:[["Salesperson","Sales"],["Amit","78500"],["Neha","92400"],["Ravi","68100"],["Pooja","105200"],["Karan","87300"]]},
+    SMALL: {task:"Find the 2nd lowest fee from B2:B6.", rows:[["Course","Fee"],["Excel","3500"],["Word","2500"],["PowerPoint","3000"],["English","2200"],["AI Basics","4000"]]},
+    ROUND: {task:"Round each percentage to 1 decimal place.", rows:[["Student","Percentage","Rounded"],["Rahul","87.456",""],["Priya","91.234",""],["Amit","76.789",""],["Neha","84.651",""]]},
+    ROUNDUP: {task:"Round each invoice amount upward to the nearest whole number.", rows:[["Invoice","Amount","Rounded Up"],["INV-101","1250.21",""],["INV-102","987.01",""],["INV-103","4500.12",""]]},
+    ROUNDDOWN: {task:"Round each invoice amount downward to the nearest whole number.", rows:[["Invoice","Amount","Rounded Down"],["INV-201","1250.89",""],["INV-202","987.99",""],["INV-203","4500.75",""]]},
+    DAY: {task:"Extract the day from each admission date.", rows:[["Student","Admission Date","Day"],["Rahul","2026-04-15",""],["Priya","2026-05-22",""],["Amit","2026-06-03",""]]},
+    MONTH: {task:"Extract the month number from each admission date.", rows:[["Student","Admission Date","Month"],["Rahul","2026-04-15",""],["Priya","2026-05-22",""],["Amit","2026-06-03",""]]},
+    YEAR: {task:"Extract the year from each joining date.", rows:[["Employee","Joining Date","Year"],["Amit","2024-07-12",""],["Neha","2025-01-20",""],["Ravi","2023-11-08",""]]},
+    DATE: {task:"Create a date from separate Year, Month and Day columns.", rows:[["Year","Month","Day","Date"],["2026","9","15",""],["2026","10","5",""],["2027","1","20",""]]},
+    TODAY: {task:"Enter =TODAY() in B2 to show today's date. It updates automatically.", rows:[["Item","Current Date"],["Today",""]]},
+    NOW: {task:"Enter =NOW() in B2 to show the current date and time.", rows:[["Item","Current Date & Time"],["Now",""]]},
+    LOWER: {task:"Convert department codes to lowercase.", rows:[["Code","Lowercase"],["DEL-ADMIN",""],["MUM-HR",""],["BLR-MIS",""]]},
+    UPPER: {task:"Convert city names to uppercase.", rows:[["City","Uppercase"],["Delhi",""],["Mumbai",""],["Bengaluru",""]]},
+    PROPER: {task:"Clean names into Proper Case.", rows:[["Raw Name","Proper Name"],["rahul kumar",""],["PRIYA SHARMA",""],["amit singh",""]]},
+    TRIM: {task:"Remove extra spaces from imported employee names.", rows:[["Imported Name","Clean Name"],["  Rahul   Kumar  ",""],[" Priya   Sharma ",""],["  Amit Singh  ",""]]},
+    LEFT: {task:"Extract the first 3 characters from each branch code.", rows:[["Branch Code","Prefix"],["DEL-001",""],["MUM-002",""],["BLR-003",""]]},
+    RIGHT: {task:"Extract the last 3 digits from each student ID.", rows:[["Student ID","Number"],["STU-1001",""],["STU-2045",""],["STU-3099",""]]},
+    MID: {task:"Extract the middle 3 digits from each employee code.", rows:[["Employee Code","Middle"],["EMP-101-DEL",""],["EMP-205-MUM",""],["EMP-310-BLR",""]]},
+    LEN: {task:"Count characters in each student name.", rows:[["Student Name","Characters"],["Rahul Kumar",""],["Priya Sharma",""],["Amit Singh",""]]}
+  };
+
+  const advanced = {
+    XLOOKUP:{task:"Enter =XLOOKUP(B2,A5:A8,B5:B8) to return the student's course.",rows:[["Student ID","Course"],["STU103",""],["STU101",""],["STU104",""],["STU102",""],["",""],["Lookup Table",""],["STU101","Excel"],["STU102","MIS"],["STU103","PowerPoint"],["STU104","AI Basics"]]},
+    VLOOKUP:{task:"Enter =VLOOKUP(B2,A5:C8,3,FALSE) to return the student's fee.",rows:[["Student ID","Student","Fee"],["STU103","",""],["STU101","",""],["STU104","",""],["STU102","",""],["","",""],["Student ID","Student","Fee"],["STU101","Rahul","3500"],["STU102","Priya","4200"],["STU103","Amit","3000"],["STU104","Neha","5000"]]},
+    HLOOKUP:{task:"Enter =HLOOKUP(B2,B5:E6,2,FALSE) to return the month's sales.",rows:[["Month","Sales"],["Mar",""],["",""],["Month","Jan","Feb","Mar","Apr"],["Sales","42000","45500","51000","48000"]]},
+    INDEX:{task:"Enter =INDEX(B2:B5,MATCH(E2,A2:A5,0)) to return a selected student's city.",rows:[["Student","City"],["Rahul","Delhi"],["Priya","Mumbai"],["Amit","Jaipur"],["Neha","Pune"],["Selected Student","Amit"]]},
+    MATCH:{task:"Enter =MATCH(E2,A2:A5,0) to find the position of the selected student.",rows:[["Student"],["Rahul"],["Priya"],["Amit"],["Neha"],["Selected Student","Amit"]]},
+    XMATCH:{task:"Enter =XMATCH(E2,A2:A5,0) to find the position of the selected student.",rows:[["Student"],["Rahul"],["Priya"],["Amit"],["Neha"],["Selected Student","Neha"]]},
+    FILTER:{task:"Use FILTER to return employees whose status is Selected.",rows:[["Employee","Status"],["Rahul","Selected"],["Priya","Pending"],["Amit","Selected"],["Neha","Rejected"]]},
+    SORT:{task:"Use SORT to sort the sales table by the first column.",rows:[["Employee","Sales"],["Neha","92000"],["Amit","78000"],["Ravi","85000"],["Pooja","67000"]]},
+    UNIQUE:{task:"Use UNIQUE to extract distinct course names.",rows:[["Course"],["Excel"],["MIS"],["Excel"],["PowerPoint"],["MIS"]]},
+    IFS:{task:"Use IFS to classify marks as Excellent, Good or Needs Improvement.",rows:[["Student","Marks","Grade"],["Rahul","92",""],["Priya","78",""],["Amit","55",""]]},
+    AND:{task:"Use AND to check whether both sales target and attendance targets are met.",rows:[["Employee","Sales","Attendance","Result"],["Amit","125000","96",""],["Neha","98000","94",""],["Ravi","132000","88",""]]},
+    OR:{task:"Use OR to check whether an employee qualifies through either high sales or high attendance.",rows:[["Employee","Sales","Attendance","Result"],["Amit","125000","96",""],["Neha","98000","94",""],["Ravi","132000","88",""]]},
+    IFERROR:{task:"Wrap a lookup in IFERROR so a missing Student ID shows 'Not Found'.",rows:[["Student ID","Result"],["STU101",""],["STU999",""]]}
+  };
+  if (advanced[name]) return advanced[name];
+
+  const conditional = ["SUMIFS","COUNTIFS","AVERAGEIFS","MAXIFS","MINIFS"].includes(name);
+  if (conditional) return {task:`Use ${name} with the department/sales dataset to calculate a conditional result.`,rows:[["Employee","Department","Sales","Status","Result"],["Amit","North","82000","Selected",""],["Neha","South","95000","Pending",""],["Ravi","North","76000","Selected",""],["Pooja","South","105000","Selected",""]]};
+
+  const textAdv = {TEXT:[["Invoice","Amount","Formatted"] , ["INV-101","12500.5",""]],TEXTJOIN:[["First Name","Last Name","City","Full Details"],["Rahul","Kumar","Delhi",""]],EXACT:[["Password 1","Password 2","Match?"],["Excel123","Excel123",""]]};
+  if (textAdv[name]) return {task:`Practice ${name} with the sample text/data.`,rows:textAdv[name]};
+  const dateAdv = {DATEDIF:[["Start Date","End Date","Years/Days"],["2020-01-15","2026-09-15",""]],WORKDAY:[["Start Date","Working Days","Result"],["2026-09-01","10",""]]};
+  if (dateAdv[name]) return {task:`Practice ${name} using the date data.`,rows:dateAdv[name]};
+  if (name === "PMT") return {task:"Calculate the monthly EMI for a loan using =PMT(rate/12,months,-loan).",rows:[["Loan","Annual Rate","Months","Monthly EMI"],["500000","10%","60",""]]};
+  return {task:`Practice ${name} with the sample office data.`,rows:[["Value","Result"],["100",""] , ["250",""] , ["500",""]]};
+}
+
+function attachExcelEvents() {
+  document.querySelectorAll("[data-excel-section]").forEach(button => button.addEventListener("click", () => {
+    excelState.section = button.dataset.excelSection; excelState.lesson = null; render();
+  }));
+  document.querySelectorAll("[data-excel-basic]").forEach(button => button.addEventListener("click", () => {
+    excelState.lesson = button.dataset.excelBasic; excelState.language = state.language === "en" ? "en" : "hi"; render();
+  }));
+  document.querySelectorAll("[data-excel-formula]").forEach(button => button.addEventListener("click", () => {
+    excelState.lesson = button.dataset.excelFormula; excelState.language = state.language === "en" ? "en" : "hi"; render();
+  }));
+  document.querySelectorAll("[data-excel-feature]").forEach(button => button.addEventListener("click", () => {
+    excelState.lesson = button.dataset.excelFeature; excelState.language = state.language === "en" ? "en" : "hi"; render();
+  }));
+  document.querySelectorAll("[data-excel-back]").forEach(button => button.addEventListener("click", () => {
+    excelState.section = button.dataset.excelBack; excelState.lesson = null; render();
+  }));
+  document.querySelectorAll("[data-excel-language]").forEach(button => button.addEventListener("click", () => {
+    excelState.language = button.dataset.excelLanguage; render();
+  }));
+  document.querySelectorAll("[data-excel-reset]").forEach(button => button.addEventListener("click", () => render()));
+  document.querySelectorAll("[data-excel-ai]").forEach(button => button.addEventListener("click", () => {
+    if (typeof window.openAITeacher === "function") window.openAITeacher("MS Excel", excelState.lesson || excelState.section);
+    else alert("AI Teacher is loading. Please try again.");
+  }));
+
+  const cells = [...document.querySelectorAll("[data-excel-cell]")];
+  let selected = cells[0] || null;
+  const nameBox = document.querySelector("[data-excel-name-box]");
+  const formulaBar = document.querySelector("[data-excel-formula-bar]");
+
+  function selectCell(input) {
+    if (!input) return;
+    cells.forEach(x => x.classList.remove("excel-selected-cell"));
+    input.classList.add("excel-selected-cell");
+    selected = input;
+    if (nameBox) nameBox.textContent = input.dataset.excelCell;
+    if (formulaBar) { formulaBar.value = input.value; formulaBar.focus(); formulaBar.select(); }
+    document.querySelectorAll(".excel-fill-handle").forEach(h => h.classList.remove("visible"));
+    const handle = document.querySelector(`[data-excel-fill="${input.dataset.excelCell}"]`);
+    if (handle) handle.classList.add("visible");
+  }
+
+  cells.forEach(input => {
+    input.addEventListener("focus", () => selectCell(input));
+    input.addEventListener("click", () => selectCell(input));
+    input.addEventListener("input", () => { if (formulaBar && selected === input) formulaBar.value = input.value; excelCalculatePractice(); });
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") { e.preventDefault(); const n = cells[cells.indexOf(input)+1]; if (n) n.focus(); }
+    });
+  });
+
+  if (formulaBar) formulaBar.addEventListener("input", () => { if (selected) selected.value = formulaBar.value; excelCalculatePractice(); });
+  document.querySelector("[data-excel-enter]")?.addEventListener("click", () => { if (selected && formulaBar) { selected.value = formulaBar.value; excelCalculatePractice(); selected.focus(); } });
+
+  document.querySelectorAll("[data-excel-fill]").forEach(handle => {
+    handle.addEventListener("mousedown", e => {
+      e.preventDefault();
+      const source = document.querySelector(`[data-excel-cell="${handle.dataset.excelFill}"]`);
+      if (!source) return;
+      let active = true;
+      const onMove = ev => {
+        if (!active) return;
+        const target = document.elementFromPoint(ev.clientX, ev.clientY)?.closest("[data-excel-cell]");
+        if (target && target !== source) {
+          target.value = adjustExcelFormula(source.value, source.dataset.excelCell, target.dataset.excelCell);
+          target.classList.add("excel-fill-preview");
+        }
+      };
+      const onUp = () => { active=false; document.removeEventListener("mousemove",onMove); document.removeEventListener("mouseup",onUp); document.querySelectorAll(".excel-fill-preview").forEach(x=>x.classList.remove("excel-fill-preview")); excelCalculatePractice(); };
+      document.addEventListener("mousemove",onMove); document.addEventListener("mouseup",onUp);
+    });
+  });
+  if (cells[0]) selectCell(cells[0]);
+  excelCalculatePractice();
+}
+
+function adjustExcelFormula(formula, fromRef, toRef) {
+  if (!String(formula).startsWith("=")) return formula;
+  const a = String(fromRef).match(/^([A-Z]+)(\d+)$/); const b = String(toRef).match(/^([A-Z]+)(\d+)$/);
+  if (!a || !b) return formula;
+  const rowDelta = Number(b[2]) - Number(a[2]);
+  const colDelta = b[1].charCodeAt(0) - a[1].charCodeAt(0);
+  return formula.replace(/(\$?)([A-Z]{1,3})(\$?)(\d+)/g, (_, cAbs, col, rAbs, row) => {
+    const nc = cAbs ? col : String.fromCharCode(col.charCodeAt(0)+colDelta);
+    const nr = rAbs ? row : String(Number(row)+rowDelta);
+    return `${cAbs}${nc}${rAbs}${nr}`;
+  });
+}
+
+function excelCalculatePractice() {
+  const inputs = [...document.querySelectorAll("[data-excel-cell]")];
+  if (!inputs.length) return;
+  const cells = Object.fromEntries(inputs.map(i => [i.dataset.excelCell.toUpperCase(), i.value]));
+  const valueOf = ref => cells[String(ref).toUpperCase()] ?? "";
+  const range = (a,b) => {
+    const x=a.match(/^([A-Z]+)(\d+)$/i), y=b.match(/^([A-Z]+)(\d+)$/i); if(!x||!y)return[];
+    const c1=x[1].charCodeAt(0)-65,c2=y[1].charCodeAt(0)-65,r1=+x[2],r2=+y[2],out=[];
+    for(let r=Math.min(r1,r2);r<=Math.max(r1,r2);r++)for(let c=Math.min(c1,c2);c<=Math.max(c1,c2);c++)out.push(valueOf(String.fromCharCode(65+c)+r)); return out;
+  };
+  const args = s => { const out=[]; let cur="",q=null,d=0; for(const ch of s){if(q){cur+=ch;if(ch===q)q=null}else if(ch==='"'){q=ch;cur+=ch}else if(ch==='('){d++;cur+=ch}else if(ch===')'){d--;cur+=ch}else if(ch===','&&d===0){out.push(cur.trim());cur=""}else cur+=ch}if(cur.trim()||s.endsWith(','))out.push(cur.trim());return out; };
+  const unq=v=>String(v??"").replace(/^['"]|['"]$/g,"");
+  const vals=a=>{const m=a.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);return m?range(m[1],m[2]):[valueOf(a)];};
+  const nums=a=>vals(a).map(Number).filter(Number.isFinite);
+  function evalF(formula){
+    let f=String(formula).trim(); if(!f.startsWith("="))return f; f=f.slice(1).trim();
+    const m=f.match(/^([A-Z][A-Z0-9._]*)\((.*)\)$/i); if(!m)return "#NAME?"; const fn=m[1].toUpperCase(),a=args(m[2]);
+    try{
+      if(fn==="SUM")return nums(a[0]).reduce((x,y)=>x+y,0);
+      if(fn==="MIN")return Math.min(...nums(a[0])); if(fn==="MAX")return Math.max(...nums(a[0]));
+      if(fn==="AVERAGE"){const n=nums(a[0]);return n.length?n.reduce((x,y)=>x+y,0)/n.length:"#DIV/0!";}
+      if(fn==="COUNT")return nums(a[0]).length; if(fn==="COUNTA")return vals(a[0]).filter(x=>String(x).trim()!=="").length; if(fn==="COUNTBLANK")return vals(a[0]).filter(x=>String(x).trim()==="").length;
+      if(fn==="LARGE"){let n=nums(a[0]).sort((x,y)=>y-x);return n[+a[1]-1]??"#NUM!";} if(fn==="SMALL"){let n=nums(a[0]).sort((x,y)=>x-y);return n[+a[1]-1]??"#NUM!";}
+      if(["ROUND","ROUNDUP","ROUNDDOWN"].includes(fn)){const n=Number(valueOf(a[0])||a[0]),p=Number(a[1]),q=10**p;return fn==="ROUND"?Math.round(n*q)/q:fn==="ROUNDUP"?Math.ceil(n*q)/q:Math.floor(n*q)/q;}
+      if(fn==="LEFT")return String(valueOf(a[0])||unq(a[0])).slice(0,Number(a[1]||1)); if(fn==="RIGHT")return String(valueOf(a[0])||unq(a[0])).slice(-Number(a[1]||1)); if(fn==="MID")return String(valueOf(a[0])||unq(a[0])).substr(Number(a[1])-1,Number(a[2])); if(fn==="LEN")return String(valueOf(a[0])||unq(a[0])).length;
+      if(fn==="LOWER")return String(valueOf(a[0])||unq(a[0])).toLowerCase(); if(fn==="UPPER")return String(valueOf(a[0])||unq(a[0])).toUpperCase(); if(fn==="PROPER")return String(valueOf(a[0])||unq(a[0])).toLowerCase().replace(/\b\w/g,c=>c.toUpperCase()); if(fn==="TRIM")return String(valueOf(a[0])||unq(a[0])).trim().replace(/\s+/g," ");
+      if(fn==="DAY"||fn==="MONTH"||fn==="YEAR"){const d=new Date(valueOf(a[0])||unq(a[0]));if(isNaN(d))return"#VALUE!";return fn==="DAY"?d.getDate():fn==="MONTH"?d.getMonth()+1:d.getFullYear();}
+      if(fn==="DATE")return new Date(+a[0],+a[1]-1,+a[2]).toLocaleDateString("en-IN"); if(fn==="TODAY")return new Date().toLocaleDateString("en-IN"); if(fn==="NOW")return new Date().toLocaleString("en-IN");
+      if(fn==="IF"){const c=a[0].replace(/([A-Z]+\d+)/gi,(_,r)=>JSON.stringify(valueOf(r)));const o=c.match(/^\s*(.+?)\s*(>=|<=|<>|=|>|<)\s*(.+?)\s*$/);if(!o)return"#VALUE!";let l=unq(o[1]),r=unq(o[3]);const ln=Number(l),rn=Number(r);if(Number.isFinite(ln)&&Number.isFinite(rn)){l=ln;r=rn}let t=o[2]===">"?l>r:o[2]==="<"?l<r:o[2]===">="?l>=r:o[2]==="<="?l<=r:o[2]==="="?l===r:l!==r;return t?unq(a[1]):unq(a[2]);}
+      if(fn==="AND"||fn==="OR"){const results=a.map(x=>{const m=x.match(/([A-Z]+\d+)\s*(>=|<=|<>|=|>|<)\s*([^ ]+)/i);if(!m)return Boolean(valueOf(x));let l=valueOf(m[1]),r=unq(m[3]);const ln=Number(l),rn=Number(r);if(Number.isFinite(ln)&&Number.isFinite(rn)){l=ln;r=rn}return m[2]===">"?l>r:m[2]==="<"?l<r:m[2]===">="?l>=r:m[2]==="<="?l<=r:m[2]==="="?l===r:l!==r;});return fn==="AND"?results.every(Boolean):results.some(Boolean);}
+      if(fn==="IFERROR"){const x=evalF(a[0]);return String(x).startsWith("#")?unq(a[1]):x;}
+      if(fn==="EXACT")return String(valueOf(a[0])||unq(a[0]))===String(valueOf(a[1])||unq(a[1]));
+      if(fn==="TEXTJOIN")return a.slice(2).map(x=>valueOf(x)||unq(x)).join(unq(a[0]));
+      if(fn==="TEXT")return String(valueOf(a[0])||unq(a[0]));
+      if(fn==="PMT"){const rate=Number(valueOf(a[0])||a[0]),n=Number(valueOf(a[1])||a[1]),pv=Number(valueOf(a[2])||a[2]);return rate===0?-(pv/n):-(pv*rate*(1+rate)**n/((1+rate)**n-1));}
+      if(fn==="MATCH"||fn==="XMATCH"){const needle=valueOf(a[0])||unq(a[0]), arr=vals(a[1]);const idx=arr.findIndex(x=>String(x)===String(needle));return idx<0?"#N/A":idx+1;}
+      if(fn==="INDEX"){const arr=vals(a[0]),idx=Number(a[1])-1;return arr[idx]??"#REF!";}
+      if(fn==="XLOOKUP"||fn==="VLOOKUP"){const needle=valueOf(a[0])||unq(a[0]);if(fn==="XLOOKUP"){const lookup=vals(a[1]),ret=vals(a[2]),i=lookup.findIndex(x=>String(x)===String(needle));return i>=0?ret[i]:(a[3]?unq(a[3]):"#N/A");}const rg=a[1].match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);if(!rg)return"#REF!";const rows=[];const s1=rg[1].match(/^([A-Z]+)(\d+)$/i),s2=rg[2].match(/^([A-Z]+)(\d+)$/i);for(let r=+s1[2];r<=+s2[2];r++)rows.push(range(`${s1[1]}${r}`,`${s2[1]}${r}`));const row=rows.find(x=>String(x[0])===String(needle));return row?row[Number(a[2])-1]:"#N/A";}
+      return "#SUPPORTED?";
+    }catch(e){return"#ERROR!";}
+  }
+  inputs.forEach(i=>{if(i.value.trim().startsWith("=")){const result=evalF(i.value);i.dataset.calculatedResult=String(result);i.title=String(result);i.classList.toggle("formula-valid",!String(result).startsWith("#"));}});
+  const box=document.querySelector("[data-excel-result]"); const formula=inputs.find(i=>i.value.trim().startsWith("=")); if(box)box.textContent=formula?`Result: ${formula.dataset.calculatedResult||"—"}`:"Ready";
+}
+
+(function injectExcelV3Styles(){
+  if(document.getElementById("joiningHandsExcelV3Styles"))return;
+  const style=document.createElement("style");style.id="joiningHandsExcelV3Styles";style.textContent=`
+    .excel-formula-layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:18px;align-items:start}
+    .excel-formula-sidebar{background:#fff;border:1px solid #dfe6ec;border-radius:20px;padding:14px;position:sticky;top:15px;max-height:calc(100vh - 30px);overflow:auto}
+    .excel-sidebar-title{font-size:18px;font-weight:900;color:#162b4d}.excel-sidebar-subtitle{font-size:12px;color:#78838e;margin:5px 4px 14px}.excel-sidebar-group{margin-bottom:12px}.excel-sidebar-group-title{font-size:11px;font-weight:900;color:#178344;letter-spacing:.8px;padding:8px 7px}.excel-sidebar-item{width:100%;border:1px solid transparent;background:#fff;border-radius:12px;padding:10px 9px;display:flex;gap:10px;text-align:left;cursor:pointer;align-items:flex-start}.excel-sidebar-item:hover{background:#f5f9ff}.excel-sidebar-item.active{background:#eaf2ff;border-color:#1677ff;box-shadow:0 3px 12px rgba(22,119,255,.1)}.excel-sidebar-icon{font-size:18px;min-width:24px}.excel-sidebar-item strong{display:block;font-size:14px}.excel-sidebar-item small{display:block;color:#74808c;font-size:11px;margin-top:2px;line-height:1.35}.excel-formula-main{min-width:0}.excel-empty-selection{min-height:250px}.excel-formula-bar-wrap{display:grid;grid-template-columns:70px 42px 1fr 45px;gap:6px;margin:12px 0;border:1px solid #cfd8e0;background:#f6f8fa;padding:6px;border-radius:8px}.excel-name-box,.excel-fx{background:#fff;border:1px solid #d7dee5;padding:8px;font-weight:800;text-align:center}.excel-formula-bar{border:1px solid #d7dee5;padding:8px 10px;font:inherit}.excel-enter-btn{border:0;background:#1677ff;color:#fff;border-radius:6px;font-weight:900}.excel-grid-wrap-v3{box-shadow:0 3px 12px rgba(0,0,0,.05)}.excel-grid-v3{min-width:850px}.excel-corner,.excel-col-head{background:#e9edf1;color:#56616d;font-weight:800;text-align:center}.excel-col-head{height:30px}.excel-grid-cell{position:relative;padding:0;min-width:110px}.excel-cell{min-width:110px}.excel-cell.excel-selected-cell{outline:2px solid #1677ff!important;outline-offset:-2px;background:#eef6ff}.excel-fill-handle{display:none;position:absolute;width:7px;height:7px;background:#1677ff;right:-3px;bottom:-3px;z-index:5;cursor:crosshair}.excel-fill-handle.visible{display:block}.excel-fill-preview{background:#eaf2ff!important}.excel-practice-v3 .excel-grid-wrap{max-height:480px}
+    @media(max-width:900px){.excel-formula-layout{grid-template-columns:1fr}.excel-formula-sidebar{position:static;max-height:330px}.excel-formula-sidebar .excel-sidebar-group{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}}
+    @media(max-width:600px){.excel-formula-sidebar .excel-sidebar-group{grid-template-columns:1fr}.excel-formula-bar-wrap{grid-template-columns:58px 35px 1fr 40px}.excel-grid-v3{min-width:720px}}
+  `;document.head.appendChild(style);
+})();
+
 /* =========================================================
    START APPLICATION
    ========================================================= */
