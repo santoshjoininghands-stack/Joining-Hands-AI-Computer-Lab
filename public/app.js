@@ -3587,6 +3587,11 @@ function excelCalculatePractice() {
     .excel-cell.formula-valid{background:#f0fff4}
     .excel-practice-help{display:flex;justify-content:space-between;gap:15px;margin-top:10px;color:#68737e;font-size:13px}
     .excel-practice-result{font-weight:800;color:#1677ff}
+    .excel-selected-cell{outline:2px solid #1677ff !important;outline-offset:-2px;background:#eef6ff !important;position:relative;z-index:2}
+    .excel-range-selected{outline:2px solid #1677ff !important;outline-offset:-2px;background:#eaf3ff !important;position:relative}
+    .excel-range-preview{outline:2px dashed #1677ff !important;outline-offset:-2px;background:#eef6ff !important;position:relative}
+    .excel-range-anchor{box-shadow:inset 0 0 0 2px #1677ff !important}
+    .excel-grid-cell{position:relative}
     @media(max-width:1050px){.excel-card-grid,.excel-formula-grid,.excel-feature-grid{grid-template-columns:repeat(2,1fr)}.excel-section-tabs{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:700px){.excel-shell{padding:15px}.excel-header{align-items:flex-start;flex-direction:column}.excel-card-grid,.excel-formula-grid,.excel-feature-grid,.excel-section-tabs{grid-template-columns:1fr}.excel-lesson-card{padding:16px}}
   `;
@@ -3752,79 +3757,412 @@ function excelPracticeConfigV3(name) {
 }
 
 function attachExcelEvents() {
-  document.querySelectorAll("[data-excel-section]").forEach(button => button.addEventListener("click", () => {
-    excelState.section = button.dataset.excelSection; excelState.lesson = null; render();
-  }));
-  document.querySelectorAll("[data-excel-basic]").forEach(button => button.addEventListener("click", () => {
-    excelState.lesson = button.dataset.excelBasic; excelState.language = state.language === "en" ? "en" : "hi"; render();
-  }));
-  document.querySelectorAll("[data-excel-formula]").forEach(button => button.addEventListener("click", () => {
-    excelState.lesson = button.dataset.excelFormula; excelState.language = state.language === "en" ? "en" : "hi"; render();
-  }));
-  document.querySelectorAll("[data-excel-feature]").forEach(button => button.addEventListener("click", () => {
-    excelState.lesson = button.dataset.excelFeature; excelState.language = state.language === "en" ? "en" : "hi"; render();
-  }));
-  document.querySelectorAll("[data-excel-back]").forEach(button => button.addEventListener("click", () => {
-    excelState.section = button.dataset.excelBack; excelState.lesson = null; render();
-  }));
-  document.querySelectorAll("[data-excel-language]").forEach(button => button.addEventListener("click", () => {
-    excelState.language = button.dataset.excelLanguage; render();
-  }));
-  document.querySelectorAll("[data-excel-reset]").forEach(button => button.addEventListener("click", () => render()));
-  document.querySelectorAll("[data-excel-ai]").forEach(button => button.addEventListener("click", () => {
-    if (typeof window.openAITeacher === "function") window.openAITeacher("MS Excel", excelState.lesson || excelState.section);
-    else alert("AI Teacher is loading. Please try again.");
-  }));
+  document.querySelectorAll("[data-excel-section]").forEach(button => {
+    button.addEventListener("click", () => {
+      excelState.section = button.dataset.excelSection;
+      excelState.lesson = null;
+      render();
+    });
+  });
 
-  const cells = [...document.querySelectorAll("[data-excel-cell]")];
-  let selected = cells[0] || null;
-  const nameBox = document.querySelector("[data-excel-name-box]");
-  const formulaBar = document.querySelector("[data-excel-formula-bar]");
+  document.querySelectorAll("[data-excel-basic]").forEach(button => {
+    button.addEventListener("click", () => {
+      excelState.lesson = button.dataset.excelBasic;
+      excelState.language = state.language === "en" ? "en" : "hi";
+      render();
+    });
+  });
 
-  function selectCell(input) {
-    if (!input) return;
-    cells.forEach(x => x.classList.remove("excel-selected-cell"));
-    input.classList.add("excel-selected-cell");
-    selected = input;
-    if (nameBox) nameBox.textContent = input.dataset.excelCell;
-    if (formulaBar) { formulaBar.value = input.value; formulaBar.focus(); formulaBar.select(); }
-    document.querySelectorAll(".excel-fill-handle").forEach(h => h.classList.remove("visible"));
-    const handle = document.querySelector(`[data-excel-fill="${input.dataset.excelCell}"]`);
-    if (handle) handle.classList.add("visible");
+  document.querySelectorAll("[data-excel-formula]").forEach(button => {
+    button.addEventListener("click", () => {
+      excelState.lesson = button.dataset.excelFormula;
+      excelState.language = state.language === "en" ? "en" : "hi";
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-excel-feature]").forEach(button => {
+    button.addEventListener("click", () => {
+      excelState.lesson = button.dataset.excelFeature;
+      excelState.language = state.language === "en" ? "en" : "hi";
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-excel-back]").forEach(button => {
+    button.addEventListener("click", () => {
+      excelState.section = button.dataset.excelBack;
+      excelState.lesson = null;
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-excel-language]").forEach(button => {
+    button.addEventListener("click", () => {
+      excelState.language = button.dataset.excelLanguage;
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-excel-reset]").forEach(button => {
+    button.addEventListener("click", () => {
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-excel-ai]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (typeof window.openAITeacher === "function") {
+        window.openAITeacher("MS Excel", excelState.lesson || excelState.section);
+      } else {
+        alert("AI Teacher is loading. Please try again.");
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-excel-cell]").forEach(input => {
+    input.addEventListener("input", () => {
+      excelCalculatePractice();
+    });
+    input.addEventListener("change", () => {
+      excelCalculatePractice();
+    });
+  });
+
+  excelCalculatePractice();
+}
+
+function excelCalculatePractice() {
+  const inputs = [...document.querySelectorAll("[data-excel-cell]")];
+  if (!inputs.length) return;
+
+  const cells = {};
+  inputs.forEach(input => {
+    cells[input.dataset.excelCell] = input.value;
+  });
+
+  // Basic formula evaluator for the practice lab.
+  // It intentionally supports the learning formulas rather than trying
+  // to reproduce the entire Excel calculation engine.
+  function cellValue(ref) {
+    const m = String(ref).toUpperCase().match(/^([A-Z]+)(\d+)$/);
+    if (!m) return "";
+    const col = m[1].charCodeAt(0) - 65;
+    const row = Number(m[2]) - 1;
+    return cells[`${row},${col}`] ?? "";
   }
 
-  cells.forEach(input => {
-    input.addEventListener("focus", () => selectCell(input));
-    input.addEventListener("click", () => selectCell(input));
-    input.addEventListener("input", () => { if (formulaBar && selected === input) formulaBar.value = input.value; excelCalculatePractice(); });
-    input.addEventListener("keydown", e => {
-      if (e.key === "Enter") { e.preventDefault(); const n = cells[cells.indexOf(input)+1]; if (n) n.focus(); }
+  function rangeValues(start, end) {
+    const a = start.match(/^([A-Z]+)(\d+)$/i);
+    const b = end.match(/^([A-Z]+)(\d+)$/i);
+    if (!a || !b) return [];
+    const c1 = a[1].toUpperCase().charCodeAt(0) - 65;
+    const r1 = Number(a[2]) - 1;
+    const c2 = b[1].toUpperCase().charCodeAt(0) - 65;
+    const r2 = Number(b[2]) - 1;
+    const values = [];
+    for (let r = Math.min(r1,r2); r <= Math.max(r1,r2); r++) {
+      for (let c = Math.min(c1,c2); c <= Math.max(c1,c2); c++) {
+        values.push(cells[`${r},${c}`] ?? "");
+      }
+    }
+    return values;
+  }
+
+  function numericValues(args) {
+    return args.flatMap(arg => {
+      const s = String(arg).trim();
+      const rm = s.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);
+      if (rm) return rangeValues(rm[1], rm[2]).map(Number).filter(Number.isFinite);
+      const n = Number(cellValue(s) || s);
+      return Number.isFinite(n) ? [n] : [];
     });
-  });
+  }
 
-  if (formulaBar) formulaBar.addEventListener("input", () => { if (selected) selected.value = formulaBar.value; excelCalculatePractice(); });
-  document.querySelector("[data-excel-enter]")?.addEventListener("click", () => { if (selected && formulaBar) { selected.value = formulaBar.value; excelCalculatePractice(); selected.focus(); } });
+  function splitArgs(s) {
+    const result = [];
+    let current = "";
+    let quote = null;
+    let depth = 0;
+    for (const ch of s) {
+      if (quote) {
+        current += ch;
+        if (ch === quote) quote = null;
+      } else if (ch === '"' || ch === "'") {
+        quote = ch;
+        current += ch;
+      } else if (ch === "(") {
+        depth++;
+        current += ch;
+      } else if (ch === ")") {
+        depth--;
+        current += ch;
+      } else if (ch === "," && depth === 0) {
+        result.push(current.trim());
+        current = "";
+      } else {
+        current += ch;
+      }
+    }
+    if (current.trim() || s.endsWith(",")) result.push(current.trim());
+    return result;
+  }
 
-  document.querySelectorAll("[data-excel-fill]").forEach(handle => {
-    handle.addEventListener("mousedown", e => {
-      e.preventDefault();
-      const source = document.querySelector(`[data-excel-cell="${handle.dataset.excelFill}"]`);
-      if (!source) return;
-      let active = true;
-      const onMove = ev => {
-        if (!active) return;
-        const target = document.elementFromPoint(ev.clientX, ev.clientY)?.closest("[data-excel-cell]");
-        if (target && target !== source) {
-          target.value = adjustExcelFormula(source.value, source.dataset.excelCell, target.dataset.excelCell);
-          target.classList.add("excel-fill-preview");
+  function unquote(v) {
+    const s = String(v).trim();
+    if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+      return s.slice(1,-1);
+    }
+    return s;
+  }
+
+  function evalFormula(formula) {
+    let f = String(formula).trim();
+    if (!f.startsWith("=")) return f;
+    f = f.slice(1).trim();
+
+    const m = f.match(/^([A-Z][A-Z0-9.]*)\((.*)\)$/i);
+    if (!m) {
+      const n = Number(f);
+      return Number.isFinite(n) ? n : "#NAME?";
+    }
+
+    const fn = m[1].toUpperCase();
+    const args = splitArgs(m[2]);
+
+    try {
+      if (fn === "SUM") return numericValues(args).reduce((a,b)=>a+b,0);
+      if (fn === "MIN") return Math.min(...numericValues(args));
+      if (fn === "MAX") return Math.max(...numericValues(args));
+      if (fn === "AVERAGE") {
+        const v = numericValues(args);
+        return v.length ? v.reduce((a,b)=>a+b,0)/v.length : "#DIV/0!";
+      }
+      if (fn === "COUNT") return numericValues(args).length;
+      if (fn === "COUNTA") return args.flatMap(a => {
+        const rm = a.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);
+        return rm ? rangeValues(rm[1],rm[2]).filter(v => String(v).trim() !== "") : [unquote(cellValue(a) || a)];
+      }).filter(v => String(v).trim() !== "").length;
+      if (fn === "COUNTBLANK") return args.flatMap(a => {
+        const rm = a.match(/^([A-Z]+\d+):([A-Z]+\d+)$/i);
+        return rm ? rangeValues(rm[1],rm[2]) : [cellValue(a)];
+      }).filter(v => String(v).trim() === "").length;
+      if (fn === "LARGE") {
+        const v = numericValues([args[0]]);
+        const k = Number(unquote(args[1]));
+        return v.sort((a,b)=>b-a)[k-1] ?? "#NUM!";
+      }
+      if (fn === "SMALL") {
+        const v = numericValues([args[0]]);
+        const k = Number(unquote(args[1]));
+        return v.sort((a,b)=>a-b)[k-1] ?? "#NUM!";
+      }
+      if (fn === "ROUND") return Math.round(Number(cellValue(args[0]) || args[0]) * 10 ** Number(args[1])) / 10 ** Number(args[1]);
+      if (fn === "ROUNDUP") {
+        const n = Number(cellValue(args[0]) || args[0]), p = Number(args[1]);
+        const factor = 10 ** p;
+        return Math.ceil(n * factor) / factor;
+      }
+      if (fn === "ROUNDDOWN") {
+        const n = Number(cellValue(args[0]) || args[0]), p = Number(args[1]);
+        const factor = 10 ** p;
+        return Math.floor(n * factor) / factor;
+      }
+      if (fn === "LEFT") return String(cellValue(args[0]) || unquote(args[0])).slice(0, Number(args[1] || 1));
+      if (fn === "RIGHT") {
+        const s = String(cellValue(args[0]) || unquote(args[0]));
+        return s.slice(-Number(args[1] || 1));
+      }
+      if (fn === "MID") {
+        const s = String(cellValue(args[0]) || unquote(args[0]));
+        return s.substr(Number(args[1])-1, Number(args[2]));
+      }
+      if (fn === "LEN") return String(cellValue(args[0]) || unquote(args[0])).length;
+      if (fn === "LOWER") return String(cellValue(args[0]) || unquote(args[0])).toLowerCase();
+      if (fn === "UPPER") return String(cellValue(args[0]) || unquote(args[0])).toUpperCase();
+      if (fn === "PROPER") return String(cellValue(args[0]) || unquote(args[0])).toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
+      if (fn === "TRIM") return String(cellValue(args[0]) || unquote(args[0])).trim().replace(/\s+/g," ");
+      if (fn === "IF") {
+        const cond = args[0].replace(/([A-Z]+\d+)/gi, (_,ref)=>JSON.stringify(cellValue(ref)));
+        const op = cond.match(/^\s*(.+?)\s*(>=|<=|<>|=|>|<)\s*(.+?)\s*$/);
+        let truth = false;
+        if (op) {
+          const left = unquote(op[1]), right = unquote(op[3]);
+          const ln = Number(left), rn = Number(right);
+          const a = Number.isFinite(ln) && Number.isFinite(rn) ? ln : left;
+          const b = Number.isFinite(ln) && Number.isFinite(rn) ? rn : right;
+          if (op[2] === ">=") truth = a >= b;
+          if (op[2] === "<=") truth = a <= b;
+          if (op[2] === ">") truth = a > b;
+          if (op[2] === "<") truth = a < b;
+          if (op[2] === "=") truth = a === b;
+          if (op[2] === "<>") truth = a !== b;
         }
-      };
-      const onUp = () => { active=false; document.removeEventListener("mousemove",onMove); document.removeEventListener("mouseup",onUp); document.querySelectorAll(".excel-fill-preview").forEach(x=>x.classList.remove("excel-fill-preview")); excelCalculatePractice(); };
-      document.addEventListener("mousemove",onMove); document.addEventListener("mouseup",onUp);
-    });
+        return truth ? unquote(args[1] || "") : unquote(args[2] || "");
+      }
+      if (fn === "DAY" || fn === "MONTH" || fn === "YEAR") {
+        const raw = cellValue(args[0]) || unquote(args[0]);
+        const d = new Date(raw);
+        if (Number.isNaN(d.getTime())) return "#VALUE!";
+        if (fn === "DAY") return d.getDate();
+        if (fn === "MONTH") return d.getMonth()+1;
+        return d.getFullYear();
+      }
+      if (fn === "DATE") {
+        return new Date(Number(args[0]), Number(args[1])-1, Number(args[2])).toLocaleDateString();
+      }
+      if (fn === "TODAY") return new Date().toLocaleDateString();
+      if (fn === "NOW") return new Date().toLocaleString();
+      return "#SUPPORTED?";
+    } catch {
+      return "#ERROR!";
+    }
+  }
+
+  inputs.forEach(input => {
+    const value = input.value.trim();
+    if (!value.startsWith("=")) return;
+
+    const result = evalFormula(value);
+    input.title = String(result);
+
+    // Only visually show a calculation result in a small tooltip-like
+    // area; keep the formula in the cell so students can see what they typed.
+    input.classList.toggle("formula-valid", !String(result).startsWith("#"));
+    input.dataset.calculatedResult = String(result);
   });
-  if (cells[0]) selectCell(cells[0]);
-  excelCalculatePractice();
+
+  const resultBox = document.querySelector("[data-excel-result]");
+  if (resultBox) {
+    const formulaInput = inputs.find(i => i.value.trim().startsWith("="));
+    if (formulaInput) {
+      resultBox.textContent = `Result: ${formulaInput.dataset.calculatedResult || "—"}`;
+    } else {
+      resultBox.textContent = "Ready";
+    }
+  }
+}
+
+/* ---------------------------------------------------------
+   EXCEL STYLES
+   --------------------------------------------------------- */
+
+(function injectExcelStyles() {
+  if (document.getElementById("joiningHandsExcelStyles")) return;
+
+  const style = document.createElement("style");
+  style.id = "joiningHandsExcelStyles";
+  style.textContent = `
+    .excel-shell{padding:24px 28px 60px;max-width:1400px;margin:0 auto}
+    .excel-header{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:24px;border-radius:24px;background:linear-gradient(135deg,#eefaf1,#f5fbff);border:1px solid #dcebe1;margin-bottom:20px}
+    .excel-header h1{margin:4px 0;font-size:34px}
+    .excel-header p{margin:6px 0 0;color:#5d6875}
+    .excel-kicker{font-size:11px;font-weight:800;letter-spacing:1.5px;color:#178344}
+    .excel-ai-button{border:0;border-radius:14px;padding:12px 18px;background:#1677ff;color:#fff;font-weight:800;cursor:pointer}
+    .excel-section-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+    .excel-section-tab{border:1px solid #dfe6ec;background:#fff;border-radius:16px;padding:16px;text-align:left;cursor:pointer;font-weight:800;display:flex;gap:10px;align-items:center}
+    .excel-section-tab.active{border-color:#1677ff;box-shadow:0 5px 20px rgba(22,119,255,.12);background:#f6faff}
+    .excel-intro-card{display:flex;gap:18px;align-items:center;background:#fff;border:1px solid #e3e8ed;border-radius:20px;padding:22px;margin-bottom:18px}
+    .excel-big-icon{font-size:42px}
+    .excel-intro-card h2{margin:0 0 6px}
+    .excel-intro-card p{margin:0;color:#65717e}
+    .excel-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .excel-topic-card,.excel-formula-card,.excel-feature-card{border:1px solid #e2e7eb;background:#fff;border-radius:18px;padding:18px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:9px;min-height:150px}
+    .excel-topic-card:hover,.excel-formula-card:hover,.excel-feature-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.08)}
+    .excel-topic-number,.excel-formula-icon,.excel-feature-icon{font-size:24px}
+    .excel-topic-card strong,.excel-formula-name,.excel-feature-card strong{font-size:18px}
+    .excel-topic-card span:last-child,.excel-open-label,.excel-feature-card em{color:#1677ff;font-size:13px;font-style:normal}
+    .excel-formula-group{margin-bottom:26px}
+    .excel-formula-group h3{margin:0 0 12px}
+    .excel-formula-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .excel-formula-card code{background:#f3f6f8;padding:8px;border-radius:8px;font-size:12px;overflow:auto}
+    .excel-formula-desc{color:#66727f;font-size:13px;line-height:1.45}
+    .excel-feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .excel-feature-number{font-size:12px;color:#84909c}
+    .excel-back-row{margin-bottom:14px}
+    .excel-back{border:0;background:transparent;color:#1677ff;font-weight:800;cursor:pointer;padding:6px 0}
+    .excel-lesson-card{background:#fff;border:1px solid #e0e6eb;border-radius:22px;padding:24px}
+    .excel-lesson-title{display:flex;gap:16px;align-items:center}
+    .excel-lesson-title>span{font-size:38px}
+    .excel-lesson-title h2{margin:4px 0}
+    .excel-lesson-title p{margin:4px 0;color:#65717e}
+    .excel-language-row{display:flex;gap:8px;margin:18px 0}
+    .excel-language-row button{border:1px solid #d7dee5;background:#fff;border-radius:10px;padding:8px 13px;cursor:pointer;font-weight:700}
+    .excel-language-row button.active{background:#1677ff;color:#fff;border-color:#1677ff}
+    .excel-video-card{background:#f7f9fb;border-radius:16px;padding:16px;margin:18px 0}
+    .excel-video-label{font-weight:800;margin-bottom:10px}
+    .excel-video-card video{display:block;width:100%;max-height:420px;background:#101418;border-radius:12px}
+    .excel-video-card p{margin:9px 0 0;color:#78838e;font-size:12px}
+    .excel-explain-block{border-left:4px solid #1677ff;background:#f8fbff;padding:16px 18px;border-radius:0 14px 14px 0;margin:16px 0}
+    .excel-explain-block h3{margin:0 0 8px}
+    .excel-explain-block p{margin:0;line-height:1.7;color:#33404d}
+    .excel-steps{margin:0;padding-left:22px;line-height:1.75}
+    .excel-practice-prompt{background:#fff8e7;border:1px solid #f0dfb0;padding:16px;border-radius:14px;margin-top:18px}
+    .excel-practice{margin-top:24px;border:2px solid #dfe8ef;border-radius:20px;padding:18px;background:#fbfcfd}
+    .excel-practice-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .excel-practice-heading h3{margin:3px 0}
+    .excel-practice-heading p{margin:4px 0;color:#6c7782}
+    .excel-reset{border:1px solid #d8e0e7;background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;font-weight:700}
+    .excel-task{background:#eef7ff;border-radius:12px;padding:12px;margin:14px 0}
+    .excel-grid-wrap{overflow:auto;border:1px solid #ccd5dd;background:#fff}
+    .excel-grid{border-collapse:collapse;min-width:700px;width:100%}
+    .excel-grid td,.excel-grid th{border:1px solid #d8dee4;height:40px}
+    .excel-row-head{background:#f1f4f6;color:#6a7480;width:45px;text-align:center}
+    .excel-cell{width:100%;height:39px;border:0;padding:8px 10px;box-sizing:border-box;font:inherit;background:#fff}
+    .excel-cell:focus{outline:2px solid #1677ff;outline-offset:-2px}
+    .excel-cell.formula-valid{background:#f0fff4}
+    .excel-practice-help{display:flex;justify-content:space-between;gap:15px;margin-top:10px;color:#68737e;font-size:13px}
+    .excel-practice-result{font-weight:800;color:#1677ff}
+    @media(max-width:1050px){.excel-card-grid,.excel-formula-grid,.excel-feature-grid{grid-template-columns:repeat(2,1fr)}.excel-section-tabs{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:700px){.excel-shell{padding:15px}.excel-header{align-items:flex-start;flex-direction:column}.excel-card-grid,.excel-formula-grid,.excel-feature-grid,.excel-section-tabs{grid-template-columns:1fr}.excel-lesson-card{padding:16px}}
+  `;
+  document.head.appendChild(style);
+})();
+
+
+/* =========================================================
+   EXCEL V3 OVERRIDES — FORMULA SIDEBAR + REAL PRACTICE GRID
+   MS WORD / AI TEACHER are intentionally untouched.
+   ========================================================= */
+
+function renderExcelFormulaList(isAdvanced) {
+  const list = isAdvanced ? excelAdvancedFormulas : excelBasicFormulas;
+  const current = excelState.lesson ? list.find(x => x[0] === excelState.lesson) : null;
+  const groups = isAdvanced ? groupAdvancedExcelFormulas(list) : { "Basic Formulas": list };
+
+  const sidebar = `
+    <aside class="excel-formula-sidebar">
+      <div class="excel-sidebar-title">${isAdvanced ? "🧠 Advanced Formulas" : "🧮 Basic Formulas"}</div>
+      <div class="excel-sidebar-subtitle">Select a formula to learn and practice</div>
+      ${Object.entries(groups).map(([group, items]) => `
+        <div class="excel-sidebar-group">
+          ${isAdvanced ? `<div class="excel-sidebar-group-title">${excelT(group)}</div>` : ""}
+          ${items.map(item => `
+            <button type="button" class="excel-sidebar-item ${excelState.lesson === item[0] ? "active" : ""}" data-excel-formula="${excelT(item[0])}">
+              <span class="excel-sidebar-icon">${item[1]}</span>
+              <span><strong>${excelT(item[0])}</strong><small>${excelT(item[2])}</small></span>
+            </button>
+          `).join("")}
+        </div>
+      `).join("")}
+    </aside>
+  `;
+
+  const main = current
+    ? `<main class="excel-formula-main">${renderExcelFormulaLesson(current, isAdvanced)}</main>`
+    : `
+      <main class="excel-formula-main">
+        <div class="excel-intro-card excel-empty-selection">
+          <span class="excel-big-icon">${isAdvanced ? "🧠" : "🧮"}</span>
+          <div>
+            <h2>${isAdvanced ? "Advanced Formulas" : "Basic Formulas"}</h2>
+            <p>Select any formula from the left. Its video, explanation, steps, real-life example and an interactive Excel practice sheet will appear here.</p>
+          </div>
+        </div>
+      </main>
+    `;
+
+  return `<div class="excel-formula-layout">${sidebar}${main}</div>`;
 }
 
 function adjustExcelFormula(formula, fromRef, toRef) {
