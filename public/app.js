@@ -3232,33 +3232,22 @@ function renderExcelFeatureLesson(item) {
 
 function attachExcelEvents() {
   document.querySelectorAll("[data-excel-section]").forEach(button => button.addEventListener("click", () => {
-    excelState.section = button.dataset.excelSection;
-    excelState.lesson = null;
-    render();
+    excelState.section = button.dataset.excelSection; excelState.lesson = null; render();
   }));
   document.querySelectorAll("[data-excel-basic]").forEach(button => button.addEventListener("click", () => {
-    excelState.lesson = button.dataset.excelBasic;
-    excelState.language = state.language === "en" ? "en" : "hi";
-    render();
+    excelState.lesson = button.dataset.excelBasic; excelState.language = state.language === "en" ? "en" : "hi"; render();
   }));
   document.querySelectorAll("[data-excel-formula]").forEach(button => button.addEventListener("click", () => {
-    excelState.lesson = button.dataset.excelFormula;
-    excelState.language = state.language === "en" ? "en" : "hi";
-    render();
+    excelState.lesson = button.dataset.excelFormula; excelState.language = state.language === "en" ? "en" : "hi"; render();
   }));
   document.querySelectorAll("[data-excel-feature]").forEach(button => button.addEventListener("click", () => {
-    excelState.lesson = button.dataset.excelFeature;
-    excelState.language = state.language === "en" ? "en" : "hi";
-    render();
+    excelState.lesson = button.dataset.excelFeature; excelState.language = state.language === "en" ? "en" : "hi"; render();
   }));
   document.querySelectorAll("[data-excel-back]").forEach(button => button.addEventListener("click", () => {
-    excelState.section = button.dataset.excelBack;
-    excelState.lesson = null;
-    render();
+    excelState.section = button.dataset.excelBack; excelState.lesson = null; render();
   }));
   document.querySelectorAll("[data-excel-language]").forEach(button => button.addEventListener("click", () => {
-    excelState.language = button.dataset.excelLanguage;
-    render();
+    excelState.language = button.dataset.excelLanguage; render();
   }));
   document.querySelectorAll("[data-excel-reset]").forEach(button => button.addEventListener("click", () => render()));
   document.querySelectorAll("[data-excel-ai]").forEach(button => button.addEventListener("click", () => {
@@ -3267,236 +3256,183 @@ function attachExcelEvents() {
   }));
 
   const cells = [...document.querySelectorAll("[data-excel-cell]")];
+  const gridCells = [...document.querySelectorAll(".excel-grid-cell")];
   let selected = cells[0] || null;
-  let rangeStart = null;
-  let rangeEnd = null;
-  let isDraggingRange = false;
-  let dragStartCell = null;
+  let dragStart = null;
+  let dragging = false;
+  let rangeFormulaMode = false;
   const nameBox = document.querySelector("[data-excel-name-box]");
   const formulaBar = document.querySelector("[data-excel-formula-bar]");
 
-  // Make the practice grid behave more like real Excel.
-  // A single click selects a cell. Dragging selects a rectangular range.
-  // When a formula is being entered, the selected range is inserted into the formula
-  // so students do NOT have to type A1:A4 manually.
-  if (!document.getElementById("excel-range-selection-style")) {
-    const style = document.createElement("style");
-    style.id = "excel-range-selection-style";
-    style.textContent = `
-      .excel-cell.excel-range-cell{background:#dbeafe!important;box-shadow:inset 0 0 0 1px #60a5fa!important}
-      .excel-cell.excel-range-anchor{background:#eef6ff!important;box-shadow:inset 0 0 0 2px #1677ff!important}
-      .excel-grid-cell.excel-dragging{cursor:crosshair}
-      .excel-formula-bar.excel-formula-selecting{background:#fffdf2}
-    `;
-    document.head.appendChild(style);
-  }
-
-  function refParts(ref) {
+  const refToPos = ref => {
     const m = String(ref || "").toUpperCase().match(/^([A-Z]+)(\d+)$/);
     if (!m) return null;
     let col = 0;
-    for (const ch of m[1]) col = col * 26 + (ch.charCodeAt(0) - 64);
-    return { col: col - 1, row: Number(m[2]) - 1, ref: `${m[1]}${m[2]}` };
+    for (const ch of m[1]) col = col * 26 + ch.charCodeAt(0) - 64;
+    return { row: Number(m[2]), col };
+  };
+
+  function posToRef(row, col) {
+    let c = col, letters = "";
+    while (c > 0) { const n = (c - 1) % 26; letters = String.fromCharCode(65 + n) + letters; c = Math.floor((c - 1) / 26); }
+    return letters + row;
   }
 
-  function refFromParts(row, col) {
-    let n = col + 1;
-    let letters = "";
-    while (n > 0) {
-      const rem = (n - 1) % 26;
-      letters = String.fromCharCode(65 + rem) + letters;
-      n = Math.floor((n - 1) / 26);
-    }
-    return `${letters}${row + 1}`;
-  }
-
-  function cellsBetween(a, b) {
-    const p1 = refParts(a.dataset.excelCell);
-    const p2 = refParts(b.dataset.excelCell);
-    if (!p1 || !p2) return [];
-    const minRow = Math.min(p1.row, p2.row);
-    const maxRow = Math.max(p1.row, p2.row);
-    const minCol = Math.min(p1.col, p2.col);
-    const maxCol = Math.max(p1.col, p2.col);
-    return cells.filter(cell => {
-      const p = refParts(cell.dataset.excelCell);
-      return p && p.row >= minRow && p.row <= maxRow && p.col >= minCol && p.col <= maxCol;
-    });
-  }
-
-  function clearRangeClasses() {
-    cells.forEach(x => {
-      x.classList.remove("excel-selected-cell", "excel-range-cell", "excel-range-anchor");
-      x.closest(".excel-grid-cell")?.classList.remove("excel-dragging");
-    });
+  function clearGridSelection() {
+    cells.forEach(x => x.classList.remove("excel-selected-cell", "excel-range-cell"));
+    gridCells.forEach(x => x.classList.remove("excel-range-bg"));
   }
 
   function showFillHandle(input) {
     document.querySelectorAll(".excel-fill-handle").forEach(h => h.classList.remove("visible"));
-    if (!input) return;
-    const handle = document.querySelector(`[data-excel-fill="${input.dataset.excelCell}"]`);
+    const handle = document.querySelector(`[data-excel-fill="${input?.dataset.excelCell || ""}"]`);
     if (handle) handle.classList.add("visible");
   }
 
-  function selectCell(input, focusInput = true) {
+  function selectCell(input, syncFormula = true) {
     if (!input) return;
-    clearRangeClasses();
-    input.classList.add("excel-selected-cell", "excel-range-anchor");
+    clearGridSelection();
+    input.classList.add("excel-selected-cell");
     selected = input;
-    rangeStart = input;
-    rangeEnd = input;
     if (nameBox) nameBox.textContent = input.dataset.excelCell;
-    if (formulaBar) {
-      formulaBar.value = input.value;
-      if (focusInput) {
-        formulaBar.focus();
-        formulaBar.select();
-      }
-    }
+    if (formulaBar && syncFormula) formulaBar.value = input.value;
     showFillHandle(input);
   }
 
-  function selectRange(startCell, endCell, updateFormula = true) {
-    if (!startCell || !endCell) return;
-    clearRangeClasses();
-    const selectedCells = cellsBetween(startCell, endCell);
-    selectedCells.forEach(cell => cell.classList.add("excel-range-cell"));
-    startCell.classList.add("excel-range-anchor");
-    selected = startCell;
-    rangeStart = startCell;
-    rangeEnd = endCell;
-    const a = refParts(startCell.dataset.excelCell);
-    const b = refParts(endCell.dataset.excelCell);
-    const startRef = startCell.dataset.excelCell;
-    const endRef = endCell.dataset.excelCell;
-    const rangeRef = startRef === endRef ? startRef : `${refFromParts(Math.min(a.row,b.row), Math.min(a.col,b.col))}:${refFromParts(Math.max(a.row,b.row), Math.max(a.col,b.col))}`;
-    if (nameBox) nameBox.textContent = rangeRef;
-    showFillHandle(startCell);
-
-    if (updateFormula && formulaBar && formulaBar.value.trim().startsWith("=")) {
-      insertSelectedRangeIntoFormula(rangeRef);
-    }
+  function paintRange(a, b) {
+    const p1 = refToPos(a.dataset.excelCell), p2 = refToPos(b.dataset.excelCell);
+    if (!p1 || !p2) return;
+    const minRow = Math.min(p1.row, p2.row), maxRow = Math.max(p1.row, p2.row);
+    const minCol = Math.min(p1.col, p2.col), maxCol = Math.max(p1.col, p2.col);
+    clearGridSelection();
+    cells.forEach(input => {
+      const p = refToPos(input.dataset.excelCell);
+      if (!p) return;
+      if (p.row >= minRow && p.row <= maxRow && p.col >= minCol && p.col <= maxCol) {
+        input.classList.add("excel-range-cell");
+      }
+    });
+    const startRef = posToRef(minRow, minCol), endRef = posToRef(maxRow, maxCol);
+    const start = document.querySelector(`[data-excel-cell="${startRef}"]`);
+    if (start) start.classList.add("excel-selected-cell");
+    if (nameBox) nameBox.textContent = startRef === endRef ? startRef : `${a.dataset.excelCell}:${b.dataset.excelCell}`;
   }
 
-  function insertSelectedRangeIntoFormula(rangeRef) {
-    if (!formulaBar) return;
-    let formula = formulaBar.value || "";
-    if (!formula.startsWith("=")) return;
+  function cellFromEvent(ev) {
+    const el = document.elementFromPoint(ev.clientX, ev.clientY);
+    const td = el?.closest?.(".excel-grid-cell");
+    return td?.querySelector?.("[data-excel-cell]") || null;
+  }
 
-    // Remove a previously inserted range from the current drag operation.
-    if (formulaBar.dataset.excelLastRange) {
-      const old = formulaBar.dataset.excelLastRange;
-      const idx = formula.indexOf(old);
-      if (idx !== -1) {
-        formula = formula.slice(0, idx) + formula.slice(idx + old.length);
-      }
+  function isFormulaReferenceMode() {
+    if (!formulaBar) return false;
+    if (document.activeElement === formulaBar) {
+      const v = formulaBar.value.trim();
+      return v.startsWith("=") && /\([^)]*$/.test(v);
     }
+    return false;
+  }
 
-    const start = Number.isInteger(formulaBar.dataset.excelRangeCaret)
-      ? formulaBar.dataset.excelRangeCaret
-      : (formulaBar.selectionStart ?? formula.length);
-    const safeStart = Math.max(1, Math.min(start, formula.length));
+  function addRangeToFormula(start, end) {
+    if (!formulaBar || !start || !end) return;
+    let value = formulaBar.value;
+    const ref = start.dataset.excelCell === end.dataset.excelCell
+      ? start.dataset.excelCell
+      : `${start.dataset.excelCell}:${end.dataset.excelCell}`;
 
-    formula = formula.slice(0, safeStart) + rangeRef + formula.slice(safeStart);
-    formulaBar.value = formula;
-    formulaBar.dataset.excelLastRange = rangeRef;
-    formulaBar.classList.add("excel-formula-selecting");
-    if (selected) selected.value = formula;
+    // Excel-style: =SUM( + drag B2:B5 -> =SUM(B2:B5)
+    const openPos = value.lastIndexOf("(");
+    const closePos = value.lastIndexOf(")");
+    if (openPos > closePos) {
+      const before = value.slice(0, openPos + 1);
+      const inside = value.slice(openPos + 1).trim();
+      const separator = inside && !inside.endsWith(",") ? "," : "";
+      value = before + inside + separator + ref;
+    } else {
+      value += ref;
+    }
+    formulaBar.value = value;
+    if (selected) selected.value = value;
+    formulaBar.focus();
+    formulaBar.setSelectionRange(value.length, value.length);
     excelCalculatePractice();
   }
 
+  // Direct cell editing / normal single-cell selection.
   cells.forEach(input => {
     input.addEventListener("focus", () => {
-      if (!isDraggingRange) selectCell(input, false);
+      if (!dragging && !rangeFormulaMode) selectCell(input, true);
     });
-
-    input.addEventListener("click", e => {
-      if (isDraggingRange) return;
-      selectCell(input, false);
-      if (formulaBar && formulaBar.value.trim().startsWith("=")) {
-        formulaBar.focus();
-        formulaBar.setSelectionRange(formulaBar.value.length, formulaBar.value.length);
-      } else {
-        input.focus();
-      }
+    input.addEventListener("click", () => {
+      if (!dragging && !rangeFormulaMode) selectCell(input, true);
     });
-
     input.addEventListener("input", () => {
-      if (formulaBar && selected === input && !isDraggingRange) {
-        formulaBar.value = input.value;
-        formulaBar.dataset.excelLastRange = "";
-      }
+      if (formulaBar && selected === input && document.activeElement !== formulaBar) formulaBar.value = input.value;
       excelCalculatePractice();
     });
-
     input.addEventListener("keydown", e => {
       if (e.key === "Enter") {
         e.preventDefault();
         const n = cells[cells.indexOf(input) + 1];
-        if (n) n.focus();
+        if (n) { selectCell(n, true); n.focus(); }
       }
     });
   });
 
-  // Mouse drag selection over cells.
-  cells.forEach(input => {
-    input.addEventListener("mousedown", e => {
-      // Left mouse button only. Shift-click also extends the current selection.
-      if (e.button !== 0) return;
+  // Real Excel-like mouse selection. Drag across cells to select a range.
+  gridCells.forEach(td => {
+    td.addEventListener("mousedown", e => {
+      if (e.button !== 0 || e.target.closest("[data-excel-fill]")) return;
+      const input = td.querySelector("[data-excel-cell]");
+      if (!input) return;
       e.preventDefault();
-      e.stopPropagation();
-
-      dragStartCell = input;
-      isDraggingRange = false;
-      const formulaIsActive = !!(formulaBar && formulaBar.value.trim().startsWith("="));
-
-      if (formulaIsActive) {
-        // Save the insertion point before the mouse leaves the formula bar.
-        formulaBar.dataset.excelRangeCaret = String(formulaBar.selectionStart ?? formulaBar.value.length);
-        formulaBar.classList.add("excel-formula-selecting");
+      dragStart = input;
+      dragging = true;
+      rangeFormulaMode = isFormulaReferenceMode();
+      if (rangeFormulaMode) {
+        // Keep the formula bar focused while the user selects the reference.
+        paintRange(input, input);
+      } else {
+        selectCell(input, true);
       }
 
-      clearRangeClasses();
-      input.classList.add("excel-selected-cell", "excel-range-anchor");
-      selected = input;
-      rangeStart = input;
-      rangeEnd = input;
-      if (nameBox) nameBox.textContent = input.dataset.excelCell;
-      showFillHandle(input);
-
       const onMove = ev => {
-        const target = document.elementFromPoint(ev.clientX, ev.clientY)?.closest("[data-excel-cell]");
+        if (!dragging) return;
+        const target = cellFromEvent(ev);
         if (!target) return;
-        if (target !== dragStartCell) isDraggingRange = true;
-        selectRange(dragStartCell, target, formulaIsActive);
+        if (rangeFormulaMode) paintRange(dragStart, target);
+        else {
+          paintRange(dragStart, target);
+          selected = target;
+        }
       };
 
-      const onUp = () => {
+      const onUp = ev => {
+        if (!dragging) return;
+        const target = cellFromEvent(ev) || dragStart;
+        dragging = false;
         document.removeEventListener("mousemove", onMove);
         document.removeEventListener("mouseup", onUp);
-        document.querySelectorAll(".excel-grid-cell").forEach(x => x.classList.remove("excel-dragging"));
-        isDraggingRange = false;
-        if (formulaBar) formulaBar.classList.remove("excel-formula-selecting");
-        excelCalculatePractice();
+
+        if (rangeFormulaMode) {
+          addRangeToFormula(dragStart, target);
+          rangeFormulaMode = false;
+          paintRange(dragStart, target);
+        } else {
+          selectCell(target, true);
+          target.focus();
+        }
+        dragStart = null;
       };
 
       document.addEventListener("mousemove", onMove);
-      document.addEventListener("mouseup", onUp, { once: true });
+      document.addEventListener("mouseup", onUp);
     });
   });
 
   if (formulaBar) {
-    formulaBar.addEventListener("focus", () => {
-      formulaBar.dataset.excelRangeCaret = String(formulaBar.selectionStart ?? formulaBar.value.length);
-      formulaBar.dataset.excelLastRange = "";
-    });
-    formulaBar.addEventListener("click", () => {
-      formulaBar.dataset.excelRangeCaret = String(formulaBar.selectionStart ?? formulaBar.value.length);
-      formulaBar.dataset.excelLastRange = "";
-    });
     formulaBar.addEventListener("input", () => {
       if (selected) selected.value = formulaBar.value;
-      formulaBar.dataset.excelLastRange = "";
       excelCalculatePractice();
     });
   }
@@ -3504,13 +3440,12 @@ function attachExcelEvents() {
   document.querySelector("[data-excel-enter]")?.addEventListener("click", () => {
     if (selected && formulaBar) {
       selected.value = formulaBar.value;
-      formulaBar.dataset.excelLastRange = "";
       excelCalculatePractice();
       selected.focus();
     }
   });
 
-  // Existing Excel-like fill handle: drag the small blue square to copy formulas.
+  // Excel-style fill handle: drag the small square at the bottom-right of the selected cell.
   document.querySelectorAll("[data-excel-fill]").forEach(handle => {
     handle.addEventListener("mousedown", e => {
       e.preventDefault();
@@ -3520,7 +3455,7 @@ function attachExcelEvents() {
       let active = true;
       const onMove = ev => {
         if (!active) return;
-        const target = document.elementFromPoint(ev.clientX, ev.clientY)?.closest("[data-excel-cell]");
+        const target = cellFromEvent(ev);
         if (target && target !== source) {
           target.value = adjustExcelFormula(source.value, source.dataset.excelCell, target.dataset.excelCell);
           target.classList.add("excel-fill-preview");
@@ -3534,11 +3469,11 @@ function attachExcelEvents() {
         excelCalculatePractice();
       };
       document.addEventListener("mousemove", onMove);
-      document.addEventListener("mouseup", onUp, { once: true });
+      document.addEventListener("mouseup", onUp);
     });
   });
 
-  if (cells[0]) selectCell(cells[0], false);
+  if (cells[0]) selectCell(cells[0]);
   excelCalculatePractice();
 }
 
